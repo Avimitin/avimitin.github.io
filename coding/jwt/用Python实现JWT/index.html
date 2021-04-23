@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <!-- Minima -->
+  <!-- Hexo theme created by @adisaktijrs -->
+
+  <!-- Basic Page Needs
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta charset="utf-8">
+
+  
+  <title>使用 Python 实现 JSON Web Token</title>
+  
+  <link rel="canonical" href="https://blog.cf.avmtn.net/coding/jwt/%E7%94%A8Python%E5%AE%9E%E7%8E%B0JWT/">
+  
+  <meta name="description" content="前言涉及到无状态鉴权时，Token 是比较好的验证用户身份的方案，而 Token 如何制作也是一个设计难点。只是一个 Token 去下载模块又增加依赖的负担，于是我去学习了 JWT(JSON Web Token) 的设计方式。   JWT 简介 JWT (JSON Web Token) 是一个定义安">
+  
+  
+  <meta name="keywords" content="golang,linux">
+  
+  <meta name="author" content="Avimitin">
+  
+  <meta property="og:image" content="https://blog.cf.avmtn.netundefined">
+  
+  <meta property="og:site_name" content="Avimitin Blog" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="使用 Python 实现 JSON Web Token" />
+  
+  <meta property="og:description" content="前言涉及到无状态鉴权时，Token 是比较好的验证用户身份的方案，而 Token 如何制作也是一个设计难点。只是一个 Token 去下载模块又增加依赖的负担，于是我去学习了 JWT(JSON Web Token) 的设计方式。   JWT 简介 JWT (JSON Web Token) 是一个定义安">
+  
+  <meta property="og:url" content="https://blog.cf.avmtn.net/coding/jwt/%E7%94%A8Python%E5%AE%9E%E7%8E%B0JWT/" />
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="使用 Python 实现 JSON Web Token">
+  
+  <meta name="twitter:description" content="前言涉及到无状态鉴权时，Token 是比较好的验证用户身份的方案，而 Token 如何制作也是一个设计难点。只是一个 Token 去下载模块又增加依赖的负担，于是我去学习了 JWT(JSON Web Token) 的设计方式。   JWT 简介 JWT (JSON Web Token) 是一个定义安">
+  
+  
+  <meta name="twitter:image" content="https://blog.cf.avmtn.netundefined">
+  
+  <meta name="twitter:url" content="https://blog.cf.avmtn.net/coding/jwt/%E7%94%A8Python%E5%AE%9E%E7%8E%B0JWT/" />
+
+  <!-- Mobile Specific Metas
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Preload fonts
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="preload" href="../fonts/dm-serif-display-v4-latin-regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../fonts/inter-v2-latin-regular.woff2" as="font" type="font/woff2" crossorigin>
+
+  <!-- CSS
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  
+<link rel="stylesheet" href="/css/normalize.css">
+
+  
+<link rel="stylesheet" href="/css/skeleton.css">
+
+  
+<link rel="stylesheet" href="/css/custom.css">
+
+  
+<link rel="stylesheet" href="/css/prism-dark.css">
+
+  
+<link rel="stylesheet" href="/css/prism-line-numbers.css">
+
+  <!-- User css -->
+  
+  
+<link rel="stylesheet" href="/css/user.css">
+
+  
+
+  <!-- Favicon
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="icon" type="image/png" href="/images/favicon.png">
+
+  <!-- Custom Theme Color Style
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <style>
+  a:not(.icon) {
+    text-decoration-color: #D19826;
+    background-image: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0) 50%,
+      #D19826 50%
+    );
+  }
+  blockquote {
+    border-left: 8px solid #D19826;
+  }
+  .nanobar .bar {
+    background: #D19826;
+  }
+  .button.button-primary:hover,
+  button.button-primary:hover,
+  input[type="submit"].button-primary:hover,
+  input[type="reset"].button-primary:hover,
+  input[type="button"].button-primary:hover,
+  .button.button-primary:focus,
+  button.button-primary:focus,
+  input[type="submit"].button-primary:focus,
+  input[type="reset"].button-primary:focus,
+  input[type="button"].button-primary:focus {
+    background-color: #D19826;
+    border-color: #D19826;
+  }
+  input[type="email"]:focus,
+  input[type="number"]:focus,
+  input[type="search"]:focus,
+  input[type="text"]:focus,
+  input[type="tel"]:focus,
+  input[type="url"]:focus,
+  input[type="password"]:focus,
+  textarea:focus,
+  select:focus {
+    border: 1px solid #D19826;
+  }
+</style>
+
+  <!-- Google Analytics (With Privacy Settings On)
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+  <div class="container">
+    <div class="row">
+      <div>
+
+        <div class="row">
+  <div class="two columns" style="max-width: 50px">
+    <h1 class="mt-2 mode">
+      <div onclick=setDarkMode(true) id="darkBtn">🌑</div>
+      <div onclick=setDarkMode(false) id="lightBtn" class=hidden>☀️</div>
+      <script >
+        if (localStorage.getItem('preferredTheme') == 'dark') {
+          setDarkMode(true)
+        }
+        function setDarkMode(isDark) {
+          var darkBtn = document.getElementById('darkBtn')
+          var lightBtn = document.getElementById('lightBtn')
+          if (isDark) {
+            lightBtn.style.display = "block"
+            darkBtn.style.display = "none"
+            localStorage.setItem('preferredTheme', 'dark');
+          } else {
+            lightBtn.style.display = "none"
+            darkBtn.style.display = "block"
+            localStorage.removeItem('preferredTheme');
+          }
+          document.body.classList.toggle("darkmode");
+        }
+      </script>
+    </h1>
+  </div>
+
+  <div class="six columns ml-1">
+    <h1 class="mt-2">
+      Avimitin&#39;s Blog
+    </h1>
+  </div>
+
+  <div class="twelve columns">
+    <div class="row">
+      <div class="nine columns left">
+        <a href="/">Home</a>
+        
+          
+          <a href="/friends" class="ml">Friends</a>
+          
+        
+        
+          
+            <a href="mailto:avimitin@gmail.com" target="_blank" class="ml">Email</a>
+          
+        
+      </div>
+    </div>
+    <hr style="margin-bottom: 2.6rem">
+  </div>
+</div>
+
+        <div class="trans">
+          <h1 class="post-title">使用 Python 实现 JSON Web Token</h1>
+
+
+
+
+
+
+
+  <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>涉及到无状态鉴权时，<code>Token</code> 是比较好的验证用户身份的方案，而 <code>Token</code> 如何制作也是一个设计难点。只是一个 <code>Token</code> 去下载模块又增加依赖的负担，于是我去学习了 <code>JWT(JSON Web Token)</code> 的设计方式。</p>
+<span id="more"></span>
+
+<h2 id="JWT-简介"><a href="#JWT-简介" class="headerlink" title="JWT 简介"></a>JWT 简介</h2><blockquote>
+<p><code>JWT (JSON Web Token)</code> 是一个定义安全信息传输的公开标准(<a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc7519">RFC 7519</a>)。使用 <code>JWT</code> 标准设计的信息因为其数字签名，都可被验证和信任。</p>
+</blockquote>
+<p><code>JWT</code> 使用 <code>HMAC</code> 算法或者一个 <code>RSA</code> 或 <code>ECDSA</code> 加密的公/私钥来进行签名认证。使用 <code>JWT</code> 可以帮助实现无状态鉴权和 <code>OAuth 2.0</code> 的实现，也可以用来传输信息。</p>
+<h2 id="JWT-结构"><a href="#JWT-结构" class="headerlink" title="JWT 结构"></a>JWT 结构</h2><p><code>JWT</code> 由三部分组成：</p>
+<ul>
+<li>Header</li>
+<li>Payload</li>
+<li>Signature</li>
+</ul>
+<p>分别用点 <code>.</code> 隔开组合，一个 JWT 应该长得像下面这样:</p>
+<p><code>xxxx.yyyy.zzzz</code></p>
+<h3 id="Header"><a href="#Header" class="headerlink" title="Header"></a>Header</h3><p><code>header</code> 内包含两个信息，一般来说都应该是相同的，用来告示自己使用的算法如 <code>HS256</code> 。下面是一个 <code>header</code> 的例子：</p>
+<pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">&#123;</span>
+    <span class="token property">"alg"</span><span class="token operator">:</span> <span class="token string">"HS256"</span><span class="token punctuation">,</span>
+    <span class="token property">"typ"</span><span class="token operator">:</span> <span class="token string">"JWT"</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><strong>然后使用 Base64Url 将这个 <code>JSON</code> 编码。</strong></p>
+<h3 id="Payload"><a href="#Payload" class="headerlink" title="Payload"></a>Payload</h3><p>Payload 用来装载关于比如用户的信息或其他更多信息，包含三部分：</p>
+<ul>
+<li>Registered claims: 这里是对 <code>Token</code> 的签发的说明，如 <code>Token</code> 签发方，<code>Token</code> 签发时间，有效时间等等。可以在 <a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc7519#section-4.1">这里</a> 看到更多关于 <em>Registered claims</em> 名词的说明。</li>
+<li>Public claims: 这里可以由签发人随意定义，但是要尽量避开 <code>Registered claims</code> 所用到的专有名词。</li>
+<li>Private claims: 这里可以装载想要使用 <code>Token</code> 分享的信息。</li>
+</ul>
+<p>下面是关于 <code>Payload</code> 的例子：</p>
+<pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">&#123;</span>
+    <span class="token property">"iss"</span><span class="token operator">:</span> <span class="token string">"Avimitin Studio"</span><span class="token punctuation">,</span>
+    <span class="token property">"exp"</span><span class="token operator">:</span> <span class="token string">"1600483010"</span><span class="token punctuation">,</span>
+    <span class="token property">"user"</span><span class="token operator">:</span> <span class="token string">"Tom"</span><span class="token punctuation">,</span>
+    <span class="token property">"admin"</span><span class="token operator">:</span> <span class="token boolean">false</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><strong>然后使用 Base64Url 将这个 <code>JSON</code> 编码。</strong></p>
+<h3 id="Signature"><a href="#Signature" class="headerlink" title="Signature"></a>Signature</h3><p>接着使用 <code>HMAC</code> 算法对上面编码的两个 <code>JSON</code> 进行加密：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python">HMACSHA256<span class="token punctuation">(</span>header_b64<span class="token operator">+</span><span class="token string">"."</span><span class="token operator">+</span>payload_b64<span class="token punctuation">,</span> secret_key<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="组合："><a href="#组合：" class="headerlink" title="组合："></a>组合：</h3><p>将上面三个部分得到的 base64 使用 <code>.</code> 组合起来，就能获得最终的 JWT 了：</p>
+<h2 id="Python-实现"><a href="#Python-实现" class="headerlink" title="Python 实现"></a>Python 实现</h2><p>虽然 <code>JWT</code> 已经有成熟的模块了，但是在一些环境中能够原生实现相比起让用户安装依赖会更加合适一些，于是我根据上面标准，使用自带模块实现了 JWT。大概步骤如下：</p>
+<h3 id="导入包"><a href="#导入包" class="headerlink" title="导入包"></a>导入包</h3><p>制作 <code>Token </code> 将需要以下依赖：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token comment"># 加密</span>
+<span class="token keyword">import</span> hmac
+<span class="token comment"># 获取时间戳</span>
+<span class="token keyword">import</span> time
+<span class="token comment"># base64加密</span>
+<span class="token keyword">import</span> base64
+<span class="token comment"># 获取字符</span>
+<span class="token keyword">import</span> string
+<span class="token comment"># 比 random 更安全的随机</span>
+<span class="token keyword">import</span> secrets
+<span class="token comment"># 加密算法</span>
+<span class="token keyword">from</span> hashlib <span class="token keyword">import</span> sha256<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="base64加密"><a href="#base64加密" class="headerlink" title="base64加密"></a>base64加密</h3><p>因为 <code>Token</code> 常用于 URL中传递，普通的 base64 加密中的 <code>\</code> <code>=</code> 等字符会造成歧义，所以我们需要加工一下：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">def</span> <span class="token function">_safe_base64_url_encode</span><span class="token punctuation">(</span>text<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token comment"># 判断输入</span>
+    <span class="token keyword">if</span> <span class="token builtin">isinstance</span><span class="token punctuation">(</span>text<span class="token punctuation">,</span> <span class="token builtin">str</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        text <span class="token operator">=</span> text<span class="token punctuation">.</span>encode<span class="token punctuation">(</span><span class="token string">"utf-8"</span><span class="token punctuation">)</span>
+    <span class="token keyword">elif</span> <span class="token builtin">isinstance</span><span class="token punctuation">(</span>text<span class="token punctuation">,</span> <span class="token builtin">bytes</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">pass</span>
+    <span class="token keyword">else</span><span class="token punctuation">:</span>
+        <span class="token keyword">raise</span> TypeError<span class="token punctuation">(</span><span class="token string">"Expected string or bytes but got others"</span><span class="token punctuation">)</span>
+	<span class="token comment"># 使用urlsafe方法得到无歧义的base64字节</span>
+    text_b64 <span class="token operator">=</span> base64<span class="token punctuation">.</span>urlsafe_b64encode<span class="token punctuation">(</span>text<span class="token punctuation">)</span>
+    <span class="token comment"># 用replace方法将字节里的 = 去掉</span>
+    <span class="token keyword">return</span> text_b64<span class="token punctuation">.</span>replace<span class="token punctuation">(</span><span class="token string">b"="</span><span class="token punctuation">,</span> <span class="token string">b""</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="生成-Header"><a href="#生成-Header" class="headerlink" title="生成 Header"></a>生成 Header</h3><pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">def</span> <span class="token function">header_generate</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token comment"># 生成 header 之后传递base64加密后的字节 </span>
+	header <span class="token operator">=</span> <span class="token triple-quoted-string string">"""&#123;"alg": "HS256", "typ": "jwt"&#125;"""</span>
+    <span class="token keyword">return</span> self<span class="token punctuation">.</span>_safe_base64_url_encode<span class="token punctuation">(</span>header<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="生成-Payload"><a href="#生成-Payload" class="headerlink" title="生成 Payload"></a>生成 Payload</h3><pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">def</span> <span class="token function">payload_generate</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> username<span class="token punctuation">:</span> <span class="token builtin">str</span><span class="token punctuation">,</span> permission<span class="token punctuation">:</span> <span class="token builtin">str</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token comment"># 参数名是示例，可以自行调整</span>
+    exp <span class="token operator">=</span> <span class="token builtin">round</span><span class="token punctuation">(</span>time<span class="token punctuation">.</span>time<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token number">50</span>
+    payload <span class="token operator">=</span> <span class="token triple-quoted-string string">"""&#123;"iss": "Avimitin Studio", "exp": "%d", "user": "%s", "admin": "%s"&#125;"""</span> <span class="token operator">%</span> <span class="token punctuation">(</span>exp<span class="token punctuation">,</span> username<span class="token punctuation">,</span> permission<span class="token punctuation">)</span>
+    <span class="token keyword">return</span> self<span class="token punctuation">.</span>_safe_base64_url_encode<span class="token punctuation">(</span>payload<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="生成加密密钥"><a href="#生成加密密钥" class="headerlink" title="生成加密密钥"></a>生成加密密钥</h3><p>加密用的密钥我是用的是一次性密钥的方法，你也可以换成自己熟记的密码串用来解密。</p>
+<ul>
+<li>一次性随机密码串</li>
+</ul>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">def</span> <span class="token function">_secret_key_generate</span><span class="token punctuation">(</span><span class="token builtin">len</span><span class="token punctuation">:</span> <span class="token builtin">int</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    current_time <span class="token operator">=</span> <span class="token builtin">round</span><span class="token punctuation">(</span>time<span class="token punctuation">.</span>time<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    combine_text <span class="token operator">=</span> string<span class="token punctuation">.</span>ascii_letters <span class="token operator">+</span> <span class="token builtin">str</span><span class="token punctuation">(</span>current_time<span class="token punctuation">)</span>
+    salt <span class="token operator">=</span> <span class="token string">""</span>
+    <span class="token keyword">while</span> <span class="token builtin">len</span> <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">:</span>
+        salt <span class="token operator">+=</span> secrets<span class="token punctuation">.</span>choice<span class="token punctuation">(</span>combine_text<span class="token punctuation">)</span>
+        <span class="token builtin">len</span> <span class="token operator">-=</span> <span class="token number">1</span>
+    <span class="token keyword">return</span> salt<span class="token punctuation">.</span>encode<span class="token punctuation">(</span><span class="token string">"utf-8"</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<ul>
+<li>或者直接换成自己熟记的密码（尽量不要明文）</li>
+</ul>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">def</span> <span class="token function">_secret_key_generate</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+	<span class="token keyword">with</span> <span class="token builtin">open</span><span class="token punctuation">(</span><span class="token string">"config/password.json"</span><span class="token punctuation">,</span> <span class="token string">"r"</span><span class="token punctuation">)</span> <span class="token keyword">as</span> password_file<span class="token punctuation">:</span>
+        <span class="token keyword">return</span> json<span class="token punctuation">.</span>loads<span class="token punctuation">(</span>password_file<span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token string">"password"</span><span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<ul>
+<li>关于 Secrets 模块的<a target="_blank" rel="noopener" href="https://docs.python.org/3/library/secrets.html">更多说明</a></li>
+</ul>
+<h3 id="算法加密"><a href="#算法加密" class="headerlink" title="算法加密"></a>算法加密</h3><pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">def</span> <span class="token function">encrypt</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> msg<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token comment"># new 方法生成一个新的HMAC对象，用digest返回加密后的抽样</span>
+    sign <span class="token operator">=</span> hmac<span class="token punctuation">.</span>new<span class="token punctuation">(</span>key<span class="token punctuation">,</span> msg<span class="token punctuation">,</span> sha256<span class="token punctuation">)</span><span class="token punctuation">.</span>digest<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token keyword">return</span> sign<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<ul>
+<li>关于HMAC的<a target="_blank" rel="noopener" href="https://docs.python.org/3/library/hmac.html">更多API说明</a></li>
+</ul>
+<h3 id="最终合成"><a href="#最终合成" class="headerlink" title="最终合成"></a>最终合成</h3><pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">def</span> <span class="token function">generate</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> username<span class="token punctuation">,</span> permission<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token comment"># 生成加密用的密钥</span>
+    key <span class="token operator">=</span> self<span class="token punctuation">.</span>_secret_key_generate<span class="token punctuation">(</span><span class="token number">16</span><span class="token punctuation">)</span>
+    <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"加密密钥： "</span> <span class="token operator">+</span> key<span class="token punctuation">.</span>decode<span class="token punctuation">(</span><span class="token string">"utf-8"</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+	<span class="token comment"># 将前两段信息的 base64 用 . 合并起来    </span>
+    message <span class="token operator">=</span> self<span class="token punctuation">.</span>header_generate<span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">b"."</span> <span class="token operator">+</span> self<span class="token punctuation">.</span>payload_generate<span class="token punctuation">(</span>username<span class="token punctuation">,</span> permission<span class="token punctuation">)</span>
+    <span class="token comment"># 用密钥把message加密</span>
+    signature <span class="token operator">=</span> self<span class="token punctuation">.</span>encrypt<span class="token punctuation">(</span>key<span class="token punctuation">,</span> message<span class="token punctuation">)</span>
+    <span class="token comment"># 将加密后获得的抽样 base64 加密</span>
+    signature_b64 <span class="token operator">=</span> self<span class="token punctuation">.</span>_safe_base64_url_encode<span class="token punctuation">(</span>signature<span class="token punctuation">)</span>
+    part <span class="token operator">=</span> <span class="token punctuation">[</span>message<span class="token punctuation">,</span> signature_b64<span class="token punctuation">]</span>
+    <span class="token comment"># 最终把所有的base64合并并解码为 string 字符串</span>
+    <span class="token keyword">return</span> <span class="token string">b"."</span><span class="token punctuation">.</span>join<span class="token punctuation">(</span>part<span class="token punctuation">)</span><span class="token punctuation">.</span>decode<span class="token punctuation">(</span><span class="token string">"utf-8"</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="输出样例"><a href="#输出样例" class="headerlink" title="输出样例"></a>输出样例</h3><p>最终程序输出样例：</p>
+<pre class="line-numbers language-none"><code class="language-none">加密密钥： XWBCv6bT8FXNKV2z
+
+JWT: eyJhbGciOiAiSFMyNTYiLCAidHlwIjogImp3dCJ9.eyJpc3MiOiAiQXZpbWl0aW4gU3R1ZGlvIiwgImV4cCI6ICIxNjAwNDg1Nzc4IiwgInVzZXIiOiAiYXZpbWl0aW4iLCAiYWRtaW4iOiAiVHJ1ZSJ9.Kph2-Qin9Xrd3LwLWX5mOtGiei-1Cp2mtWuhzps3ub0<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="代码样本："><a href="#代码样本：" class="headerlink" title="代码样本："></a>代码样本：</h2><p>你可以在我的 <a target="_blank" rel="noopener" href="https://github.com/Avimitin/JWTPY">GitHub</a> 看到完整的代码演示。</p>
+
+
+  <p><a class="classtest-link" href="/tags/jwt/" rel="tag">jwt</a>, <a class="classtest-link" href="/tags/python/" rel="tag">python</a>, <a class="classtest-link" href="/tags/web/" rel="tag">web</a> — Sep 19, 2020</p>
+  
+
+
+          <div class="row mt-2">
+  
+    <div class="eight columns">
+      <p id="madewith">Made with ❤ and
+        <a class="footer-link icon" href="https://hexo.io" target="_blank" style="text-decoration: none;" rel="noreferrer" aria-label="Hexo.io">
+        <svg class="hexo svg-hov" width="14" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>Hexo.js</title><path d="M12 .007L1.57 6.056V18.05L12 23.995l10.43-6.049V5.952L12 .007zm4.798 17.105l-.939.521-.939-.521V12.94H9.08v4.172l-.94.521-.938-.521V6.89l.939-.521.939.521v4.172h5.84V6.89l.94-.521.938.521v10.222z"/></svg>
+        </a>
+        
+        at <a href="https://en.wikipedia.org/wiki/Earth" target="_blank" rel="noreferrer">Earth</a>.</p>
+        
+    </div>
+
+    <!-- Sepcial thanks to https://simpleicons.org/ for the icons -->
+    <div class="four columns mb-3 posisi" >
+      
+      <a class="ml-0 footer-link icon" href="https://github.com/avimitin" target="_blank" style="text-decoration: none" rel="noreferrer" aria-label="GitHub">
+        <svg class="github svg-hov" width="18" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>GitHub</title><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+      </a>
+      
+
+      
+
+      
+
+      
+
+      
+
+    </div>
+  
+</div>
+
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+  <script src="/js/nanobar.min.js"></script>
+  <script>
+    var options = {
+      classname: 'nanobar',
+      id: 'myNanobar'
+    };
+    var nanobar = new Nanobar(options);
+    nanobar.go(30);
+    nanobar.go(76);
+    nanobar.go(100);
+  </script>
+
+</body>
+
+</html>

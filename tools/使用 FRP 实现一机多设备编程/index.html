@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <!-- Minima -->
+  <!-- Hexo theme created by @adisaktijrs -->
+
+  <!-- Basic Page Needs
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta charset="utf-8">
+
+  
+  <title>使用 FRP 实现一机多设备编程</title>
+  
+  <link rel="canonical" href="https://blog.cf.avmtn.net/tools/%E4%BD%BF%E7%94%A8%20FRP%20%E5%AE%9E%E7%8E%B0%E4%B8%80%E6%9C%BA%E5%A4%9A%E8%AE%BE%E5%A4%87%E7%BC%96%E7%A8%8B/">
+  
+  <meta name="description" content="前言最近配了台 ChromeBook 用来方便平常通勤写代码，但是 ChromeBook 羸弱的性能和拉跨的散热使得他日常编程体验极其垃圾。同时，回到宿舍之后用主机写代码和 ChromeBook 之间也会极其脱节。 也有考虑过用 git 分支来管理代码，但是有时候代码写了一半还有很多问题没调试，不想">
+  
+  
+  <meta name="keywords" content="golang,linux">
+  
+  <meta name="author" content="Avimitin">
+  
+  <meta property="og:image" content="https://blog.cf.avmtn.netundefined">
+  
+  <meta property="og:site_name" content="Avimitin Blog" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="使用 FRP 实现一机多设备编程" />
+  
+  <meta property="og:description" content="前言最近配了台 ChromeBook 用来方便平常通勤写代码，但是 ChromeBook 羸弱的性能和拉跨的散热使得他日常编程体验极其垃圾。同时，回到宿舍之后用主机写代码和 ChromeBook 之间也会极其脱节。 也有考虑过用 git 分支来管理代码，但是有时候代码写了一半还有很多问题没调试，不想">
+  
+  <meta property="og:url" content="https://blog.cf.avmtn.net/tools/%E4%BD%BF%E7%94%A8%20FRP%20%E5%AE%9E%E7%8E%B0%E4%B8%80%E6%9C%BA%E5%A4%9A%E8%AE%BE%E5%A4%87%E7%BC%96%E7%A8%8B/" />
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="使用 FRP 实现一机多设备编程">
+  
+  <meta name="twitter:description" content="前言最近配了台 ChromeBook 用来方便平常通勤写代码，但是 ChromeBook 羸弱的性能和拉跨的散热使得他日常编程体验极其垃圾。同时，回到宿舍之后用主机写代码和 ChromeBook 之间也会极其脱节。 也有考虑过用 git 分支来管理代码，但是有时候代码写了一半还有很多问题没调试，不想">
+  
+  
+  <meta name="twitter:image" content="https://blog.cf.avmtn.netundefined">
+  
+  <meta name="twitter:url" content="https://blog.cf.avmtn.net/tools/%E4%BD%BF%E7%94%A8%20FRP%20%E5%AE%9E%E7%8E%B0%E4%B8%80%E6%9C%BA%E5%A4%9A%E8%AE%BE%E5%A4%87%E7%BC%96%E7%A8%8B/" />
+
+  <!-- Mobile Specific Metas
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Preload fonts
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="preload" href="../fonts/dm-serif-display-v4-latin-regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../fonts/inter-v2-latin-regular.woff2" as="font" type="font/woff2" crossorigin>
+
+  <!-- CSS
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  
+<link rel="stylesheet" href="/css/normalize.css">
+
+  
+<link rel="stylesheet" href="/css/skeleton.css">
+
+  
+<link rel="stylesheet" href="/css/custom.css">
+
+  
+<link rel="stylesheet" href="/css/prism-dark.css">
+
+  
+<link rel="stylesheet" href="/css/prism-line-numbers.css">
+
+  <!-- User css -->
+  
+  
+<link rel="stylesheet" href="/css/user.css">
+
+  
+
+  <!-- Favicon
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="icon" type="image/png" href="/images/favicon.png">
+
+  <!-- Custom Theme Color Style
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <style>
+  a:not(.icon) {
+    text-decoration-color: #D19826;
+    background-image: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0) 50%,
+      #D19826 50%
+    );
+  }
+  blockquote {
+    border-left: 8px solid #D19826;
+  }
+  .nanobar .bar {
+    background: #D19826;
+  }
+  .button.button-primary:hover,
+  button.button-primary:hover,
+  input[type="submit"].button-primary:hover,
+  input[type="reset"].button-primary:hover,
+  input[type="button"].button-primary:hover,
+  .button.button-primary:focus,
+  button.button-primary:focus,
+  input[type="submit"].button-primary:focus,
+  input[type="reset"].button-primary:focus,
+  input[type="button"].button-primary:focus {
+    background-color: #D19826;
+    border-color: #D19826;
+  }
+  input[type="email"]:focus,
+  input[type="number"]:focus,
+  input[type="search"]:focus,
+  input[type="text"]:focus,
+  input[type="tel"]:focus,
+  input[type="url"]:focus,
+  input[type="password"]:focus,
+  textarea:focus,
+  select:focus {
+    border: 1px solid #D19826;
+  }
+</style>
+
+  <!-- Google Analytics (With Privacy Settings On)
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+  <div class="container">
+    <div class="row">
+      <div>
+
+        <div class="row">
+  <div class="two columns" style="max-width: 50px">
+    <h1 class="mt-2 mode">
+      <div onclick=setDarkMode(true) id="darkBtn">🌑</div>
+      <div onclick=setDarkMode(false) id="lightBtn" class=hidden>☀️</div>
+      <script >
+        if (localStorage.getItem('preferredTheme') == 'dark') {
+          setDarkMode(true)
+        }
+        function setDarkMode(isDark) {
+          var darkBtn = document.getElementById('darkBtn')
+          var lightBtn = document.getElementById('lightBtn')
+          if (isDark) {
+            lightBtn.style.display = "block"
+            darkBtn.style.display = "none"
+            localStorage.setItem('preferredTheme', 'dark');
+          } else {
+            lightBtn.style.display = "none"
+            darkBtn.style.display = "block"
+            localStorage.removeItem('preferredTheme');
+          }
+          document.body.classList.toggle("darkmode");
+        }
+      </script>
+    </h1>
+  </div>
+
+  <div class="six columns ml-1">
+    <h1 class="mt-2">
+      Avimitin&#39;s Blog
+    </h1>
+  </div>
+
+  <div class="twelve columns">
+    <div class="row">
+      <div class="nine columns left">
+        <a href="/">Home</a>
+        
+          
+          <a href="/friends" class="ml">Friends</a>
+          
+        
+        
+          
+            <a href="mailto:avimitin@gmail.com" target="_blank" class="ml">Email</a>
+          
+        
+      </div>
+    </div>
+    <hr style="margin-bottom: 2.6rem">
+  </div>
+</div>
+
+        <div class="trans">
+          <h1 class="post-title">使用 FRP 实现一机多设备编程</h1>
+
+
+
+
+
+
+
+  <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近配了台 ChromeBook 用来方便平常通勤写代码，但是 ChromeBook 羸弱的性能和拉跨的散热使得他日常编程体验极其垃圾。同时，回到宿舍之后用主机写代码和 ChromeBook 之间也会极其脱节。</p>
+<p>也有考虑过用 git 分支来管理代码，但是有时候代码写了一半还有很多问题没调试，不想提交 commit 。或者使用 SAMBA 直接对笔记本的代码进行修改，这样又会遇到跨平台编译的问题。</p>
+<p>于是我用了一段时间的 VSCode 的 Remote SSH 插件，在外用 ChromeBook，回到宿舍之后主机 SSH 连接 ChromeBook 来写代码。但是这样有些本末倒置了：本来性能更好的主机却只做了显示器的功能。于是我这周和朋友了解了一下 frp 并重新设计了部署方案。</p>
+<h2 id="设计"><a href="#设计" class="headerlink" title="设计"></a>设计</h2><p>一机多设备编程部署方案：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Avimitin/PicStorage/pic/20201025132138.png" alt="Design By XMind"></p>
+<p>一台高性能的本地服务器主机用作编译主机，部署 frp 服务到一台有公网 IP 的 VPS主机上，然后别的设备通过 VPS 转发流量到本地主机上来操作本地服务器。</p>
+<h2 id="平台"><a href="#平台" class="headerlink" title="平台"></a>平台</h2><p>我的本地服务器用的 Ubuntu 20.4，公网服务器用的 Debian Buster。</p>
+<h2 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h2><p>首先下载 <a target="_blank" rel="noopener" href="https://github.com/fatedier/frp">FRP</a> ，根据自己的系统和处理器选择，我这边选的 <a target="_blank" rel="noopener" href="https://github.com/fatedier/frp/releases/download/v0.34.1/frp_0.34.1_linux_amd64.tar.gz">linux-amd64</a> 版本。解压之后里面有两个程序，一个是 <code>frps</code> ，一个是 <code>frpc</code> ，分别对应服务器和客户端两个程序。</p>
+<blockquote>
+<p>下面所述的字段在 <a target="_blank" rel="noopener" href="https://gofrp.org/docs/">FRP Docs</a> 里都有详细介绍，你可以根据自己需求更改。</p>
+</blockquote>
+<h3 id="FRPS（服务器端）"><a href="#FRPS（服务器端）" class="headerlink" title="FRPS（服务器端）"></a>FRPS（服务器端）</h3><p>将 <code>frps</code> 和 <code>frps.ini</code> 用 SFTP 发送到公网IP服务器，然后修改 <code>frps.ini</code> ：</p>
+<pre class="line-numbers language-ini" data-language="ini"><code class="language-ini"><span class="token comment">;common 就是通用设置</span>
+<span class="token selector">[common]</span>
+<span class="token comment">;服务端监听端口，建议修改防止被扫</span>
+<span class="token constant">bind_port</span> <span class="token attr-value"><span class="token punctuation">=</span> 7000</span>
+<span class="token comment">;token设置</span>
+<span class="token constant">token</span> <span class="token attr-value"><span class="token punctuation">=</span> 12345qwert</span>
+<span class="token comment">;端口复用设置</span>
+<span class="token constant">tcp_mux</span> <span class="token attr-value"><span class="token punctuation">=</span> true</span>
+<span class="token constant">tcpmux_httpconnect_port</span> <span class="token attr-value"><span class="token punctuation">=</span> 7001</span>
+<span class="token comment">;log文件设置</span>
+<span class="token comment">;我这边没有设置，我使用的另外一个方法获取log</span>
+<span class="token comment">;有需求可以去掉前面的分号来启用自定义log</span>
+<span class="token comment">;log_file = /run/logs/frps/frps.log</span>
+<span class="token comment">;log_level = info</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>然后使用 <code>./frps -c frps.ini</code> 测试启动成功与否。按 <code>Ctrl + C</code> 停止程序。你还要记得在VPS面板更改防火墙设置把自己设置的端口打开。</p>
+<h3 id="FRPC（客户端）"><a href="#FRPC（客户端）" class="headerlink" title="FRPC（客户端）"></a>FRPC（客户端）</h3><p>然后把 <code>frpc</code> 和 <code>frpc.ini</code> 复制到本地服务器，修改 <code>frpc.ini</code> ：</p>
+<pre class="line-numbers language-ini" data-language="ini"><code class="language-ini"><span class="token selector">[common]</span>
+<span class="token comment">;这里填公网IP的机子的地址还有端口</span>
+<span class="token constant">server_addr</span> <span class="token attr-value"><span class="token punctuation">=</span> xxx.xx.xxx.xxx</span>
+<span class="token constant">server_port</span> <span class="token attr-value"><span class="token punctuation">=</span> 7000</span>
+<span class="token comment">;token服务端和客户端要一致</span>
+<span class="token constant">token</span> <span class="token attr-value"><span class="token punctuation">=</span> 12345qwert</span>
+<span class="token comment">;然后自定义一个方案名</span>
+<span class="token selector">[SSH]</span>
+<span class="token constant">type</span> <span class="token attr-value"><span class="token punctuation">=</span> tcp</span>
+<span class="token comment">;如果想要访问局域网内别的设备这里就填局域网别的设备的ip</span>
+<span class="token constant">local_ip</span> <span class="token attr-value"><span class="token punctuation">=</span> 127.0.0.1</span>
+<span class="token constant">local_port</span> <span class="token attr-value"><span class="token punctuation">=</span> 22</span>
+<span class="token comment">;remote_port 建议修改，防止被扫</span>
+<span class="token constant">remote_port</span> <span class="token attr-value"><span class="token punctuation">=</span> 6000</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<blockquote>
+<p>这里的 remote_port 是公网服务器监听的端口，即若有对 xxx.xxx.xxx.xxx:6000 的请求，公网服务器就会把请求转发到内网的 127.0.0.1:22 地址上。所以 remote_port 也要记得在公网服务器的防火墙里打开。</p>
+</blockquote>
+<p>在公网服务器启动 frps 服务端，然后使用 <code>./frpc -c frpc.ini</code> 测试连接成功与否，如果成功连接公网服务器的 frps 服务端会有 <code>client login info</code> 的提示，然后会看到两边都有 <code>new proxy [ssh] success</code> 的提示，就代表转发代理建立成功了。然后你可以在任意一台设备上使用</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">ssh</span> xxx@xxx.xxx.xxx.xxx -p <span class="token number">6000</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>来测试 SSH  转发成功与否。大部分失败都是因为防火墙没有打开对应端口。</p>
+<h2 id="安全性"><a href="#安全性" class="headerlink" title="安全性"></a>安全性</h2><p>由于将内网机器暴露在公网，SSH 尽量不使用明文密码登录，建议使用 pubkey 进行设备认证。</p>
+<h3 id="公钥生成并监听"><a href="#公钥生成并监听" class="headerlink" title="公钥生成并监听"></a>公钥生成并监听</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment">#生成公钥</span>
+ssh-keygen -t rsa -C <span class="token string">"example@gmail.com"</span>
+<span class="token builtin class-name">eval</span> <span class="token string">"<span class="token variable"><span class="token variable">$(</span>ssh-agent -s<span class="token variable">)</span></span>"</span>
+<span class="token comment">#私钥监听</span>
+ssh-add ~/.ssh/id_rsa<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="公私钥认证"><a href="#公私钥认证" class="headerlink" title="公私钥认证"></a>公私钥认证</h3><p>在服务器端下的 <code>.ssh</code> 文件夹修改或者创建文件 <code>authorized_keys</code> 。在里面追加公钥(<code>.pub</code>结尾的文件)</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># 客户端查看并复制公钥</span>
+<span class="token function">cat</span> ~/.ssh/id_rsa.pub
+<span class="token comment"># 追加到 authorized_keys 里</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>每个设备的公钥占一行，隔行来分辨不同设备。</p>
+<h3 id="设置仅公钥登录"><a href="#设置仅公钥登录" class="headerlink" title="设置仅公钥登录"></a>设置仅公钥登录</h3><p>在本地服务器打开 <code>/etc/ssh/sshd_config</code> , 首先建议把默认的 22 端口修改为高位的端口减少被扫的次数（这里假如修改了记得要去 <code>frpc.ini</code> 修改本地端口）。然后找到 <code>PubKeyAuthentication</code> 字段，删掉前面的 # 号注释，并改为 <code>yes</code> 。找到 <code>PasswordAuthentication</code> 字段并改为 <code>no</code> 。这样就不能再用密码登录了。</p>
+<h2 id="持续可用性"><a href="#持续可用性" class="headerlink" title="持续可用性"></a>持续可用性</h2><p>我使用 <code>systemd</code> 来进行进程维护。下载的压缩包里已经有写好的 <code>.service</code> 文件，根据文件名复制到对应机子的 <code>/etc/systemd/system/</code> 文件夹下。并根据 <code>.service</code> 文件里的内容把程序和配置文件复制到对应文件，我选择修改 <code>.service </code> 文件。拿服务器端举例：</p>
+<ol>
+<li>首先 <code>mv frps /usr/bin/</code> 移动 frps 到 <code>/usr/bin</code> 目录下。</li>
+<li>然后 <code>cp ./frps.ini /usr/local/frps</code> 复制配置文件到 <code>/usr/local/frps</code> 下。</li>
+<li>打开 <code>frps.service</code> 文件，将 ExecStart 字段修改为 <code>/usr/bin/frps -c /usr/local/frps/frps.ini</code></li>
+<li>将 ExecReload 字段修改为 <code>/usr/bin/frps reload -c /usr/local/frps/frps.ini</code></li>
+<li>然后 <code>cp frps.service /etc/systemd/system</code> 复制到 systemd 目录下。</li>
+<li>每次修改 service 文件都需要 <code>sudo systemctl daemon-reload</code> 。</li>
+<li>启动 frp  :   <code>sudo systemctl start frps</code></li>
+<li>重启 frp : <code>sudo systemctl restart frps</code></li>
+<li>关闭 frp：<code>sudo systemctl stop frps</code></li>
+<li>查看 frp 状态 : <code>sudo systemctl status frps</code></li>
+<li>frp 开机自启 : <code>sudo systemctl enable frps</code></li>
+<li>frp log 查询 : <code>journalctl -au frps.service</code> 或 <code>journalctl -au frps.service -f</code> 查看最新日志并等待新日志输出。</li>
+</ol>
+<h2 id="VSCode-SSH-Remote"><a href="#VSCode-SSH-Remote" class="headerlink" title="VSCode SSH Remote"></a>VSCode SSH Remote</h2><p>部署完毕之后就是 VSCode 的设置了，安装好插件之后点击左下角的 SSH 按钮，在弹出菜单中点选 <code>Remote-SSH Open Configuration File</code> ，选择 config 存放位置，在里面填入</p>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml">Host xxx
+	HostName xxx.xxx.xxx.xxx
+	User xxx
+	Port 6000
+	IdentityFile "~/.ssh/id_rsa"<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<blockquote>
+<ul>
+<li>Host 任意填名字</li>
+<li>HostName 填公网IP</li>
+<li>User 就是登录用户名</li>
+<li>Port 远程端口，即我们设置的转发端口 6000</li>
+<li>IdentityFile 填私钥地址</li>
+</ul>
+</blockquote>
+<p>然后就可以多设备同机编程了。</p>
+
+
+  <p><a class="classtest-link" href="/tags/cooporate/" rel="tag">cooporate</a>, <a class="classtest-link" href="/tags/frp/" rel="tag">frp</a> — Oct 25, 2020</p>
+  
+
+
+          <div class="row mt-2">
+  
+    <div class="eight columns">
+      <p id="madewith">Made with ❤ and
+        <a class="footer-link icon" href="https://hexo.io" target="_blank" style="text-decoration: none;" rel="noreferrer" aria-label="Hexo.io">
+        <svg class="hexo svg-hov" width="14" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>Hexo.js</title><path d="M12 .007L1.57 6.056V18.05L12 23.995l10.43-6.049V5.952L12 .007zm4.798 17.105l-.939.521-.939-.521V12.94H9.08v4.172l-.94.521-.938-.521V6.89l.939-.521.939.521v4.172h5.84V6.89l.94-.521.938.521v10.222z"/></svg>
+        </a>
+        
+        at <a href="https://en.wikipedia.org/wiki/Earth" target="_blank" rel="noreferrer">Earth</a>.</p>
+        
+    </div>
+
+    <!-- Sepcial thanks to https://simpleicons.org/ for the icons -->
+    <div class="four columns mb-3 posisi" >
+      
+      <a class="ml-0 footer-link icon" href="https://github.com/avimitin" target="_blank" style="text-decoration: none" rel="noreferrer" aria-label="GitHub">
+        <svg class="github svg-hov" width="18" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>GitHub</title><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+      </a>
+      
+
+      
+
+      
+
+      
+
+      
+
+    </div>
+  
+</div>
+
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+  <script src="/js/nanobar.min.js"></script>
+  <script>
+    var options = {
+      classname: 'nanobar',
+      id: 'myNanobar'
+    };
+    var nanobar = new Nanobar(options);
+    nanobar.go(30);
+    nanobar.go(76);
+    nanobar.go(100);
+  </script>
+
+</body>
+
+</html>

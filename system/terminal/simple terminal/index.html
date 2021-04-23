@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <!-- Minima -->
+  <!-- Hexo theme created by @adisaktijrs -->
+
+  <!-- Basic Page Needs
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta charset="utf-8">
+
+  
+  <title>Simple Terminal - simple and suckless terminal</title>
+  
+  <link rel="canonical" href="https://blog.cf.avmtn.net/system/terminal/simple%20terminal/">
+  
+  <meta name="description" content="Simple Terminal 的搭建和配置前言Simple Terminal 是一个基于 X 的终端，拥有非常棒的 Unicode 和 Emoji 的支持，同时也支持 256 色，拥有绝大部分的终端特性，但是却极其微小，就算在我打了许多补丁之后，他仍然只占用 108K 的存储空间，快且轻量，是重度">
+  
+  
+  <meta name="keywords" content="golang,linux">
+  
+  <meta name="author" content="Avimitin">
+  
+  <meta property="og:image" content="https://blog.cf.avmtn.nethttps://cdn.jsdelivr.net/gh/Avimitin/PicStorage/pic/20210210164630.png">
+  
+  <meta property="og:site_name" content="Avimitin Blog" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Simple Terminal - simple and suckless terminal" />
+  
+  <meta property="og:description" content="Simple Terminal 的搭建和配置前言Simple Terminal 是一个基于 X 的终端，拥有非常棒的 Unicode 和 Emoji 的支持，同时也支持 256 色，拥有绝大部分的终端特性，但是却极其微小，就算在我打了许多补丁之后，他仍然只占用 108K 的存储空间，快且轻量，是重度">
+  
+  <meta property="og:url" content="https://blog.cf.avmtn.net/system/terminal/simple%20terminal/" />
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Simple Terminal - simple and suckless terminal">
+  
+  <meta name="twitter:description" content="Simple Terminal 的搭建和配置前言Simple Terminal 是一个基于 X 的终端，拥有非常棒的 Unicode 和 Emoji 的支持，同时也支持 256 色，拥有绝大部分的终端特性，但是却极其微小，就算在我打了许多补丁之后，他仍然只占用 108K 的存储空间，快且轻量，是重度">
+  
+  
+  <meta name="twitter:image" content="https://blog.cf.avmtn.nethttps://cdn.jsdelivr.net/gh/Avimitin/PicStorage/pic/20210210164630.png">
+  
+  <meta name="twitter:url" content="https://blog.cf.avmtn.net/system/terminal/simple%20terminal/" />
+
+  <!-- Mobile Specific Metas
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Preload fonts
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="preload" href="../fonts/dm-serif-display-v4-latin-regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../fonts/inter-v2-latin-regular.woff2" as="font" type="font/woff2" crossorigin>
+
+  <!-- CSS
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  
+<link rel="stylesheet" href="/css/normalize.css">
+
+  
+<link rel="stylesheet" href="/css/skeleton.css">
+
+  
+<link rel="stylesheet" href="/css/custom.css">
+
+  
+<link rel="stylesheet" href="/css/prism-dark.css">
+
+  
+<link rel="stylesheet" href="/css/prism-line-numbers.css">
+
+  <!-- User css -->
+  
+  
+<link rel="stylesheet" href="/css/user.css">
+
+  
+
+  <!-- Favicon
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="icon" type="image/png" href="/images/favicon.png">
+
+  <!-- Custom Theme Color Style
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <style>
+  a:not(.icon) {
+    text-decoration-color: #D19826;
+    background-image: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0) 50%,
+      #D19826 50%
+    );
+  }
+  blockquote {
+    border-left: 8px solid #D19826;
+  }
+  .nanobar .bar {
+    background: #D19826;
+  }
+  .button.button-primary:hover,
+  button.button-primary:hover,
+  input[type="submit"].button-primary:hover,
+  input[type="reset"].button-primary:hover,
+  input[type="button"].button-primary:hover,
+  .button.button-primary:focus,
+  button.button-primary:focus,
+  input[type="submit"].button-primary:focus,
+  input[type="reset"].button-primary:focus,
+  input[type="button"].button-primary:focus {
+    background-color: #D19826;
+    border-color: #D19826;
+  }
+  input[type="email"]:focus,
+  input[type="number"]:focus,
+  input[type="search"]:focus,
+  input[type="text"]:focus,
+  input[type="tel"]:focus,
+  input[type="url"]:focus,
+  input[type="password"]:focus,
+  textarea:focus,
+  select:focus {
+    border: 1px solid #D19826;
+  }
+</style>
+
+  <!-- Google Analytics (With Privacy Settings On)
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+  <div class="container">
+    <div class="row">
+      <div>
+
+        <div class="row">
+  <div class="two columns" style="max-width: 50px">
+    <h1 class="mt-2 mode">
+      <div onclick=setDarkMode(true) id="darkBtn">🌑</div>
+      <div onclick=setDarkMode(false) id="lightBtn" class=hidden>☀️</div>
+      <script >
+        if (localStorage.getItem('preferredTheme') == 'dark') {
+          setDarkMode(true)
+        }
+        function setDarkMode(isDark) {
+          var darkBtn = document.getElementById('darkBtn')
+          var lightBtn = document.getElementById('lightBtn')
+          if (isDark) {
+            lightBtn.style.display = "block"
+            darkBtn.style.display = "none"
+            localStorage.setItem('preferredTheme', 'dark');
+          } else {
+            lightBtn.style.display = "none"
+            darkBtn.style.display = "block"
+            localStorage.removeItem('preferredTheme');
+          }
+          document.body.classList.toggle("darkmode");
+        }
+      </script>
+    </h1>
+  </div>
+
+  <div class="six columns ml-1">
+    <h1 class="mt-2">
+      Avimitin&#39;s Blog
+    </h1>
+  </div>
+
+  <div class="twelve columns">
+    <div class="row">
+      <div class="nine columns left">
+        <a href="/">Home</a>
+        
+          
+          <a href="/friends" class="ml">Friends</a>
+          
+        
+        
+          
+            <a href="mailto:avimitin@gmail.com" target="_blank" class="ml">Email</a>
+          
+        
+      </div>
+    </div>
+    <hr style="margin-bottom: 2.6rem">
+  </div>
+</div>
+
+        <div class="trans">
+          <h1 class="post-title">Simple Terminal - simple and suckless terminal</h1>
+
+
+	<p class="post-tldr">
+		<span id="tldr-start">TL;DR:</span> Don't you have a simple and easy-to-use terminal yet? I will help you build it.
+	</p>
+
+
+
+	<img src="https://cdn.jsdelivr.net/gh/Avimitin/PicStorage/pic/20210210164630.png"/>
+
+
+
+	<p class="post-tn-alt">simple terminal screenshot</p>
+
+
+  <h1 id="Simple-Terminal-的搭建和配置"><a href="#Simple-Terminal-的搭建和配置" class="headerlink" title="Simple Terminal 的搭建和配置"></a>Simple Terminal 的搭建和配置</h1><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>Simple Terminal 是一个基于 X 的终端，拥有非常棒的 Unicode 和 Emoji 的支持，同时也支持 256 色，拥有绝大部分的终端特性，但是却极其微小，就算在我打了许多补丁之后，他仍然只占用 108K 的存储空间，快且轻量，是重度终端用户的一个很不错的选择。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Avimitin/PicStorage/pic/20210210155347.png" alt="预编译的 st 仅占用 108k"></p>
+<p>本篇文章目的在教你打造一个自己的 st，如果没有需求也可以前往我的<a target="_blank" rel="noopener" href="https://github.com/Avimitin/st">仓库</a>克隆我的源码，直接编译安装就可以了。</p>
+<h2 id="下载源码"><a href="#下载源码" class="headerlink" title="下载源码"></a>下载源码</h2><p>Simple Terminal 的官网：<a target="_blank" rel="noopener" href="https://st.suckless.org/">https://st.suckless.org/</a> ，不需要下载 Download 的那个 st ，直接 clone 源码仓库就好：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> clone https://git.suckless.org/st<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h2 id="安装依赖"><a href="#安装依赖" class="headerlink" title="安装依赖"></a>安装依赖</h2><p>Simple Terminal (以下简称 st) 需要 <code>libx11-dev</code> 和 <code>libxft-dev</code> 两个包，对于 Debian 和 Ubuntu 用户来说直接使用 apt 安装即可，Arch 系的大部分发行版都已经包含。</p>
+<p>克隆官方的仓库之后，编辑 <code>config.mk</code> 文件，编译时 st 会基于这个文件进行配置，一般来说只需要改两行即可：</p>
+<pre class="line-numbers language-makefile" data-language="makefile"><code class="language-makefile">X11INC <span class="token operator">=</span> /usr/local/X11
+X11LIB <span class="token operator">=</span> /usr/local/X11<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>然后用 root 权限执行编译安装：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">sudo</span> <span class="token function">make</span> clean <span class="token function">install</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>文件会复制到 <code>/usr/local/bin/</code> 目录下，一般直接执行就能启动。</p>
+<h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><p>一般直接安装就能用了，但是没有人会喜欢一个黑黝黝字体那么丑的终端，所以需要进行一些基础配置。 </p>
+<p>st 没有配置文件，所有的配置都是直接编译进二进制文件里的，在第一次执行完 <code>make install</code> 之后 st 目录下应该有个 <code>config.def.h</code> 和 <code>config.h</code> 文件，直接删除 <code>config.def.h</code> ，然后修改 <code>config.h</code>：</p>
+<ul>
+<li>修改字体</li>
+</ul>
+<p>在第一行就能看到一行 <code>...font...</code>  字样，你可以修改里面的字体名和文字大小</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">static</span> <span class="token keyword">char</span> <span class="token operator">*</span>font <span class="token operator">=</span> <span class="token string">"Liberation Mono:pixelsize=12:antialias=true:autohint=true"</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>建议你使用 Jetbrains Mono 或者 Fira Mono 这类有 nerd font 补丁的等宽字体，nerd fonts可以在 github 下载：<a target="_blank" rel="noopener" href="https://github.com/ryanoasis/nerd-fonts/releases">https://github.com/ryanoasis/nerd-fonts/releases</a> 。下载完之后解压到 <code>~/.config/fonts</code> 文件夹并执行命令 <code>fc-cache -fv</code> 刷新字体缓存，然后回到 <code>config.h</code> 文件修改字体：</p>
+<pre class="line-numbers language-diff" data-language="diff"><code class="language-diff"><span class="token deleted-sign deleted"><span class="token prefix deleted">-</span><span class="token line">static char *font = "Liberation Mono:pixelsize=12:antialias=true:autohint=true";
+</span></span><span class="token inserted-sign inserted"><span class="token prefix inserted">+</span><span class="token line">static char *font = "JetbrainsMono Nerd Font:pixelsize=24:antialias=true:autohint=true";</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>然后重新执行 <code>sudo make clean install</code> 安装。</p>
+<ul>
+<li>修改主题</li>
+</ul>
+<p>你可以在 <a target="_blank" rel="noopener" href="http://terminal.sexy/">http://terminal.sexy/</a> 上点击 Scheme Browser 选择喜欢的主题，然后点击 Export，Format 选择 <code>Simple Terminal</code> 然后复制即可。</p>
+<p>打开 <code>config.h</code> 文件，找到 <code>/* Terminal Color...</code> 这行，把复制的文字替换即可。比如我这里选择了 Tomorrow Night 主题：</p>
+<pre class="line-numbers language-diff" data-language="diff"><code class="language-diff"><span class="token deleted-sign deleted"><span class="token prefix deleted">-</span><span class="token line">       "black",
+</span><span class="token prefix deleted">-</span><span class="token line">       "red3",
+</span><span class="token prefix deleted">-</span><span class="token line">       "green3",
+</span><span class="token prefix deleted">-</span><span class="token line">       "yellow3",
+</span><span class="token prefix deleted">-</span><span class="token line">       "blue2",
+</span><span class="token prefix deleted">-</span><span class="token line">       "magenta3",
+</span><span class="token prefix deleted">-</span><span class="token line">       "cyan3",
+</span><span class="token prefix deleted">-</span><span class="token line">       "gray90",
+</span><span class="token prefix deleted">-</span><span class="token line">
+</span><span class="token prefix deleted">-</span><span class="token line">       /* 8 bright colors */
+</span><span class="token prefix deleted">-</span><span class="token line">       "gray50",
+</span><span class="token prefix deleted">-</span><span class="token line">       "red",
+</span><span class="token prefix deleted">-</span><span class="token line">       "green",
+</span><span class="token prefix deleted">-</span><span class="token line">       "yellow",
+</span><span class="token prefix deleted">-</span><span class="token line">       "#5c5cff",
+</span><span class="token prefix deleted">-</span><span class="token line">       "magenta",
+</span><span class="token prefix deleted">-</span><span class="token line">       "cyan",
+</span><span class="token prefix deleted">-</span><span class="token line">       "white",
+</span><span class="token prefix deleted">-</span><span class="token line">
+</span><span class="token prefix deleted">-</span><span class="token line">       [255] = 0,
+</span><span class="token prefix deleted">-</span><span class="token line">
+</span><span class="token prefix deleted">-</span><span class="token line">       /* more colors can be added after 255 to use with DefaultXX */
+</span><span class="token prefix deleted">-</span><span class="token line">       "#cccccc",
+</span><span class="token prefix deleted">-</span><span class="token line">       "#555555",
+</span></span><span class="token inserted-sign inserted"><span class="token prefix inserted">+</span><span class="token line">       [0] = "#1d1f21", /* black   */
+</span><span class="token prefix inserted">+</span><span class="token line">       [1] = "#cc6666", /* red     */
+</span><span class="token prefix inserted">+</span><span class="token line">       [2] = "#b5bd68", /* green   */
+</span><span class="token prefix inserted">+</span><span class="token line">       [3] = "#f0c674", /* yellow  */
+</span><span class="token prefix inserted">+</span><span class="token line">       [4] = "#81a2be", /* blue    */
+</span><span class="token prefix inserted">+</span><span class="token line">       [5] = "#b294bb", /* magenta */
+</span><span class="token prefix inserted">+</span><span class="token line">       [6] = "#8abeb7", /* cyan    */
+</span><span class="token prefix inserted">+</span><span class="token line">       [7] = "#c5c8c6", /* white   */
+</span><span class="token prefix inserted">+</span><span class="token line">
+</span><span class="token prefix inserted">+</span><span class="token line">/* 8 bright colors */
+</span><span class="token prefix inserted">+</span><span class="token line">       [8]  = "#969896", /* black   */
+</span><span class="token prefix inserted">+</span><span class="token line">       [9]  = "#cc6666", /* red     */
+</span><span class="token prefix inserted">+</span><span class="token line">       [10] = "#b5bd68", /* green   */
+</span><span class="token prefix inserted">+</span><span class="token line">       [11] = "#f0c674", /* yellow  */
+</span><span class="token prefix inserted">+</span><span class="token line">       [12] = "#81a2be", /* blue    */
+</span><span class="token prefix inserted">+</span><span class="token line">       [13] = "#b294bb", /* magenta */
+</span><span class="token prefix inserted">+</span><span class="token line">       [14] = "#8abeb7", /* cyan    */
+</span><span class="token prefix inserted">+</span><span class="token line">       [15] = "#ffffff", /* white   */
+</span><span class="token prefix inserted">+</span><span class="token line">
+</span><span class="token prefix inserted">+</span><span class="token line">       /* special colors */
+</span><span class="token prefix inserted">+</span><span class="token line">       [256] = "#1d1f21", /* background */
+</span><span class="token prefix inserted">+</span><span class="token line">       [257] = "#c5c8c6", /* foreground */
+</span><span class="token prefix inserted">+</span><span class="token line">
+</span></span><span class="token unchanged"><span class="token prefix unchanged"> </span><span class="token line">&#125;;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>然后编译安装。</p>
+<ul>
+<li>打补丁</li>
+</ul>
+<p>你也可以给源码打上 diff 补丁来增加 st 的功能。补丁可以在官网 patches 页面下寻找：<a target="_blank" rel="noopener" href="https://st.suckless.org/patches/">https://st.suckless.org/patches/</a> ，这里我推荐几个比较实用的补丁，别的可以根据自己需求安装。</p>
+<ol>
+<li>背景透明 </li>
+</ol>
+<p>首先是背景透明：<a target="_blank" rel="noopener" href="https://st.suckless.org/patches/alpha/">https://st.suckless.org/patches/alpha/</a> ，通过给背景加上 alpha 通道实现透明，打开页面下载最新的 0.8.2 版本，放到 st 仓库目录下后，执行命令打上补丁：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">patch <span class="token operator">&lt;</span> st-alpha-0.8.2.diff<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>它会找不到 config.def.h 然后询问你打到哪，你输入 config.h 即可。</p>
+<p>你可能想修改透明度，找到下面这行修改值即可，1 即是不透明</p>
+<pre class="line-numbers language-diff" data-language="diff"><code class="language-diff"><span class="token deleted-sign deleted"><span class="token prefix deleted">-</span><span class="token line"> float alpha = 0.8;
+</span></span><span class="token inserted-sign inserted"><span class="token prefix inserted">+</span><span class="token line"> float alpha = 0.2;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<ol start="2">
+<li>然后是 <a target="_blank" rel="noopener" href="https://st.suckless.org/patches/anysize/">anysize</a>，可以帮助你的 simple terminal 适应各种大小的拉伸。</li>
+<li>如果想在桌面启动 st，可以打上 <a target="_blank" rel="noopener" href="https://st.suckless.org/patches/desktopentry/">DesktopEntry</a> 补丁，他会帮你自动生成 .desktop 文件。</li>
+<li>如果你的 st 显示 emoji 很奇怪你可能还会需要 <a target="_blank" rel="noopener" href="https://github.com/Avimitin/st/blob/master/patches/st-fontfix.diff">fontfix 补丁</a></li>
+<li>除此之外你还需要滚动终端显示内容，所以需要打上 <a target="_blank" rel="noopener" href="https://st.suckless.org/patches/scrollback/">scrollback 补丁</a>，默认下摁 Alt + PageUp 或 PageDown 翻页。</li>
+</ol>
+<p>如果你先修改上翻下翻的键位，可以参考下面：</p>
+<pre class="line-numbers language-diff" data-language="diff"><code class="language-diff"><span class="token deleted-sign deleted"><span class="token prefix deleted">-</span><span class="token line">	&#123; ShiftMask,            XK_Page_Up,     kscrollup,      &#123;.i = -1&#125; &#125;,
+</span><span class="token prefix deleted">-</span><span class="token line">	&#123; ShiftMask,            XK_Page_Down,   kscrolldown,    &#123;.i = -1&#125; &#125;,
+</span></span><span class="token inserted-sign inserted"><span class="token prefix inserted">+</span><span class="token line">	&#123; MODKEY,               XK_u,           kscrollup,      &#123;.i = 1&#125; &#125;,
+</span><span class="token prefix inserted">+</span><span class="token line">	&#123; MODKEY,               XK_j,           kscrolldown,    &#123;.i = 1&#125; &#125;,
+</span><span class="token prefix inserted">+</span><span class="token line">	&#123; MODKEY|ControlMask,   XK_u,           kscrollup,      &#123;.i = -1&#125; &#125;,
+</span><span class="token prefix inserted">+</span><span class="token line">	&#123; MODKEY|ControlMask,   XK_j,           kscrolldown,    &#123;.i = -1&#125; &#125;,</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>这里我把上翻一行改为了 Mod + u （Mod 键即使 alt 键），下翻一行改为了 Mod + j，上翻一页改为 Mod + Ctrl + u。</p>
+<ol start="6">
+<li><a target="_blank" rel="noopener" href="https://st.suckless.org/patches/font2/">font2</a>，可以帮助你把 emoji 显示不正确的问题通过增加 fallback 的形式修复，你就不需要改变喜欢的字体了。</li>
+</ol>
+<blockquote>
+<p>如果在打补丁的时候遇到打不上错误的问题，他会在本地生成 config.h.rej 文件你把里面带 + 号的复制到 config.h 的指定位置，把带 - 的在 config.h 里找到删除即可。</p>
+</blockquote>
+<h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>你也可以免去所有麻烦直接克隆我配置好的文件：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> clone git@github.com:Avimitin/st.git
+<span class="token builtin class-name">cd</span> st
+<span class="token function">sudo</span> <span class="token function">make</span> clean <span class="token function">install</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>或者前往 <a target="_blank" rel="noopener" href="https://github.com/Avimitin/st/releases">release</a>（可能有的修改不会及时上传）下载我预编译的 <code>linux-amd64</code> 版本。</p>
+
+
+  <p><a class="classtest-link" href="/tags/linux/" rel="tag">linux</a>, <a class="classtest-link" href="/tags/simple-terminal/" rel="tag">simple terminal</a>, <a class="classtest-link" href="/tags/terminal/" rel="tag">terminal</a> — Feb 10, 2021</p>
+  
+
+
+          <div class="row mt-2">
+  
+    <div class="eight columns">
+      <p id="madewith">Made with ❤ and
+        <a class="footer-link icon" href="https://hexo.io" target="_blank" style="text-decoration: none;" rel="noreferrer" aria-label="Hexo.io">
+        <svg class="hexo svg-hov" width="14" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>Hexo.js</title><path d="M12 .007L1.57 6.056V18.05L12 23.995l10.43-6.049V5.952L12 .007zm4.798 17.105l-.939.521-.939-.521V12.94H9.08v4.172l-.94.521-.938-.521V6.89l.939-.521.939.521v4.172h5.84V6.89l.94-.521.938.521v10.222z"/></svg>
+        </a>
+        
+        at <a href="https://en.wikipedia.org/wiki/Earth" target="_blank" rel="noreferrer">Earth</a>.</p>
+        
+    </div>
+
+    <!-- Sepcial thanks to https://simpleicons.org/ for the icons -->
+    <div class="four columns mb-3 posisi" >
+      
+      <a class="ml-0 footer-link icon" href="https://github.com/avimitin" target="_blank" style="text-decoration: none" rel="noreferrer" aria-label="GitHub">
+        <svg class="github svg-hov" width="18" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>GitHub</title><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+      </a>
+      
+
+      
+
+      
+
+      
+
+      
+
+    </div>
+  
+</div>
+
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+  <script src="/js/nanobar.min.js"></script>
+  <script>
+    var options = {
+      classname: 'nanobar',
+      id: 'myNanobar'
+    };
+    var nanobar = new Nanobar(options);
+    nanobar.go(30);
+    nanobar.go(76);
+    nanobar.go(100);
+  </script>
+
+</body>
+
+</html>

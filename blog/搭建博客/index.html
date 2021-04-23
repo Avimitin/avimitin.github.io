@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <!-- Minima -->
+  <!-- Hexo theme created by @adisaktijrs -->
+
+  <!-- Basic Page Needs
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta charset="utf-8">
+
+  
+  <title>Hexo搭建博客</title>
+  
+  <link rel="canonical" href="https://blog.cf.avmtn.net/blog/%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/">
+  
+  <meta name="description" content="获得Github主页仓库设置 打开github，新建一个新的仓库，仓库名设置为：你的用户名.github.io。**假设我叫小明，就设置为xiaoming.github.io**。 不要勾选readme.md 打开这个空仓库，点击setting。 滚动页面至下方Github Pages处，选择Cho">
+  
+  
+  <meta name="keywords" content="golang,linux">
+  
+  <meta name="author" content="Avimitin">
+  
+  <meta property="og:image" content="https://blog.cf.avmtn.netundefined">
+  
+  <meta property="og:site_name" content="Avimitin Blog" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Hexo搭建博客" />
+  
+  <meta property="og:description" content="获得Github主页仓库设置 打开github，新建一个新的仓库，仓库名设置为：你的用户名.github.io。**假设我叫小明，就设置为xiaoming.github.io**。 不要勾选readme.md 打开这个空仓库，点击setting。 滚动页面至下方Github Pages处，选择Cho">
+  
+  <meta property="og:url" content="https://blog.cf.avmtn.net/blog/%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/" />
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Hexo搭建博客">
+  
+  <meta name="twitter:description" content="获得Github主页仓库设置 打开github，新建一个新的仓库，仓库名设置为：你的用户名.github.io。**假设我叫小明，就设置为xiaoming.github.io**。 不要勾选readme.md 打开这个空仓库，点击setting。 滚动页面至下方Github Pages处，选择Cho">
+  
+  
+  <meta name="twitter:image" content="https://blog.cf.avmtn.netundefined">
+  
+  <meta name="twitter:url" content="https://blog.cf.avmtn.net/blog/%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/" />
+
+  <!-- Mobile Specific Metas
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Preload fonts
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="preload" href="../fonts/dm-serif-display-v4-latin-regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../fonts/inter-v2-latin-regular.woff2" as="font" type="font/woff2" crossorigin>
+
+  <!-- CSS
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  
+<link rel="stylesheet" href="/css/normalize.css">
+
+  
+<link rel="stylesheet" href="/css/skeleton.css">
+
+  
+<link rel="stylesheet" href="/css/custom.css">
+
+  
+<link rel="stylesheet" href="/css/prism-dark.css">
+
+  
+<link rel="stylesheet" href="/css/prism-line-numbers.css">
+
+  <!-- User css -->
+  
+  
+<link rel="stylesheet" href="/css/user.css">
+
+  
+
+  <!-- Favicon
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="icon" type="image/png" href="/images/favicon.png">
+
+  <!-- Custom Theme Color Style
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <style>
+  a:not(.icon) {
+    text-decoration-color: #D19826;
+    background-image: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0) 50%,
+      #D19826 50%
+    );
+  }
+  blockquote {
+    border-left: 8px solid #D19826;
+  }
+  .nanobar .bar {
+    background: #D19826;
+  }
+  .button.button-primary:hover,
+  button.button-primary:hover,
+  input[type="submit"].button-primary:hover,
+  input[type="reset"].button-primary:hover,
+  input[type="button"].button-primary:hover,
+  .button.button-primary:focus,
+  button.button-primary:focus,
+  input[type="submit"].button-primary:focus,
+  input[type="reset"].button-primary:focus,
+  input[type="button"].button-primary:focus {
+    background-color: #D19826;
+    border-color: #D19826;
+  }
+  input[type="email"]:focus,
+  input[type="number"]:focus,
+  input[type="search"]:focus,
+  input[type="text"]:focus,
+  input[type="tel"]:focus,
+  input[type="url"]:focus,
+  input[type="password"]:focus,
+  textarea:focus,
+  select:focus {
+    border: 1px solid #D19826;
+  }
+</style>
+
+  <!-- Google Analytics (With Privacy Settings On)
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+  <div class="container">
+    <div class="row">
+      <div>
+
+        <div class="row">
+  <div class="two columns" style="max-width: 50px">
+    <h1 class="mt-2 mode">
+      <div onclick=setDarkMode(true) id="darkBtn">🌑</div>
+      <div onclick=setDarkMode(false) id="lightBtn" class=hidden>☀️</div>
+      <script >
+        if (localStorage.getItem('preferredTheme') == 'dark') {
+          setDarkMode(true)
+        }
+        function setDarkMode(isDark) {
+          var darkBtn = document.getElementById('darkBtn')
+          var lightBtn = document.getElementById('lightBtn')
+          if (isDark) {
+            lightBtn.style.display = "block"
+            darkBtn.style.display = "none"
+            localStorage.setItem('preferredTheme', 'dark');
+          } else {
+            lightBtn.style.display = "none"
+            darkBtn.style.display = "block"
+            localStorage.removeItem('preferredTheme');
+          }
+          document.body.classList.toggle("darkmode");
+        }
+      </script>
+    </h1>
+  </div>
+
+  <div class="six columns ml-1">
+    <h1 class="mt-2">
+      Avimitin&#39;s Blog
+    </h1>
+  </div>
+
+  <div class="twelve columns">
+    <div class="row">
+      <div class="nine columns left">
+        <a href="/">Home</a>
+        
+          
+          <a href="/friends" class="ml">Friends</a>
+          
+        
+        
+          
+            <a href="mailto:avimitin@gmail.com" target="_blank" class="ml">Email</a>
+          
+        
+      </div>
+    </div>
+    <hr style="margin-bottom: 2.6rem">
+  </div>
+</div>
+
+        <div class="trans">
+          <h1 class="post-title">Hexo搭建博客</h1>
+
+
+
+
+
+
+
+  <h1 id="获得Github主页"><a href="#获得Github主页" class="headerlink" title="获得Github主页"></a>获得Github主页</h1><h2 id="仓库设置"><a href="#仓库设置" class="headerlink" title="仓库设置"></a>仓库设置</h2><ol>
+<li>打开github，新建一个新的仓库，仓库名设置为：<code>你的用户名.github.io</code>。**假设我叫小明，就设置为<code>xiaoming.github.io</code>**。<a target="_blank" rel="noopener" href="https://img.vim-cn.com/0f/883fbe076e12cb7990ea4e3e83dfa0d7a31f24.png"><img src="https://img.vim-cn.com/0f/883fbe076e12cb7990ea4e3e83dfa0d7a31f24.png" alt="img"></a></li>
+<li>不要勾选readme.md</li>
+<li>打开这个空仓库，点击setting。</li>
+<li>滚动页面至下方<code>Github Pages</code>处，选择<code>Choose a theme</code>来为你这个仓库创建网页。如果你有自己的域名，可以在<code>Custom domain</code>处用你自己的域名来替代<code>xiaoming.github.io</code></li>
+<li>随便选择一个主题，过大约5分钟之后你就可以输入你的这个仓库名来访问主页了。</li>
+</ol>
+<h1 id="Hexo设置"><a href="#Hexo设置" class="headerlink" title="Hexo设置"></a>Hexo设置</h1><h2 id="Node-js安装"><a href="#Node-js安装" class="headerlink" title="Node.js安装"></a>Node.js安装</h2><blockquote>
+<p>Node-js官网：<a target="_blank" rel="noopener" href="https://nodejs.org/en/">点这进入</a></p>
+</blockquote>
+<p>对于绝大部分Linux发行版用户，在包管理器找到LTS(长期稳定)版本安装即可。例如Manjaro用户只需在终端输入：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># Manjaro/Arch</span>
+yay -S nodejs-lts
+<span class="token comment"># Ubuntu/Debian</span>
+<span class="token function">sudo</span> <span class="token function">apt</span> <span class="token function">install</span> nodejs<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>就可以安装了。</p>
+<h2 id="Git安装"><a href="#Git安装" class="headerlink" title="Git安装"></a>Git安装</h2><blockquote>
+<p>Git官网：<a target="_blank" rel="noopener" href="https://git-scm.com/downloads">点这进入</a></p>
+</blockquote>
+<p>与Node.js一样，在包管理器下载即可，部分发行版可能装机自带git。</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># Manjaro/Arch</span>
+yay -S <span class="token function">git</span>
+<span class="token comment"># Ubuntu/Debian</span>
+<span class="token function">sudo</span> <span class="token function">apt</span> <span class="token function">install</span> <span class="token function">git</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="HEXO安装"><a href="#HEXO安装" class="headerlink" title="HEXO安装"></a>HEXO安装</h2><p>首先，检查一下版本来确定是否安装成功了。</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># 分开运行</span>
+<span class="token function">npm</span> -v
+node -v<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>显示版本信息即可：<a target="_blank" rel="noopener" href="https://img.vim-cn.com/d3/d2ca00e3439b8acc4a79f144f0d157c55ee53c.png"><img src="https://img.vim-cn.com/d3/d2ca00e3439b8acc4a79f144f0d157c55ee53c.png" alt="img"></a></p>
+<p>然后在合适的地方创建一个放置hexo仓库的文件夹，然后进入这个文件夹，安装hexo。</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># 创建文件夹(不一定要用命令)</span>
+<span class="token function">mkdir</span> ~/Document/hexo
+<span class="token comment"># 进入文件夹</span>
+<span class="token builtin class-name">cd</span> ~/Document/hxo
+<span class="token comment"># 安装hexo</span>
+<span class="token function">npm</span> <span class="token function">install</span> hexo-cli -g
+<span class="token comment"># 中间可能会出现不少warn之类的提示，只要不影响安装都不用管</span>
+<span class="token function">npm</span> <span class="token function">install</span> hexo --save
+<span class="token comment"># 最后进行版本检测来确认是不是安装好了</span>
+hexo -v<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>显示版本信息就可以了：</p>
+<p><a target="_blank" rel="noopener" href="https://img.vim-cn.com/03/4efe1e50c05ef11f061848e5d736ef77e64253.png"><img src="https://img.vim-cn.com/03/4efe1e50c05ef11f061848e5d736ef77e64253.png" alt="img"></a></p>
+<h2 id="HEXO初始化"><a href="#HEXO初始化" class="headerlink" title="HEXO初始化"></a>HEXO初始化</h2><p>首先对hexo进行初始化和仓库建立：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># 初始化hexo仓库(注意要在空白文件夹初始化)</span>
+hexo init
+<span class="token comment"># 安装hexo相关组件</span>
+<span class="token function">npm</span> <span class="token function">install</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>然后就可以实际体验了：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># 网页编译</span>
+hexo g
+<span class="token comment"># 本地运行</span>
+hexo s<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>然后你可以看到一条INFO提醒你hexo在<code>http://localhost:4000</code>运行，打开浏览器输入这个本地地址即可预览网页。(以后在编译网页以后想要提前预览再上传可直接用<code>hexo s</code>来本地预览。)</p>
+<h2 id="NPM下载源慢的解决方案"><a href="#NPM下载源慢的解决方案" class="headerlink" title="NPM下载源慢的解决方案"></a>NPM下载源慢的解决方案</h2><p>换淘宝源：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">npm</span> <span class="token function">install</span> -g cnpm --registry<span class="token operator">=</span>https://registry.npm.taobao.org<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>安装完之后使用<code>cnpm install [name]</code>来使用中国镜像源下载。</p>
+<h1 id="将本地网页仓库上传到github"><a href="#将本地网页仓库上传到github" class="headerlink" title="将本地网页仓库上传到github"></a>将本地网页仓库上传到github</h1><h2 id="git配置"><a href="#git配置" class="headerlink" title="git配置"></a>git配置</h2><ul>
+<li>首先设置一下git信息</li>
+</ul>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># git的用户名</span>
+<span class="token function">git</span> config --global user.name <span class="token string">"你的名字"</span>
+<span class="token comment"># git的邮箱</span>
+<span class="token function">git</span> config --global user.email <span class="token string">"example@gmail.com"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<ul>
+<li>然后检查SSH信息</li>
+</ul>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># 列出该目录下的文件，查看是否存在你的id,你的id.pub</span>
+<span class="token function">ls</span> ~/.ssh<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p><a target="_blank" rel="noopener" href="https://img.vim-cn.com/4b/603f84ac097b43dc9571a12d94afb7c61d0cf4.png"><img src="https://img.vim-cn.com/4b/603f84ac097b43dc9571a12d94afb7c61d0cf4.png" alt="img"></a></p>
+<p>没有SSH KEY就生成密钥：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># 写自己的邮箱</span>
+ssh-keygen -t rsa -C <span class="token string">"example@gmail.com"</span>
+<span class="token comment"># 如果不需要密码，就一直回车确定就好了</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>SSH的默认存储位置在：<code>~/.ssh</code></p>
+<ul>
+<li>把密钥添加到ssh_agent来进行保管：</li>
+</ul>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># 让ssh_agent在后台运行</span>
+<span class="token builtin class-name">eval</span> <span class="token string">"<span class="token variable"><span class="token variable">$(</span>ssh-agent -s<span class="token variable">)</span></span>"</span>
+<span class="token comment">#添加生成的SSH KEY</span>
+ssh-add ~/.ssh/id_rsa<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<ul>
+<li>将ssh密钥添加到Github里：</li>
+</ul>
+<p>打开你的Github主页，点击头像，点击设置，把<code>id_rsa.pub</code>文件里的内容复制到这里</p>
+<p><a target="_blank" rel="noopener" href="https://img.vim-cn.com/92/aff491e54df6e0ebf214a0e85fd9b2d37d7272.png"><img src="https://img.vim-cn.com/92/aff491e54df6e0ebf214a0e85fd9b2d37d7272.png" alt="img"></a></p>
+<ul>
+<li>测试</li>
+</ul>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">ssh</span> -T git@github.com<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>假如看到:<code>&quot;Hi 你的用户名! You&#39;ve successfully authenticated, but GitHub does not provide shell access.&quot;</code>这句话，就说明成功了。</p>
+<ul>
+<li>提前安装一个扩展插件来帮助连接仓库</li>
+</ul>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">npm</span> <span class="token function">install</span> hexo-deployer-git --save<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h2 id="将本地仓库与Github连接"><a href="#将本地仓库与Github连接" class="headerlink" title="将本地仓库与Github连接"></a>将本地仓库与Github连接</h2><p>打开hexo的路径，打开_config.yml文件，找到Deploy，然后参照如下进行修改：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># 进入hexo目录，打开文件</span>
+<span class="token builtin class-name">cd</span> ~/Documents/hexo
+<span class="token comment"># 可以用别的文本编辑器，nano，vi都可以</span>
+<span class="token function">vim</span> _config.yml
+<span class="token comment"># 找到deploy语句，进行修改(vim编辑器可以输入 /deploy 快速搜索)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>修改文件：</p>
+<pre class="line-numbers language-none"><code class="language-none">deploy:	
+	type: git	
+	repo: git@github.com:你的用户名&#x2F;你的用户名.github.io.git	
+	branch: master<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h1 id="你的第一篇文章"><a href="#你的第一篇文章" class="headerlink" title="你的第一篇文章"></a>你的第一篇文章</h1><h2 id="新建博客文章"><a href="#新建博客文章" class="headerlink" title="新建博客文章"></a>新建博客文章</h2><p>通过hexo的命令直接生成文章：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># 进入主目录</span>
+<span class="token builtin class-name">cd</span> ~/Documents/hexo
+<span class="token comment"># 生成文章</span>
+hexo new post <span class="token string">"My First Artical"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>生成的文章都放在你的hexo主目录/hexo/source/_posts目录下，这时你可以在目录下看到My First Artical.md文件。你也可以直接在用其他Markdown编辑器如Typora,VS Code,Atom里打开这个目录直接创建.md文件来写文章。</p>
+<h2 id="文章格式"><a href="#文章格式" class="headerlink" title="文章格式"></a>文章格式</h2><p><strong>如果是自己直接创建新文章的话，需要注意hexo会读取文章的标题头</strong></p>
+<p>一般来说，你需要在文章的开头使用短横线分栏对文章内容进行描述，如下图：</p>
+<p><a target="_blank" rel="noopener" href="https://img.vim-cn.com/0c/d18326704a42eaffe12664c738df63eb55fb84.png"><img src="https://img.vim-cn.com/0c/d18326704a42eaffe12664c738df63eb55fb84.png" alt="img"></a></p>
+<p>使用三个短横线<code>-</code>进行区分。<a target="_blank" rel="noopener" href="https://avimitin.github.io/2019/08/20/%E5%A6%82%E4%BD%95%E4%BB%A5%E9%AB%98%E9%80%9F%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/[https://avimitin.github.io/2019/07/17/hexo%E6%A0%87%E9%A2%98%E8%AE%BE%E7%BD%AE/](https://avimitin.github.io/2019/07/17/hexo%E6%A0%87%E9%A2%98%E8%AE%BE%E7%BD%AE/)">每个内容的作用细则点这查看。</a></p>
+<p>写完文章之后，打开终端，输入命令进行文章编译渲染：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># 生成文章页面</span>
+hexo g
+<span class="token comment"># 部署网页</span>
+hexo d
+<span class="token comment"># 不需要预览的话可以直接一条命令全部解决</span>
+hexo d -g<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="图床推荐"><a href="#图床推荐" class="headerlink" title="图床推荐"></a>图床推荐</h2><p>写文章，一直用自己的服务器，加载慢而且很快也会没存储空间，使用图床是最方便而且避免很多麻烦的方式，我常用的图床是<a target="_blank" rel="noopener" href="https://avimitin.github.io/2019/08/20/%E5%A6%82%E4%BD%95%E4%BB%A5%E9%AB%98%E9%80%9F%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/sm.ms">sm.ms</a>，速度一般，但是贵在免费，而且操作简单，将HTML链接拷到文章就可以用了。</p>
+<h1 id="网页主题"><a href="#网页主题" class="headerlink" title="网页主题"></a>网页主题</h1><h2 id="找到一个心仪的主题"><a href="#找到一个心仪的主题" class="headerlink" title="找到一个心仪的主题"></a>找到一个心仪的主题</h2><p>假如不会自己设计网页，也可以去找别人设计好的网页，然后下载源代码。直接谷歌搜索hexo主题查看别人的网页，然后找到他的Github主页fork一份使用，<a target="_blank" rel="noopener" href="https://www.zhihu.com/question/24422335">这里也有别人搜集好的好看的主题</a>，下载好之后把整个文件夹拷到hexo主目录下的themes文件夹下。</p>
+<h2 id="应用下载好的主题"><a href="#应用下载好的主题" class="headerlink" title="应用下载好的主题"></a>应用下载好的主题</h2><p>在hexo根目录下，修改_config.yml文件，将其中的theme字段修改为你的主题文件夹名。</p>
+<pre class="line-numbers language-none"><code class="language-none"># Extensions
+## Plugins:***
+## Themes:***
+theme: 你的文件夹名字<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>在终端输入</p>
+<pre class="line-numbers language-none"><code class="language-none">hexo s<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>在本地进行预览。</p>
+<p>假如出现报错但是你不知道是什么原因的话，在终端输入</p>
+<pre class="line-numbers language-none"><code class="language-none">hexo s --debug<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>输出运行日志，在输出的信息中检查异常，并定位问题所在。</p>
+<h2 id="使用Butterfly主题"><a href="#使用Butterfly主题" class="headerlink" title="使用Butterfly主题"></a>使用Butterfly主题</h2><blockquote>
+<p>感谢jerryc127大佬，他的github主页<a target="_blank" rel="noopener" href="https://github.com/jerryc127">引导</a></p>
+</blockquote>
+<p>假如你对我的主题感兴趣，也可以在终端输入以下命令：</p>
+<pre class="line-numbers language-none"><code class="language-none"># 在hexo根目录路径下使用
+cd ~&#x2F;Documents&#x2F;hexo
+git clone -b master https:&#x2F;&#x2F;github.com&#x2F;jerryc127&#x2F;hexo-theme-butterfly.git themes&#x2F;Butterfly
+# 安装Butterfly依赖插件
+npm install hexo-renderer-jade hexo-renderer-stylus --save or yarn add hexo-renderer-jade hexo-renderer-stylus<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>然后你需要将<code>_config.yml</code>文件中的<code>theme</code>字段改成Butterfly。同时为了网页平滑升级，需要在 <code>source/ _data</code>下创建Butterfly.yml文件来替换原来theme文件夹下的<code>_config.yml</code>文件。在终端输入：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># 在hexo/source目录下创建_data文件夹</span>
+<span class="token function">mkdir</span> ~/Documents/hexo/source/_data
+<span class="token comment"># 将主题文件夹的_config.yml文件直接复制过去，并且重命名</span>
+<span class="token function">cp</span> ~/Documents/hexo/themes/Butterfly/_config.yml ~/Documents/hexo/source/_data/Butterfly.yml<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>之后所有的网站自定义都在这个<code>Butterfly.yml</code>文件里修改，在终端输入</p>
+<pre class="line-numbers language-none"><code class="language-none">hexo d -g<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>就可以把更改提交到github的仓库。</p>
+<p>对于站点的细节配置可以查看<a target="_blank" rel="noopener" href="https://docs.jerryc.me/">这个链接</a>，来对博客进行自定义。</p>
+<h2 id="安装看板娘插件"><a href="#安装看板娘插件" class="headerlink" title="安装看板娘插件"></a>安装看板娘插件</h2><blockquote>
+<p>来源: 韦阳的博客<br>作者: 韦阳<br>链接: <a target="_blank" rel="noopener" href="https://godweiyang.com/2018/04/13/hexo-blog/#toc-heading-21">https://godweiyang.com/2018/04/13/hexo-blog/#toc-heading-21</a></p>
+</blockquote>
+<p>有一个萌萌的看板娘一定让博客增色不少，安装看板娘插件也非常简单：</p>
+<p>首先安装live2d插件：</p>
+<pre class="line-numbers language-none"><code class="language-none">npm install --save hexo-helper-live2d<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>然后安装看板娘，我这里安装了初音，也可以谷歌一下其他的看板娘角色：</p>
+<p><a target="_blank" rel="noopener" href="https://img.vim-cn.com/b9/c26d1f6d473fc72fbd9659a6aa4b03f337b473.png"><img src="https://img.vim-cn.com/b9/c26d1f6d473fc72fbd9659a6aa4b03f337b473.png" alt="img"></a></p>
+<pre class="line-numbers language-none"><code class="language-none"># 安装其他角色只需要修改后面的角色名就好了
+npm install live2d-widget-model-miku<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>最后就是在<strong>根目录</strong>下的<code>_config.yml</code>文件下添加以下代码(直接复制就好了)：</p>
+<pre class="line-numbers language-none"><code class="language-none"># 删除#的内容
+live2d:   
+	enable: true   
+	scriptFrom: local   
+	pluginRootPath: live2dw&#x2F;   
+	pluginJsPath: lib&#x2F;   
+	pluginModelPath: assets&#x2F;   
+	tagMode: false   
+	log: false   
+	model:     
+		use: live2d-widget-model-miku     #显示什么角色  
+	display:                 #显示位置和大小    
+		position: right     
+		width: 150     
+		height: 300   
+	mobile:     
+		show: true   
+	react:     
+		opacity: 0.8           #透明度,1为不透明<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>然后再重新部署一下就能出现了。</p>
+<h1 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h1><p>欢迎访问我的主页：<a target="_blank" rel="noopener" href="https://avimitin.github.io/2019/08/20/%E5%A6%82%E4%BD%95%E4%BB%A5%E9%AB%98%E9%80%9F%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/avimitin.github.io/">avimitin.github.io</a></p>
+
+
+  <p><a class="classtest-link" href="/tags/blog/" rel="tag">blog</a>, <a class="classtest-link" href="/tags/hexo/" rel="tag">hexo</a> — Jul 17, 2019</p>
+  
+
+
+          <div class="row mt-2">
+  
+    <div class="eight columns">
+      <p id="madewith">Made with ❤ and
+        <a class="footer-link icon" href="https://hexo.io" target="_blank" style="text-decoration: none;" rel="noreferrer" aria-label="Hexo.io">
+        <svg class="hexo svg-hov" width="14" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>Hexo.js</title><path d="M12 .007L1.57 6.056V18.05L12 23.995l10.43-6.049V5.952L12 .007zm4.798 17.105l-.939.521-.939-.521V12.94H9.08v4.172l-.94.521-.938-.521V6.89l.939-.521.939.521v4.172h5.84V6.89l.94-.521.938.521v10.222z"/></svg>
+        </a>
+        
+        at <a href="https://en.wikipedia.org/wiki/Earth" target="_blank" rel="noreferrer">Earth</a>.</p>
+        
+    </div>
+
+    <!-- Sepcial thanks to https://simpleicons.org/ for the icons -->
+    <div class="four columns mb-3 posisi" >
+      
+      <a class="ml-0 footer-link icon" href="https://github.com/avimitin" target="_blank" style="text-decoration: none" rel="noreferrer" aria-label="GitHub">
+        <svg class="github svg-hov" width="18" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>GitHub</title><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+      </a>
+      
+
+      
+
+      
+
+      
+
+      
+
+    </div>
+  
+</div>
+
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+  <script src="/js/nanobar.min.js"></script>
+  <script>
+    var options = {
+      classname: 'nanobar',
+      id: 'myNanobar'
+    };
+    var nanobar = new Nanobar(options);
+    nanobar.go(30);
+    nanobar.go(76);
+    nanobar.go(100);
+  </script>
+
+</body>
+
+</html>

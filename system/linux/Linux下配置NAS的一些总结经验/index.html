@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <!-- Minima -->
+  <!-- Hexo theme created by @adisaktijrs -->
+
+  <!-- Basic Page Needs
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta charset="utf-8">
+
+  
+  <title>使用Linux搭建NAS</title>
+  
+  <link rel="canonical" href="https://blog.cf.avmtn.net/system/linux/Linux%E4%B8%8B%E9%85%8D%E7%BD%AENAS%E7%9A%84%E4%B8%80%E4%BA%9B%E6%80%BB%E7%BB%93%E7%BB%8F%E9%AA%8C/">
+  
+  <meta name="description" content="Linux下配置NAS的一些总结经验前言经历了上一次的Windows Server的痛苦配置以后，我决定换成Linux来配置NAS。相对于Windows平台，Linux平台会更加自由和简洁。而且清晰的权限和后台也要比Win更加干净，唯一的弊端就是要去学不少命令。但是我这里会帮你总结好大部分要用到的命">
+  
+  
+  <meta name="keywords" content="golang,linux">
+  
+  <meta name="author" content="Avimitin">
+  
+  <meta property="og:image" content="https://blog.cf.avmtn.netundefined">
+  
+  <meta property="og:site_name" content="Avimitin Blog" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="使用Linux搭建NAS" />
+  
+  <meta property="og:description" content="Linux下配置NAS的一些总结经验前言经历了上一次的Windows Server的痛苦配置以后，我决定换成Linux来配置NAS。相对于Windows平台，Linux平台会更加自由和简洁。而且清晰的权限和后台也要比Win更加干净，唯一的弊端就是要去学不少命令。但是我这里会帮你总结好大部分要用到的命">
+  
+  <meta property="og:url" content="https://blog.cf.avmtn.net/system/linux/Linux%E4%B8%8B%E9%85%8D%E7%BD%AENAS%E7%9A%84%E4%B8%80%E4%BA%9B%E6%80%BB%E7%BB%93%E7%BB%8F%E9%AA%8C/" />
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="使用Linux搭建NAS">
+  
+  <meta name="twitter:description" content="Linux下配置NAS的一些总结经验前言经历了上一次的Windows Server的痛苦配置以后，我决定换成Linux来配置NAS。相对于Windows平台，Linux平台会更加自由和简洁。而且清晰的权限和后台也要比Win更加干净，唯一的弊端就是要去学不少命令。但是我这里会帮你总结好大部分要用到的命">
+  
+  
+  <meta name="twitter:image" content="https://blog.cf.avmtn.netundefined">
+  
+  <meta name="twitter:url" content="https://blog.cf.avmtn.net/system/linux/Linux%E4%B8%8B%E9%85%8D%E7%BD%AENAS%E7%9A%84%E4%B8%80%E4%BA%9B%E6%80%BB%E7%BB%93%E7%BB%8F%E9%AA%8C/" />
+
+  <!-- Mobile Specific Metas
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Preload fonts
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="preload" href="../fonts/dm-serif-display-v4-latin-regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../fonts/inter-v2-latin-regular.woff2" as="font" type="font/woff2" crossorigin>
+
+  <!-- CSS
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  
+<link rel="stylesheet" href="/css/normalize.css">
+
+  
+<link rel="stylesheet" href="/css/skeleton.css">
+
+  
+<link rel="stylesheet" href="/css/custom.css">
+
+  
+<link rel="stylesheet" href="/css/prism-dark.css">
+
+  
+<link rel="stylesheet" href="/css/prism-line-numbers.css">
+
+  <!-- User css -->
+  
+  
+<link rel="stylesheet" href="/css/user.css">
+
+  
+
+  <!-- Favicon
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="icon" type="image/png" href="/images/favicon.png">
+
+  <!-- Custom Theme Color Style
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <style>
+  a:not(.icon) {
+    text-decoration-color: #D19826;
+    background-image: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0) 50%,
+      #D19826 50%
+    );
+  }
+  blockquote {
+    border-left: 8px solid #D19826;
+  }
+  .nanobar .bar {
+    background: #D19826;
+  }
+  .button.button-primary:hover,
+  button.button-primary:hover,
+  input[type="submit"].button-primary:hover,
+  input[type="reset"].button-primary:hover,
+  input[type="button"].button-primary:hover,
+  .button.button-primary:focus,
+  button.button-primary:focus,
+  input[type="submit"].button-primary:focus,
+  input[type="reset"].button-primary:focus,
+  input[type="button"].button-primary:focus {
+    background-color: #D19826;
+    border-color: #D19826;
+  }
+  input[type="email"]:focus,
+  input[type="number"]:focus,
+  input[type="search"]:focus,
+  input[type="text"]:focus,
+  input[type="tel"]:focus,
+  input[type="url"]:focus,
+  input[type="password"]:focus,
+  textarea:focus,
+  select:focus {
+    border: 1px solid #D19826;
+  }
+</style>
+
+  <!-- Google Analytics (With Privacy Settings On)
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+  <div class="container">
+    <div class="row">
+      <div>
+
+        <div class="row">
+  <div class="two columns" style="max-width: 50px">
+    <h1 class="mt-2 mode">
+      <div onclick=setDarkMode(true) id="darkBtn">🌑</div>
+      <div onclick=setDarkMode(false) id="lightBtn" class=hidden>☀️</div>
+      <script >
+        if (localStorage.getItem('preferredTheme') == 'dark') {
+          setDarkMode(true)
+        }
+        function setDarkMode(isDark) {
+          var darkBtn = document.getElementById('darkBtn')
+          var lightBtn = document.getElementById('lightBtn')
+          if (isDark) {
+            lightBtn.style.display = "block"
+            darkBtn.style.display = "none"
+            localStorage.setItem('preferredTheme', 'dark');
+          } else {
+            lightBtn.style.display = "none"
+            darkBtn.style.display = "block"
+            localStorage.removeItem('preferredTheme');
+          }
+          document.body.classList.toggle("darkmode");
+        }
+      </script>
+    </h1>
+  </div>
+
+  <div class="six columns ml-1">
+    <h1 class="mt-2">
+      Avimitin&#39;s Blog
+    </h1>
+  </div>
+
+  <div class="twelve columns">
+    <div class="row">
+      <div class="nine columns left">
+        <a href="/">Home</a>
+        
+          
+          <a href="/friends" class="ml">Friends</a>
+          
+        
+        
+          
+            <a href="mailto:avimitin@gmail.com" target="_blank" class="ml">Email</a>
+          
+        
+      </div>
+    </div>
+    <hr style="margin-bottom: 2.6rem">
+  </div>
+</div>
+
+        <div class="trans">
+          <h1 class="post-title">使用Linux搭建NAS</h1>
+
+
+	<p class="post-tldr">
+		<span id="tldr-start">TL;DR:</span> 配置组合使用 Samba + Aria2 + Transmission 来实现 NAS 功能
+	</p>
+
+
+
+
+
+
+  <h1 id="Linux下配置NAS的一些总结经验"><a href="#Linux下配置NAS的一些总结经验" class="headerlink" title="Linux下配置NAS的一些总结经验"></a>Linux下配置NAS的一些总结经验</h1><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>经历了上一次的Windows Server的痛苦配置以后，我决定换成Linux来配置NAS。相对于Windows平台，Linux平台会更加自由和简洁。而且清晰的权限和后台也要比Win更加干净，唯一的弊端就是要去学不少命令。但是我这里会帮你总结好大部分要用到的命令，快速帮你搭建好Linux平台下的NAS。</p>
+<h2 id="Linux的系统选择"><a href="#Linux的系统选择" class="headerlink" title="Linux的系统选择"></a>Linux的系统选择</h2><p>我选择的是<a href="www.ubuntu.com">Ubuntu 18.04</a>。但是对于NAS来说，稳定且更新少是必要需求，所以我更加推荐<a href="www.archlinux.org">Arch Linux</a>。简洁干净，最好减少桌面配置，减少GPU占用。</p>
+<h2 id="配置思路"><a href="#配置思路" class="headerlink" title="配置思路"></a>配置思路</h2><ul>
+<li>SMB高速传输</li>
+<li>基于Web的离线下载</li>
+<li>SSH命令行和Web页面管理系统</li>
+</ul>
+<hr>
+<h2 id="系统安装"><a href="#系统安装" class="headerlink" title="系统安装"></a>系统安装</h2><p>下载好.iso文件以后，用<a target="_blank" rel="noopener" href="https://cn.ultraiso.net/">UltraISO</a>烧录进U盘里。然后重启，按F12进入BIOS，检查启动列表，要打开UEFI启动选项。然后保存设置退出，按F8打开启动列表，选择UEFI 你的U盘。进入系统选择第一项，直接安装。关于硬盘配置，我只有一个SSD和一个HDD，所以把系统安装在SSD，让安装程序自动分区，HDD自动挂载用来做数据盘。其余没什么好说的，按照自己的需求一直下一部就行了。</p>
+<h2 id="NAS正式配置"><a href="#NAS正式配置" class="headerlink" title="NAS正式配置"></a>NAS正式配置</h2><h3 id="SAMBA配置"><a href="#SAMBA配置" class="headerlink" title="SAMBA配置"></a>SAMBA配置</h3><p>一、安装Ubuntu SAMBA服务器</p>
+<ul>
+<li>更新软件源：输入命令<code>sudo apt-get update</code>更新软件源</li>
+<li>安装SAMBA服务：输入命令<code>sudo apt-get install samba</code>安装SAMBA服务器。</li>
+</ul>
+<p>二、创建SAMBA配置文件</p>
+<ul>
+<li>创建共享目录：<code>sudo mkdir -p /你的共享文件夹路径</code> <code>#mkdir -p 用来创建路径中不存在的路径。</code></li>
+<li>修改配置文件：<code>sudo vim /etc/samba/smb.conf</code>  #没有vim的请输入命令<code>sudo apt-get vim </code> <a target="_blank" rel="noopener" href="https://www.runoob.com/linux/linux-vim.html">vim的使用方法</a> </li>
+</ul>
+<p>进入配置文件之后，按i进入编辑模式，把所有字段全部删除，输入以下配置(#号后注释文字要删除）：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>你的配置名<span class="token punctuation">]</span> <span class="token comment">#这里是分享路径配置</span>
+comment <span class="token operator">=</span> User's NAS <span class="token comment">#这一段是标记，对配置没有影响。</span>
+path <span class="token operator">=</span> /你的共享文件夹路径 <span class="token comment">#写上你自己的共享路径</span>
+<span class="token builtin class-name">read</span> only <span class="token operator">=</span> no <span class="token comment">#是否只读</span>
+browseable <span class="token operator">=</span> <span class="token function">yes</span> <span class="token comment">#是否可浏览</span>
+<span class="token punctuation">[</span>另一个配置名<span class="token punctuation">]</span>
+<span class="token comment">#如果同一台机子你想分开共享路径，就把上面的配置复制到这里。</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>三、创建SAMBA用户</p>
+<ul>
+<li>输入命令 </li>
+</ul>
+<p><code>sudo smbpasswd -a smbuser</code> </p>
+<p><strong>注意！在创建samba用户之前请确保有一个同名的linux用户。</strong></p>
+<p>如果想创建其他linux用户来使用samba，请输入命令<code>sudo adduser username</code>来创建新用户</p>
+<p>四、重启SAMBA服务</p>
+<ul>
+<li>输入命令 </li>
+</ul>
+<p><code> sudo systemctl restart smb</code></p>
+<p>五、检查SAMBA服务是否正在运行</p>
+<ul>
+<li>要检查samba 服务是否正在运行，请输入命令：</li>
+</ul>
+<p><code> systemctl status smb</code></p>
+<p><code> systemctl status nmb</code></p>
+<ul>
+<li>要启用这两个服务，请运行以下命令：</li>
+</ul>
+<p><code> sudo systemctl start smb</code></p>
+<p><code> sudo systemctl start nmb</code></p>
+<p>开始运行后，smbd将在139和445端口上侦听，若有无法访问，可以检查是否为端口封锁。</p>
+<p>开机自启动:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">systemctl <span class="token builtin class-name">enable</span> smb nmb
+systemctl start smb nmb<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>六、从其他设备访问SAMBA文件夹</p>
+<ul>
+<li>在同一网络的Windows 设备上，打开此电脑，点击上方选项卡<strong>计算机</strong> ，选择选项__映射网络驱动器__，<br>在文件栏输入 <code>\\ip\配置文件名</code></li>
+</ul>
+<p>然后就可以直接使用了。</p>
+<blockquote>
+<h6 id="参考文章："><a href="#参考文章：" class="headerlink" title="参考文章："></a>参考文章：</h6><blockquote>
+<h6 id="linux与window文件目录共享——samba配置及在windows映射-2013-01-21-https-blog-csdn-net-mengfanbo123-article-details-8524924"><a href="#linux与window文件目录共享——samba配置及在windows映射-2013-01-21-https-blog-csdn-net-mengfanbo123-article-details-8524924" class="headerlink" title="linux与window文件目录共享——samba配置及在windows映射  [2013-01-21]https://blog.csdn.net/mengfanbo123/article/details/8524924"></a>linux与window文件目录共享——samba配置及在windows映射  [2013-01-21]<a target="_blank" rel="noopener" href="https://blog.csdn.net/mengfanbo123/article/details/8524924">https://blog.csdn.net/mengfanbo123/article/details/8524924</a></h6><h6 id="Ubuntu下配置支持Windows访问的samba共享-2014-02-14-https-blog-csdn-net-i-chips-article-details-19191957"><a href="#Ubuntu下配置支持Windows访问的samba共享-2014-02-14-https-blog-csdn-net-i-chips-article-details-19191957" class="headerlink" title="Ubuntu下配置支持Windows访问的samba共享  [2014-02-14] https://blog.csdn.net/i_chips/article/details/19191957"></a>Ubuntu下配置支持Windows访问的samba共享  [2014-02-14] <a target="_blank" rel="noopener" href="https://blog.csdn.net/i_chips/article/details/19191957">https://blog.csdn.net/i_chips/article/details/19191957</a></h6><h6 id="samba配置文件注释-2015-02-06-https-blog-csdn-net-dhgao38-article-details-43567403"><a href="#samba配置文件注释-2015-02-06-https-blog-csdn-net-dhgao38-article-details-43567403" class="headerlink" title="samba配置文件注释 [2015-02-06]https://blog.csdn.net/dhgao38/article/details/43567403"></a>samba配置文件注释 [2015-02-06]<a target="_blank" rel="noopener" href="https://blog.csdn.net/dhgao38/article/details/43567403">https://blog.csdn.net/dhgao38/article/details/43567403</a></h6><h6 id="如何在Ubuntu-16-04上安装和配置Samba服务器以进行文件共享-2017-11-02-https-www-linuxidc-com-Linux-2017-11-148194-htm"><a href="#如何在Ubuntu-16-04上安装和配置Samba服务器以进行文件共享-2017-11-02-https-www-linuxidc-com-Linux-2017-11-148194-htm" class="headerlink" title="如何在Ubuntu 16.04上安装和配置Samba服务器以进行文件共享 [2017-11-02] https://www.linuxidc.com/Linux/2017-11/148194.htm"></a>如何在Ubuntu 16.04上安装和配置Samba服务器以进行文件共享 [2017-11-02] <a target="_blank" rel="noopener" href="https://www.linuxidc.com/Linux/2017-11/148194.htm">https://www.linuxidc.com/Linux/2017-11/148194.htm</a></h6></blockquote>
+</blockquote>
+<hr>
+<h2 id="离线下载和远程控制的配置"><a href="#离线下载和远程控制的配置" class="headerlink" title="离线下载和远程控制的配置"></a>离线下载和远程控制的配置</h2><h3 id="BT下载"><a href="#BT下载" class="headerlink" title="BT下载"></a>BT下载</h3><p>一、BT软件下载</p>
+<blockquote>
+<p>BT软件推荐：<br>Transmission、Deluge</p>
+</blockquote>
+<p>以下以Transmission为例进行介绍</p>
+<ul>
+<li> 输入命令：<code>sudo apt-get install transmission</code> 下载transmission。</li>
+<li> 输入命令：<code>sudo apt-get install transmission-daemon</code> 下载transmission的web管理端</li>
+</ul>
+<p>这样你就可以在桌面打开了，可以在应用程序页面中找到启动应用程序应用，把transmission勾选进开机自启动。</p>
+<p>二、web管理BT下载</p>
+<ul>
+<li><p>打开Transmission，点击编辑选项，点击首选项选项卡，点击远程选项卡。打开远程连接选项，输入你觉得比较好记的端口。</p>
+</li>
+<li><p>在其他设备上打开浏览器，在地址栏输入你的NASIP和你刚刚设置好的端口，例如<code>192.168.1.100:12345</code>, 你就已经可以使用web来管理BT下载了。</p>
+</li>
+<li><p>如果想要更加美观的界面和更多的设置选项，可以继续以下步骤：</p>
+</li>
+</ul>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://github.com/ronggang/transmission-web-control">Transmission-web-control</a> 安装<br>1.获取最新脚本</p>
+<blockquote>
+<p>输入命令</p>
+</blockquote>
+</blockquote>
+<pre class="line-numbers language-none"><code class="language-none">wget https:&#x2F;&#x2F;github.com&#x2F;ronggang&#x2F;transmission-web-control&#x2F;raw&#x2F;master&#x2F;release&#x2F;install-tr-control-cn.sh
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<blockquote>
+<blockquote>
+<p>请留意执行结果，如果出现<code>install-tr-control-cn.sh.1</code>之类的提示，表示文件已存在，请使用 <code>rm install-tr-control-cn.sh*</code> 删除之前的脚本再重新执行上面的命令。<br>如果提示 https 获取失败，请使用以下命令获取安装脚本：</p>
+</blockquote>
+</blockquote>
+<pre class="line-numbers language-none"><code class="language-none">wget https:&#x2F;&#x2F;github.com&#x2F;ronggang&#x2F;transmission-web-control&#x2F;raw&#x2F;master&#x2F;release&#x2F;install-tr-control-cn.sh --no-check-certificate
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<blockquote>
+<blockquote>
+<p>如果提示文件已存在，可以通过 <code>rm install-tr-control-cn.sh</code> 进行删除后再执行下载；或者在 wget 后面添加 -N 参数，如：</p>
+</blockquote>
+</blockquote>
+<pre class="line-numbers language-none"><code class="language-none">wget -N https:&#x2F;&#x2F;github.com&#x2F;ronggang&#x2F;transmission-web-control&#x2F;raw&#x2F;master&#x2F;release&#x2F;install-tr-control-cn.sh --no-check-certificate
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<blockquote>
+<p>2.执行安装脚本</p>
+<blockquote>
+<p>执行安装脚本（如果系统不支持 bash 命令，请尝试将 bash 改为 sh ）：<br><code>bash install-tr-control-cn.sh</code><br>如果出现 Permission denied 之类的提示，表示没有权限，可尝试添加执行权限：<br><code>chmod +x install-tr-control-cn.sh</code><br>如果命令成功执行，将出现文字安装界面：<br>按照提示，输入相应的数字，按回车即可。</p>
+</blockquote>
+</blockquote>
+<blockquote>
+<p>安装完成后，用浏览器访问 Transmission Web Interface（如：<a target="_blank" rel="noopener" href="http://192.168.1.1:9091/">http://192.168.1.1:9091/</a> ）即可看到新的界面；如果无法看到新界面，可能是浏览器缓存了，请按 Ctrl + F5 强制刷新页面或 清空缓存 后再重新打开；注意，路径最后不要加web</p>
+</blockquote>
+<h3 id="离线下载"><a href="#离线下载" class="headerlink" title="离线下载"></a>离线下载</h3><p>一、关于离线下载软件</p>
+<blockquote>
+<p>离线下载推荐使用<a target="_blank" rel="noopener" href="https://aria2.github.io/">aria2</a>，功能齐全，下载性能强悍，比迅雷会员下载还猛。</p>
+</blockquote>
+<p>二、Aria2安装与配置</p>
+<ul>
+<li>Aria2 下载<br>输入命令：<br><code>sudo apt-get install aria2</code></li>
+</ul>
+<p>Aria2完整安装：</p>
+<pre class="line-numbers language-none"><code class="language-none">sudo mkdir &#x2F;etc&#x2F;aria2 #新建aria2文件夹
+sudo touch &#x2F;etc&#x2F;aria2&#x2F;aria2.session #新建session文件
+sudo chmod 777 &#x2F;etc&#x2F;aria2&#x2F;aria2.session    #设置aria2.session可写 
+sudo vim &#x2F;etc&#x2F;aria2&#x2F;aria2.conf    #创建配置文件
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<ul>
+<li>Aria2 配置<br>vim 打开aria2.conf，将下列配置直接拷贝进文档内再自行进行编辑。</li>
+</ul>
+<p><strong>注意！注释号内的配置皆为不生效使用默认配置，如果要自定义配置一定要把配置前的注释号删除！</strong></p>
+<pre class="line-numbers language-none"><code class="language-none">#&#39;#&#39;开头为注释内容, 选项都有相应的注释说明, 根据需要修改
+#被注释的选项填写的是默认值, 建议在需要修改时再取消注释
+
+#文件保存相关
+
+# 文件的保存路径(可使用绝对路径或相对路径), 默认: 当前启动位置
+dir&#x3D;~&#x2F;downloads
+# 启用磁盘缓存, 0为禁用缓存, 需1.16以上版本, 默认:16M
+#disk-cache&#x3D;32M
+# 文件预分配方式, 能有效降低磁盘碎片, 默认:prealloc
+# 预分配所需时间: none &lt; falloc ? trunc &lt; prealloc
+# falloc和trunc则需要文件系统和内核支持
+# NTFS建议使用falloc, EXT3&#x2F;4建议trunc, MAC 下需要注释此项
+#file-allocation&#x3D;none
+# 断点续传
+continue&#x3D;true
+
+#下载连接相关
+
+# 最大同时下载任务数, 运行时可修改, 默认:5
+#max-concurrent-downloads&#x3D;5
+# 同一服务器连接数, 添加时可指定, 默认:1
+max-connection-per-server&#x3D;5
+# 最小文件分片大小, 添加时可指定, 取值范围1M -1024M, 默认:20M
+# 假定size&#x3D;10M, 文件为20MiB 则使用两个来源下载; 文件为15MiB 则使用一个来源下载
+min-split-size&#x3D;10M
+# 单个任务最大线程数, 添加时可指定, 默认:5
+#split&#x3D;5
+# 整体下载速度限制, 运行时可修改, 默认:0
+#max-overall-download-limit&#x3D;0
+# 单个任务下载速度限制, 默认:0
+#max-download-limit&#x3D;0
+# 整体上传速度限制, 运行时可修改, 默认:0
+#max-overall-upload-limit&#x3D;0
+# 单个任务上传速度限制, 默认:0
+#max-upload-limit&#x3D;0
+# 禁用IPv6, 默认:false
+#disable-ipv6&#x3D;true
+# 连接超时时间, 默认:60
+#timeout&#x3D;60
+# 最大重试次数, 设置为0表示不限制重试次数, 默认:5
+#max-tries&#x3D;5
+# 设置重试等待的秒数, 默认:0
+#retry-wait&#x3D;0
+
+#进度保存相关
+
+# 从会话文件中读取下载任务
+input-file&#x3D;&#x2F;etc&#x2F;aria2&#x2F;aria2.session
+# 在Aria2退出时保存&#96;错误&#x2F;未完成&#96;的下载任务到会话文件
+save-session&#x3D;&#x2F;etc&#x2F;aria2&#x2F;aria2.session
+# 定时保存会话, 0为退出时才保存, 需1.16.1以上版本, 默认:0
+#save-session-interval&#x3D;60
+
+#RPC相关设置
+
+# 启用RPC, 默认:false
+enable-rpc&#x3D;true
+# 允许所有来源, 默认:false
+rpc-allow-origin-all&#x3D;true
+# 允许非外部访问, 默认:false
+rpc-listen-all&#x3D;true
+# 事件轮询方式, 取值:[epoll, kqueue, port, poll, select], 不同系统默认值不同
+#event-poll&#x3D;select
+# RPC监听端口, 端口被占用时可以修改, 默认:6800
+#rpc-listen-port&#x3D;6800
+# 设置的RPC授权令牌, v1.18.4新增功能, 取代 --rpc-user 和 --rpc-passwd 选项
+#rpc-secret&#x3D;&lt;TOKEN&gt;
+# 设置的RPC访问用户名, 此选项新版已废弃, 建议改用 --rpc-secret 选项
+#rpc-user&#x3D;&lt;USER&gt;
+# 设置的RPC访问密码, 此选项新版已废弃, 建议改用 --rpc-secret 选项
+#rpc-passwd&#x3D;&lt;PASSWD&gt;
+# 是否启用 RPC 服务的 SSL&#x2F;TLS 加密,
+# 启用加密后 RPC 服务需要使用 https 或者 wss 协议连接
+#rpc-secure&#x3D;true
+# 在 RPC 服务中启用 SSL&#x2F;TLS 加密时的证书文件,
+# 使用 PEM 格式时，您必须通过 --rpc-private-key 指定私钥
+#rpc-certificate&#x3D;&#x2F;path&#x2F;to&#x2F;certificate.pem
+# 在 RPC 服务中启用 SSL&#x2F;TLS 加密时的私钥文件
+#rpc-private-key&#x3D;&#x2F;path&#x2F;to&#x2F;certificate.key
+
+#BT&#x2F;PT下载相关
+
+# 当下载的是一个种子(以.torrent结尾)时, 自动开始BT任务, 默认:true
+#follow-torrent&#x3D;true
+# BT监听端口, 当端口被屏蔽时使用, 默认:6881-6999
+listen-port&#x3D;51413
+# 单个种子最大连接数, 默认:55
+#bt-max-peers&#x3D;55
+# 打开DHT功能, PT需要禁用, 默认:true
+enable-dht&#x3D;false
+# 打开IPv6 DHT功能, PT需要禁用
+#enable-dht6&#x3D;false
+# DHT网络监听端口, 默认:6881-6999
+#dht-listen-port&#x3D;6881-6999
+# 本地节点查找, PT需要禁用, 默认:false
+#bt-enable-lpd&#x3D;false
+# 种子交换, PT需要禁用, 默认:true
+enable-peer-exchange&#x3D;false
+# 每个种子限速, 对少种的PT很有用, 默认:50K
+#bt-request-peer-speed-limit&#x3D;50K
+# 客户端伪装, PT需要
+peer-id-prefix&#x3D;-TR2770-
+user-agent&#x3D;Transmission&#x2F;2.77
+# 当种子的分享率达到这个数时, 自动停止做种, 0为一直做种, 默认:1.0
+seed-ratio&#x3D;0
+# 强制保存会话, 即使任务已经完成, 默认:false
+# 较新的版本开启后会在任务完成后依然保留.aria2文件
+#force-save&#x3D;false
+# BT校验相关, 默认:true
+#bt-hash-check-seed&#x3D;true
+# 继续之前的BT任务时, 无需再次校验, 默认:false
+bt-seed-unverified&#x3D;true
+# 保存磁力链接元数据为种子文件(.torrent文件), 默认:false
+bt-save-metadata&#x3D;true
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<ul>
+<li>启动aria2 </li>
+</ul>
+<p>输入命令：<code>sudo aria2c --conf-path=/etc/aria2/aria2.conf</code></p>
+<p>如果没有提示错误，按<code>ctrl+c</code>停止运行命令，转为后台运行：</p>
+<p><code>sudo aria2c --conf-path=/etc/aria2/aria2.conf -D</code></p>
+<ul>
+<li>设置开机自动启动</li>
+</ul>
+<p>输入命令创建：<code>sudo vim /etc/init.d/aria2c</code></p>
+<p>添加以下内容</p>
+<pre class="line-numbers language-none"><code class="language-none">#!&#x2F;bin&#x2F;sh
+### BEGIN INIT INFO
+# Provides: aria2
+# Required-Start: $remote_fs $network
+# Required-Stop: $remote_fs $network
+# Default-Start: 2 3 4 5
+# Default-Stop: 0 1 6
+# Short-Description: Aria2 Downloader
+### END INIT INFO
+ 
+case &quot;$1&quot; in
+start)
+ 
+ echo -n &quot;已开启Aria2c&quot;
+ sudo aria2c --conf-path&#x3D;&#x2F;etc&#x2F;aria2&#x2F;aria2.conf -D
+;;
+stop)
+ 
+ echo -n &quot;已关闭Aria2c&quot;
+ killall aria2c
+;;
+restart)
+ 
+ killall aria2c
+ sudo aria2c --conf-path&#x3D;&#x2F;etc&#x2F;aria2&#x2F;aria2.conf -D
+;;
+esac
+exit
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>修改文件权限：<code>sudo chmod 755 /etc/init.d/aria2c</code></p>
+<p>添加aria2c服务到开机启动：<code>sudo update-rc.d aria2c defaults</code></p>
+<p>启动服务：<code>sudo service aria2c start</code></p>
+<p>查看服务状态：<code>sudo systemctl status aria2c</code></p>
+<ul>
+<li>Aria2的使用</li>
+</ul>
+<p>打开浏览器，在地址栏输入<code>http://aria2c.com</code>打开aria2的web管理器。打开右上角的设置，输入你的NAS机地址和你的aria2配置文件的端口，如果没有更改就是6800。</p>
+<p>在chrome下载aria2插件，可以方便直接调用aria2下载东西，如果无响应可以直接拷贝链接下载。</p>
+<p>三、关于Docker</p>
+<p>Docker功能正在研究学习，后续会更新。</p>
+<blockquote>
+<h6 id="参考文章：-1"><a href="#参考文章：-1" class="headerlink" title="参考文章："></a>参考文章：</h6><blockquote>
+<h6 id="ubuntu安装配置aria2-2016-08-14-https-blog-csdn-net-crazycui-article-details-52205908"><a href="#ubuntu安装配置aria2-2016-08-14-https-blog-csdn-net-crazycui-article-details-52205908" class="headerlink" title="ubuntu安装配置aria2[2016-08-14] https://blog.csdn.net/crazycui/article/details/52205908"></a>ubuntu安装配置aria2[2016-08-14] <a target="_blank" rel="noopener" href="https://blog.csdn.net/crazycui/article/details/52205908">https://blog.csdn.net/crazycui/article/details/52205908</a></h6><h6 id="ubuntu18-04-aria2的安装及使用详解-2018-08-23-https-blog-csdn-net-qq-29117915-article-details-81986509"><a href="#ubuntu18-04-aria2的安装及使用详解-2018-08-23-https-blog-csdn-net-qq-29117915-article-details-81986509" class="headerlink" title="ubuntu18.04 aria2的安装及使用详解 [2018-08-23] https://blog.csdn.net/qq_29117915/article/details/81986509"></a>ubuntu18.04 aria2的安装及使用详解 [2018-08-23] <a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_29117915/article/details/81986509">https://blog.csdn.net/qq_29117915/article/details/81986509</a></h6><h6 id="Ubuntu安装aira2及开机启动配置-2018-03-01-https-www-jianshu-com-p-3c1286c8a19d"><a href="#Ubuntu安装aira2及开机启动配置-2018-03-01-https-www-jianshu-com-p-3c1286c8a19d" class="headerlink" title="Ubuntu安装aira2及开机启动配置[2018-03-01]https://www.jianshu.com/p/3c1286c8a19d"></a>Ubuntu安装aira2及开机启动配置[2018-03-01]<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/3c1286c8a19d">https://www.jianshu.com/p/3c1286c8a19d</a></h6></blockquote>
+</blockquote>
+<hr>
+<h3 id="配置NAS的远程管理"><a href="#配置NAS的远程管理" class="headerlink" title="配置NAS的远程管理"></a>配置NAS的远程管理</h3><p>一、关于远程管理</p>
+<blockquote>
+<p>对Linux的远程连接可以使用SSH连接terminal来控制，也可以用Webmin来图形化控制</p>
+</blockquote>
+<p>个人推荐SSH多一些，毕竟Linux用命令还是多一些的，而Webmin会稍微直观一些。</p>
+<p>二、SSH的配置</p>
+<ul>
+<li>安装SSH</li>
+</ul>
+<p>输入命令:<code>sudo apt-get install ssh</code></p>
+<p>启动服务:<code>service sshd start</code></p>
+<p>配置端口:<code> vim /etc/ssh/sshd_config</code></p>
+<p>去除Port前的注释键，自定义端口。</p>
+<p>查看服务是否启动：<code>ps -e | grep ssh</code></p>
+<p>无报错且<code>ssh-agent</code>和<code>sshd</code>两个程序在运行即可。</p>
+<ul>
+<li>Windows下载<a target="_blank" rel="noopener" href="https://www.putty.org/">putty</a>，输入你的NAS地址和端口即可远程使用Terminal来管理NAS主机。</li>
+</ul>
+<p>三、Web管理</p>
+<p>*Webmin安装</p>
+<blockquote>
+<p>由于包管理器中的源并没有webmin，我们需要去官网下载软件的包来进行安装</p>
+</blockquote>
+<p>使用wget来下载包：</p>
+<p><code>cd /你的下载目录</code></p>
+<p><code>wget https://prdownloads.sourceforge.net/webadmin/webmin_1.910_all.deb</code></p>
+<p>然后运行安装命令</p>
+<p><code>dpkg --install webmin_1.910_all.deb</code></p>
+<p>安装程序将会自动把Webmin安装进 <code>/usr/share/webmin</code>目录内。如果没有任何报错，你就可以在其他设备中输入<code>http://NASIPAddress:10000/</code>，请自行更换NAS的IP。</p>
+<p>若遇到缺少依赖的报错，请输入该命令解决依赖：<code>apt-get install perl libnet-ssleay-perl openssl libauthen-pam-perl libpam-runtime libio-pty-perl apt-show-versions python</code></p>
+<p>若安装依赖库的过程中报错为无法找到包，请输入<code>vim /etc/apt/sources.list </code>，检查最后一行是否以universe结尾。</p>
+<blockquote>
+<h6 id="参考文章：Linux配置SSH服务实现远程远程访问-2018-03-30-https-blog-csdn-net-liguangxianbin-article-details-79759498"><a href="#参考文章：Linux配置SSH服务实现远程远程访问-2018-03-30-https-blog-csdn-net-liguangxianbin-article-details-79759498" class="headerlink" title="参考文章：Linux配置SSH服务实现远程远程访问[2018-03-30]https://blog.csdn.net/liguangxianbin/article/details/79759498"></a>参考文章：Linux配置SSH服务实现远程远程访问[2018-03-30]<a target="_blank" rel="noopener" href="https://blog.csdn.net/liguangxianbin/article/details/79759498">https://blog.csdn.net/liguangxianbin/article/details/79759498</a></h6></blockquote>
+
+
+  <p><a class="classtest-link" href="/tags/linux/" rel="tag">linux</a>, <a class="classtest-link" href="/tags/nas/" rel="tag">nas</a>, <a class="classtest-link" href="/tags/samba/" rel="tag">samba</a> — Aug 22, 2019</p>
+  
+
+
+          <div class="row mt-2">
+  
+    <div class="eight columns">
+      <p id="madewith">Made with ❤ and
+        <a class="footer-link icon" href="https://hexo.io" target="_blank" style="text-decoration: none;" rel="noreferrer" aria-label="Hexo.io">
+        <svg class="hexo svg-hov" width="14" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>Hexo.js</title><path d="M12 .007L1.57 6.056V18.05L12 23.995l10.43-6.049V5.952L12 .007zm4.798 17.105l-.939.521-.939-.521V12.94H9.08v4.172l-.94.521-.938-.521V6.89l.939-.521.939.521v4.172h5.84V6.89l.94-.521.938.521v10.222z"/></svg>
+        </a>
+        
+        at <a href="https://en.wikipedia.org/wiki/Earth" target="_blank" rel="noreferrer">Earth</a>.</p>
+        
+    </div>
+
+    <!-- Sepcial thanks to https://simpleicons.org/ for the icons -->
+    <div class="four columns mb-3 posisi" >
+      
+      <a class="ml-0 footer-link icon" href="https://github.com/avimitin" target="_blank" style="text-decoration: none" rel="noreferrer" aria-label="GitHub">
+        <svg class="github svg-hov" width="18" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>GitHub</title><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+      </a>
+      
+
+      
+
+      
+
+      
+
+      
+
+    </div>
+  
+</div>
+
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+  <script src="/js/nanobar.min.js"></script>
+  <script>
+    var options = {
+      classname: 'nanobar',
+      id: 'myNanobar'
+    };
+    var nanobar = new Nanobar(options);
+    nanobar.go(30);
+    nanobar.go(76);
+    nanobar.go(100);
+  </script>
+
+</body>
+
+</html>

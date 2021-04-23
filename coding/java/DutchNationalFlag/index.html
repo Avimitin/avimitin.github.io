@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <!-- Minima -->
+  <!-- Hexo theme created by @adisaktijrs -->
+
+  <!-- Basic Page Needs
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta charset="utf-8">
+
+  
+  <title>Solving Dutch National Flag</title>
+  
+  <link rel="canonical" href="https://blog.cf.avmtn.net/coding/java/DutchNationalFlag/">
+  
+  <meta name="description" content="DutchNationalFlag题目 Given an array of n buckets, each containing a red, white, or blue pebble, sort them by color.  大意：给定一个 n 大小的数组，里面包含了无序的红白蓝三种颜色，将其">
+  
+  
+  <meta name="keywords" content="golang,linux">
+  
+  <meta name="author" content="Avimitin">
+  
+  <meta property="og:image" content="https://blog.cf.avmtn.nethttps://gss0.baidu.com/-vo3dSag_xI4khGko9WTAnF6hhy/zhidao/wh%3D600%2C800/sign=94eeecbbd5a20cf446c5f6d94639670e/f603918fa0ec08fa9c51789b5cee3d6d55fbdabd.jpg">
+  
+  <meta property="og:site_name" content="Avimitin Blog" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Solving Dutch National Flag" />
+  
+  <meta property="og:description" content="DutchNationalFlag题目 Given an array of n buckets, each containing a red, white, or blue pebble, sort them by color.  大意：给定一个 n 大小的数组，里面包含了无序的红白蓝三种颜色，将其">
+  
+  <meta property="og:url" content="https://blog.cf.avmtn.net/coding/java/DutchNationalFlag/" />
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Solving Dutch National Flag">
+  
+  <meta name="twitter:description" content="DutchNationalFlag题目 Given an array of n buckets, each containing a red, white, or blue pebble, sort them by color.  大意：给定一个 n 大小的数组，里面包含了无序的红白蓝三种颜色，将其">
+  
+  
+  <meta name="twitter:image" content="https://blog.cf.avmtn.nethttps://gss0.baidu.com/-vo3dSag_xI4khGko9WTAnF6hhy/zhidao/wh%3D600%2C800/sign=94eeecbbd5a20cf446c5f6d94639670e/f603918fa0ec08fa9c51789b5cee3d6d55fbdabd.jpg">
+  
+  <meta name="twitter:url" content="https://blog.cf.avmtn.net/coding/java/DutchNationalFlag/" />
+
+  <!-- Mobile Specific Metas
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Preload fonts
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="preload" href="../fonts/dm-serif-display-v4-latin-regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../fonts/inter-v2-latin-regular.woff2" as="font" type="font/woff2" crossorigin>
+
+  <!-- CSS
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  
+<link rel="stylesheet" href="/css/normalize.css">
+
+  
+<link rel="stylesheet" href="/css/skeleton.css">
+
+  
+<link rel="stylesheet" href="/css/custom.css">
+
+  
+<link rel="stylesheet" href="/css/prism-dark.css">
+
+  
+<link rel="stylesheet" href="/css/prism-line-numbers.css">
+
+  <!-- User css -->
+  
+  
+<link rel="stylesheet" href="/css/user.css">
+
+  
+
+  <!-- Favicon
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="icon" type="image/png" href="/images/favicon.png">
+
+  <!-- Custom Theme Color Style
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <style>
+  a:not(.icon) {
+    text-decoration-color: #D19826;
+    background-image: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0) 50%,
+      #D19826 50%
+    );
+  }
+  blockquote {
+    border-left: 8px solid #D19826;
+  }
+  .nanobar .bar {
+    background: #D19826;
+  }
+  .button.button-primary:hover,
+  button.button-primary:hover,
+  input[type="submit"].button-primary:hover,
+  input[type="reset"].button-primary:hover,
+  input[type="button"].button-primary:hover,
+  .button.button-primary:focus,
+  button.button-primary:focus,
+  input[type="submit"].button-primary:focus,
+  input[type="reset"].button-primary:focus,
+  input[type="button"].button-primary:focus {
+    background-color: #D19826;
+    border-color: #D19826;
+  }
+  input[type="email"]:focus,
+  input[type="number"]:focus,
+  input[type="search"]:focus,
+  input[type="text"]:focus,
+  input[type="tel"]:focus,
+  input[type="url"]:focus,
+  input[type="password"]:focus,
+  textarea:focus,
+  select:focus {
+    border: 1px solid #D19826;
+  }
+</style>
+
+  <!-- Google Analytics (With Privacy Settings On)
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+  <div class="container">
+    <div class="row">
+      <div>
+
+        <div class="row">
+  <div class="two columns" style="max-width: 50px">
+    <h1 class="mt-2 mode">
+      <div onclick=setDarkMode(true) id="darkBtn">🌑</div>
+      <div onclick=setDarkMode(false) id="lightBtn" class=hidden>☀️</div>
+      <script >
+        if (localStorage.getItem('preferredTheme') == 'dark') {
+          setDarkMode(true)
+        }
+        function setDarkMode(isDark) {
+          var darkBtn = document.getElementById('darkBtn')
+          var lightBtn = document.getElementById('lightBtn')
+          if (isDark) {
+            lightBtn.style.display = "block"
+            darkBtn.style.display = "none"
+            localStorage.setItem('preferredTheme', 'dark');
+          } else {
+            lightBtn.style.display = "none"
+            darkBtn.style.display = "block"
+            localStorage.removeItem('preferredTheme');
+          }
+          document.body.classList.toggle("darkmode");
+        }
+      </script>
+    </h1>
+  </div>
+
+  <div class="six columns ml-1">
+    <h1 class="mt-2">
+      Avimitin&#39;s Blog
+    </h1>
+  </div>
+
+  <div class="twelve columns">
+    <div class="row">
+      <div class="nine columns left">
+        <a href="/">Home</a>
+        
+          
+          <a href="/friends" class="ml">Friends</a>
+          
+        
+        
+          
+            <a href="mailto:avimitin@gmail.com" target="_blank" class="ml">Email</a>
+          
+        
+      </div>
+    </div>
+    <hr style="margin-bottom: 2.6rem">
+  </div>
+</div>
+
+        <div class="trans">
+          <h1 class="post-title">Solving Dutch National Flag</h1>
+
+
+	<p class="post-tldr">
+		<span id="tldr-start">TL;DR:</span> using java to solve the dutch national flag problem
+	</p>
+
+
+
+	<img src="https://gss0.baidu.com/-vo3dSag_xI4khGko9WTAnF6hhy/zhidao/wh%3D600%2C800/sign=94eeecbbd5a20cf446c5f6d94639670e/f603918fa0ec08fa9c51789b5cee3d6d55fbdabd.jpg"/>
+
+
+
+	<p class="post-tn-alt">dutch flag</p>
+
+
+  <h1 id="DutchNationalFlag"><a href="#DutchNationalFlag" class="headerlink" title="DutchNationalFlag"></a>DutchNationalFlag</h1><h2 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h2><blockquote>
+<p>Given an array of <em>n</em> buckets, each containing a red, white, or blue pebble, sort them by color.</p>
+</blockquote>
+<p>大意：给定一个 <em>n</em> 大小的数组，里面包含了无序的红白蓝三种颜色，将其以颜色为组进行排序。</p>
+<p>e.g: <code>int[] array = &#123;r, w, b, w, r, w, b, r&#125;</code></p>
+<p>需要将上述数组过滤成 <code>&#123;r, r, r, w, w, w, b, b&#125;</code></p>
+<h2 id="要求"><a href="#要求" class="headerlink" title="要求"></a>要求</h2><p>复杂度至多为：<br>$$<br>O(n)<br>$$<br>内存占用至多为 <em>n</em> 。</p>
+<h2 id="API"><a href="#API" class="headerlink" title="API"></a>API</h2><table>
+<thead>
+<tr>
+<th>类型</th>
+<th>方法</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td></td>
+<td><code>DutchNationalFlag(int N)</code></td>
+<td>初始化数组</td>
+</tr>
+<tr>
+<td><code>void</code></td>
+<td><code>swap(int i, int j)</code></td>
+<td>交换对应参数角标的数组的两个值</td>
+</tr>
+<tr>
+<td><code>void</code></td>
+<td><code>color(int i)</code></td>
+<td>生成数组元素颜色</td>
+</tr>
+</tbody></table>
+<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>由于只有红白蓝三种颜色，使红白蓝分别赋值为 0, 1, 2。然后排序数组即可。</p>
+<hr>
+<p>由于需要保持在 <code>O(n)</code> 复杂度，只能遍历一次，因此使用类似于 <em>3way-quicksort</em> 的方式来排序。把数组分为三个部分，前面都是红，后面全是蓝，因此遍历数组遇到红的就往前移，遇到蓝的就往后移动。剩下中间的就全部是白色了。</p>
+<h2 id="程序设计"><a href="#程序设计" class="headerlink" title="程序设计"></a>程序设计</h2><p>设置指针 <code>begin</code>, <code>end</code>, <code>current</code>。其中 <code>begin</code> 为数组首节点，<code>end</code> 为数组尾节点，<code>current</code> 为遍历指针。将 <code>current</code> 放在首节点，不断往后遍历。</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">// 初始化三个指针</span>
+<span class="token keyword">int</span> begin <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token keyword">int</span> end <span class="token operator">=</span> d<span class="token punctuation">.</span>len <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">;</span>
+<span class="token keyword">int</span> current <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<ul>
+<li>当 <code>current</code> 遇到红色时，将其与 <code>begin</code> 交换位置，然后把 <code>begin</code>  往前进一位，因此 <code>begin</code> 指针之前的所有节点都会是红色。</li>
+<li>当 <code>current</code> 遇到白色时，只需继续遍历下一次循环，因为排序完白色一定在中间。</li>
+<li>当 <code>current</code> 遇到蓝色时，将其与 <code>end</code> 交换位置，然后把 <code>end</code>  往后退一位，因此 <code>end</code> 之后的所有节点都会是蓝色。但是<strong>不能</strong>直接进行下一轮循环，因为你并不知道换过来的 <code>end</code> 节点是什么颜色，可能会打乱前面的顺序。让 <code>current</code> 指针不动，再进行一次条件判断来排序红色和白色。</li>
+</ul>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">while</span><span class="token punctuation">(</span>current <span class="token operator">&lt;=</span> end<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+    <span class="token comment">// 遍历判断 array 数组里的值</span>
+    <span class="token keyword">switch</span> <span class="token punctuation">(</span>d<span class="token punctuation">.</span>a<span class="token punctuation">[</span>current<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+        <span class="token keyword">case</span> RED<span class="token operator">:</span>
+            <span class="token comment">// 遇到红色交换 current 和 begin 对应值并同时进一位</span>
+            d<span class="token punctuation">.</span><span class="token function">swap</span><span class="token punctuation">(</span>current<span class="token operator">++</span><span class="token punctuation">,</span> begin<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">continue</span><span class="token punctuation">;</span>
+        <span class="token keyword">case</span> WHITE<span class="token operator">:</span>
+            <span class="token comment">// 遇到白色 current 指针直接进一位</span>
+            current<span class="token operator">++</span><span class="token punctuation">;</span>
+            <span class="token keyword">continue</span><span class="token punctuation">;</span>
+        <span class="token keyword">case</span> BLUE<span class="token operator">:</span>
+            <span class="token comment">// 遇到蓝色 end 指针退一位， current 指针不动再进行一次条件判断</span>
+            d<span class="token punctuation">.</span><span class="token function">swap</span><span class="token punctuation">(</span>current<span class="token punctuation">,</span> end<span class="token operator">--</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">continue</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<ul>
+<li>图解</li>
+</ul>
+<p><img src="http://lh4.ggpht.com/_VYXCTGdavk8/TWctp9wB7uI/AAAAAAAAAEI/2D9HvA9pGno/[UNSET].jpg"></p>
+<h2 id="完整程序"><a href="#完整程序" class="headerlink" title="完整程序"></a>完整程序</h2><pre class="line-numbers language-JAVA" data-language="JAVA"><code class="language-JAVA">package pratise.ElementarySorts;
+&#x2F;&#x2F; 导入的是随机类和输出类，不影响算法
+import edu.princeton.cs.algs4.StdRandom;
+import edu.princeton.cs.algs4.StdOut;
+
+public class DutchNationalFlag &#123;
+    private static final int RED &#x3D; 0;
+    private static final int WHITE &#x3D; 1;
+    private static final int BLUE &#x3D; 2;
+    private int[] a;
+    private int len;
+
+    public DutchNationalFlag(int N)&#123;
+        a &#x3D; new int[N];
+        len &#x3D; N;
+    &#125;
+
+    public void swap(int i, int j)&#123;
+        int pebble &#x3D; a[i];
+        a[i] &#x3D; a[j];
+        a[j] &#x3D; pebble;
+    &#125;
+
+    public void color(int i)&#123;
+        a[i] &#x3D; StdRandom.uniform(3);
+    &#125;
+
+    public static void main(String[] args)&#123;
+        DutchNationalFlag d &#x3D; new DutchNationalFlag(20);
+        &#x2F;&#x2F; 往数组塞东西
+        for (int i &#x3D; 0; i &lt; d.len; i++)&#123;
+            d.color(i);
+            StdOut.print(d.a[i]);
+        &#125;
+        StdOut.print(&quot;\n&quot;);
+        &#x2F;&#x2F; 初始化三个指针
+        int begin &#x3D; 0;
+        int end &#x3D; d.len -1;
+        int current &#x3D; 0;
+        &#x2F;&#x2F; 过滤
+        while(current &lt;&#x3D; end)&#123;
+            &#x2F;&#x2F; 遍历判断 array 数组里的值
+            switch (d.a[current])&#123;
+                case RED:
+                    &#x2F;&#x2F; 遇到红色交换 current 和 begin 对应值并同时进一位
+                    d.swap(current++, begin++);
+                    continue;
+                case WHITE:
+                    &#x2F;&#x2F; 遇到白色 current 指针直接进一位
+                    current++;
+                    continue;
+                case BLUE:
+                    &#x2F;&#x2F; 遇到蓝色 end 指针退一位， current 指针不动再进行一次条件判断
+                    d.swap(current, end--);
+                    continue;
+            &#125;
+        &#125;
+        for (int i &#x3D; 0; i &lt; d.len; i++)&#123;
+            StdOut.print(d.a[i]);
+        &#125;
+    &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+  <p><a class="classtest-link" href="/tags/algorithm/" rel="tag">algorithm</a>, <a class="classtest-link" href="/tags/coding/" rel="tag">coding</a>, <a class="classtest-link" href="/tags/java/" rel="tag">java</a> — Aug 12, 2020</p>
+  
+
+
+          <div class="row mt-2">
+  
+    <div class="eight columns">
+      <p id="madewith">Made with ❤ and
+        <a class="footer-link icon" href="https://hexo.io" target="_blank" style="text-decoration: none;" rel="noreferrer" aria-label="Hexo.io">
+        <svg class="hexo svg-hov" width="14" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>Hexo.js</title><path d="M12 .007L1.57 6.056V18.05L12 23.995l10.43-6.049V5.952L12 .007zm4.798 17.105l-.939.521-.939-.521V12.94H9.08v4.172l-.94.521-.938-.521V6.89l.939-.521.939.521v4.172h5.84V6.89l.94-.521.938.521v10.222z"/></svg>
+        </a>
+        
+        at <a href="https://en.wikipedia.org/wiki/Earth" target="_blank" rel="noreferrer">Earth</a>.</p>
+        
+    </div>
+
+    <!-- Sepcial thanks to https://simpleicons.org/ for the icons -->
+    <div class="four columns mb-3 posisi" >
+      
+      <a class="ml-0 footer-link icon" href="https://github.com/avimitin" target="_blank" style="text-decoration: none" rel="noreferrer" aria-label="GitHub">
+        <svg class="github svg-hov" width="18" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>GitHub</title><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+      </a>
+      
+
+      
+
+      
+
+      
+
+      
+
+    </div>
+  
+</div>
+
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+  <script src="/js/nanobar.min.js"></script>
+  <script>
+    var options = {
+      classname: 'nanobar',
+      id: 'myNanobar'
+    };
+    var nanobar = new Nanobar(options);
+    nanobar.go(30);
+    nanobar.go(76);
+    nanobar.go(100);
+  </script>
+
+</body>
+
+</html>

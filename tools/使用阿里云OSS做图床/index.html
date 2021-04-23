@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <!-- Minima -->
+  <!-- Hexo theme created by @adisaktijrs -->
+
+  <!-- Basic Page Needs
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta charset="utf-8">
+
+  
+  <title>用阿里云OSS做图床</title>
+  
+  <link rel="canonical" href="https://blog.cf.avmtn.net/tools/%E4%BD%BF%E7%94%A8%E9%98%BF%E9%87%8C%E4%BA%91OSS%E5%81%9A%E5%9B%BE%E5%BA%8A/">
+  
+  <meta name="description" content="购买资源包直接买LRS标准就可以了，按照自己需求买，不过存几张图而已40G够用了。  然后买下行流量包，这里的流量是每月刷新的。   嫌贵的话其实可以不买，直接按实际流量扣费，0.25/GB。但是要做好被DDos或者突然高访问量然后一夜负债房子卖掉。  Bucket创建   Bucket名称要填独一">
+  
+  
+  <meta name="keywords" content="golang,linux">
+  
+  <meta name="author" content="Avimitin">
+  
+  <meta property="og:image" content="https://blog.cf.avmtn.netundefined">
+  
+  <meta property="og:site_name" content="Avimitin Blog" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="用阿里云OSS做图床" />
+  
+  <meta property="og:description" content="购买资源包直接买LRS标准就可以了，按照自己需求买，不过存几张图而已40G够用了。  然后买下行流量包，这里的流量是每月刷新的。   嫌贵的话其实可以不买，直接按实际流量扣费，0.25/GB。但是要做好被DDos或者突然高访问量然后一夜负债房子卖掉。  Bucket创建   Bucket名称要填独一">
+  
+  <meta property="og:url" content="https://blog.cf.avmtn.net/tools/%E4%BD%BF%E7%94%A8%E9%98%BF%E9%87%8C%E4%BA%91OSS%E5%81%9A%E5%9B%BE%E5%BA%8A/" />
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="用阿里云OSS做图床">
+  
+  <meta name="twitter:description" content="购买资源包直接买LRS标准就可以了，按照自己需求买，不过存几张图而已40G够用了。  然后买下行流量包，这里的流量是每月刷新的。   嫌贵的话其实可以不买，直接按实际流量扣费，0.25/GB。但是要做好被DDos或者突然高访问量然后一夜负债房子卖掉。  Bucket创建   Bucket名称要填独一">
+  
+  
+  <meta name="twitter:image" content="https://blog.cf.avmtn.netundefined">
+  
+  <meta name="twitter:url" content="https://blog.cf.avmtn.net/tools/%E4%BD%BF%E7%94%A8%E9%98%BF%E9%87%8C%E4%BA%91OSS%E5%81%9A%E5%9B%BE%E5%BA%8A/" />
+
+  <!-- Mobile Specific Metas
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Preload fonts
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="preload" href="../fonts/dm-serif-display-v4-latin-regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../fonts/inter-v2-latin-regular.woff2" as="font" type="font/woff2" crossorigin>
+
+  <!-- CSS
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  
+<link rel="stylesheet" href="/css/normalize.css">
+
+  
+<link rel="stylesheet" href="/css/skeleton.css">
+
+  
+<link rel="stylesheet" href="/css/custom.css">
+
+  
+<link rel="stylesheet" href="/css/prism-dark.css">
+
+  
+<link rel="stylesheet" href="/css/prism-line-numbers.css">
+
+  <!-- User css -->
+  
+  
+<link rel="stylesheet" href="/css/user.css">
+
+  
+
+  <!-- Favicon
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="icon" type="image/png" href="/images/favicon.png">
+
+  <!-- Custom Theme Color Style
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <style>
+  a:not(.icon) {
+    text-decoration-color: #D19826;
+    background-image: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0) 50%,
+      #D19826 50%
+    );
+  }
+  blockquote {
+    border-left: 8px solid #D19826;
+  }
+  .nanobar .bar {
+    background: #D19826;
+  }
+  .button.button-primary:hover,
+  button.button-primary:hover,
+  input[type="submit"].button-primary:hover,
+  input[type="reset"].button-primary:hover,
+  input[type="button"].button-primary:hover,
+  .button.button-primary:focus,
+  button.button-primary:focus,
+  input[type="submit"].button-primary:focus,
+  input[type="reset"].button-primary:focus,
+  input[type="button"].button-primary:focus {
+    background-color: #D19826;
+    border-color: #D19826;
+  }
+  input[type="email"]:focus,
+  input[type="number"]:focus,
+  input[type="search"]:focus,
+  input[type="text"]:focus,
+  input[type="tel"]:focus,
+  input[type="url"]:focus,
+  input[type="password"]:focus,
+  textarea:focus,
+  select:focus {
+    border: 1px solid #D19826;
+  }
+</style>
+
+  <!-- Google Analytics (With Privacy Settings On)
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+  <div class="container">
+    <div class="row">
+      <div>
+
+        <div class="row">
+  <div class="two columns" style="max-width: 50px">
+    <h1 class="mt-2 mode">
+      <div onclick=setDarkMode(true) id="darkBtn">🌑</div>
+      <div onclick=setDarkMode(false) id="lightBtn" class=hidden>☀️</div>
+      <script >
+        if (localStorage.getItem('preferredTheme') == 'dark') {
+          setDarkMode(true)
+        }
+        function setDarkMode(isDark) {
+          var darkBtn = document.getElementById('darkBtn')
+          var lightBtn = document.getElementById('lightBtn')
+          if (isDark) {
+            lightBtn.style.display = "block"
+            darkBtn.style.display = "none"
+            localStorage.setItem('preferredTheme', 'dark');
+          } else {
+            lightBtn.style.display = "none"
+            darkBtn.style.display = "block"
+            localStorage.removeItem('preferredTheme');
+          }
+          document.body.classList.toggle("darkmode");
+        }
+      </script>
+    </h1>
+  </div>
+
+  <div class="six columns ml-1">
+    <h1 class="mt-2">
+      Avimitin&#39;s Blog
+    </h1>
+  </div>
+
+  <div class="twelve columns">
+    <div class="row">
+      <div class="nine columns left">
+        <a href="/">Home</a>
+        
+          
+          <a href="/friends" class="ml">Friends</a>
+          
+        
+        
+          
+            <a href="mailto:avimitin@gmail.com" target="_blank" class="ml">Email</a>
+          
+        
+      </div>
+    </div>
+    <hr style="margin-bottom: 2.6rem">
+  </div>
+</div>
+
+        <div class="trans">
+          <h1 class="post-title">用阿里云OSS做图床</h1>
+
+
+
+
+
+
+
+  <h1 id="购买资源包"><a href="#购买资源包" class="headerlink" title="购买资源包"></a>购买资源包</h1><p>直接买LRS标准就可以了，按照自己需求买，不过存几张图而已40G够用了。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Avimitin/PicStorage/pic/Snipaste_2020-04-19_16-29-26.png"></p>
+<p>然后买下行流量包，这里的流量是每月刷新的。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Avimitin/PicStorage/pic/Snipaste_2020-04-19_16-44-37.png"></p>
+<blockquote>
+<p>嫌贵的话其实可以不买，直接按实际流量扣费，0.25/GB。但是要做好被DDos或者突然高访问量然后一夜负债房子卖掉。</p>
+</blockquote>
+<h1 id="Bucket创建"><a href="#Bucket创建" class="headerlink" title="Bucket创建"></a>Bucket创建</h1><p><img src="https://cdn.jsdelivr.net/gh/Avimitin/PicStorage/pic/Snipaste_2020-04-19_16-56-51.png"></p>
+<blockquote>
+<ol>
+<li>Bucket名称要填独一无二的，同时也不要太长，方便自己</li>
+<li>选择哪里都无所谓，但是一定要选国内的</li>
+<li>存储空间选标准</li>
+</ol>
+</blockquote>
+<h1 id="下载PicGo"><a href="#下载PicGo" class="headerlink" title="下载PicGo"></a>下载PicGo</h1><p>PicGo是一个方便的批量上传图片的软件，而且也能管理自己的图片链接，在作者的<a target="_blank" rel="noopener" href="https://github.com/Molunerfinn/PicGo/releases">GitHub Release</a>里下载安装。</p>
+<h1 id="配置图床"><a href="#配置图床" class="headerlink" title="配置图床"></a>配置图床</h1><h2 id="AccessKey获取"><a href="#AccessKey获取" class="headerlink" title="AccessKey获取"></a>AccessKey获取</h2><p>首先要取得OSS的访问秘钥，鼠标移至阿里云控制台右上角的头像处，点击Access Key管理，点击创建Access Key。然后点击开始使用子用户Access Key。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Avimitin/PicStorage/pic/Snipaste_2020-04-19_17-10-16.png"></p>
+<p>接着就会跳转创建用户，输入一个账户名，勾选编程访问，点击确定创建。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Avimitin/PicStorage/pic/Snipaste_2020-04-19_17-12-10.png"></p>
+<p>创建完成会跳转到用户信息，请一定要现在就保存好这个ID 和Secret，这里的信息只会显示现在这一次。可以下载CSV或者点复制保存。</p>
+<p>然后点添加权限，选择管理对象存储服务权限一个就够了。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Avimitin/PicStorage/pic/Snipaste_2020-04-19_17-14-52.png"></p>
+<h2 id="配置PicGo"><a href="#配置PicGo" class="headerlink" title="配置PicGo"></a>配置PicGo</h2><p>然后打开PicGo，选择阿里云图床，输入刚刚的AccessKey和其他信息：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Avimitin/PicStorage/pic/Snipaste_2020-04-19_17-19-15.png"></p>
+<blockquote>
+<ol>
+<li>存储空间名是刚刚的bucket名。</li>
+<li>存储区域是一开始选择的区域，可以在bucket信息里面找endpoint信息。</li>
+<li>存储路径请一定保证OSS有这个目录。</li>
+</ol>
+</blockquote>
+<p>然后就在上传区直接拖动照片上传就可以了。</p>
+
+
+  <p><a class="classtest-link" href="/tags/oss/" rel="tag">oss</a>, <a class="classtest-link" href="/tags/photo/" rel="tag">photo</a> — Apr 19, 2020</p>
+  
+
+
+          <div class="row mt-2">
+  
+    <div class="eight columns">
+      <p id="madewith">Made with ❤ and
+        <a class="footer-link icon" href="https://hexo.io" target="_blank" style="text-decoration: none;" rel="noreferrer" aria-label="Hexo.io">
+        <svg class="hexo svg-hov" width="14" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>Hexo.js</title><path d="M12 .007L1.57 6.056V18.05L12 23.995l10.43-6.049V5.952L12 .007zm4.798 17.105l-.939.521-.939-.521V12.94H9.08v4.172l-.94.521-.938-.521V6.89l.939-.521.939.521v4.172h5.84V6.89l.94-.521.938.521v10.222z"/></svg>
+        </a>
+        
+        at <a href="https://en.wikipedia.org/wiki/Earth" target="_blank" rel="noreferrer">Earth</a>.</p>
+        
+    </div>
+
+    <!-- Sepcial thanks to https://simpleicons.org/ for the icons -->
+    <div class="four columns mb-3 posisi" >
+      
+      <a class="ml-0 footer-link icon" href="https://github.com/avimitin" target="_blank" style="text-decoration: none" rel="noreferrer" aria-label="GitHub">
+        <svg class="github svg-hov" width="18" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>GitHub</title><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+      </a>
+      
+
+      
+
+      
+
+      
+
+      
+
+    </div>
+  
+</div>
+
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+  <script src="/js/nanobar.min.js"></script>
+  <script>
+    var options = {
+      classname: 'nanobar',
+      id: 'myNanobar'
+    };
+    var nanobar = new Nanobar(options);
+    nanobar.go(30);
+    nanobar.go(76);
+    nanobar.go(100);
+  </script>
+
+</body>
+
+</html>

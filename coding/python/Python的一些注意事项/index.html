@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <!-- Minima -->
+  <!-- Hexo theme created by @adisaktijrs -->
+
+  <!-- Basic Page Needs
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta charset="utf-8">
+
+  
+  <title>Python Coding Notice</title>
+  
+  <link rel="canonical" href="https://blog.cf.avmtn.net/coding/python/Python%E7%9A%84%E4%B8%80%E4%BA%9B%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/">
+  
+  <meta name="description" content="易错易忘点每周更新新的易错知识点，巩固记忆。 不写 Python 了, 停更 语法随机数生成 随机数生成需要import random这个模块，使用random.randrange(int值)来获取指定范围内的数值。   Example:  import random ··· ran_num = r">
+  
+  
+  <meta name="keywords" content="golang,linux">
+  
+  <meta name="author" content="Avimitin">
+  
+  <meta property="og:image" content="https://blog.cf.avmtn.netundefined">
+  
+  <meta property="og:site_name" content="Avimitin Blog" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Python Coding Notice" />
+  
+  <meta property="og:description" content="易错易忘点每周更新新的易错知识点，巩固记忆。 不写 Python 了, 停更 语法随机数生成 随机数生成需要import random这个模块，使用random.randrange(int值)来获取指定范围内的数值。   Example:  import random ··· ran_num = r">
+  
+  <meta property="og:url" content="https://blog.cf.avmtn.net/coding/python/Python%E7%9A%84%E4%B8%80%E4%BA%9B%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/" />
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Python Coding Notice">
+  
+  <meta name="twitter:description" content="易错易忘点每周更新新的易错知识点，巩固记忆。 不写 Python 了, 停更 语法随机数生成 随机数生成需要import random这个模块，使用random.randrange(int值)来获取指定范围内的数值。   Example:  import random ··· ran_num = r">
+  
+  
+  <meta name="twitter:image" content="https://blog.cf.avmtn.netundefined">
+  
+  <meta name="twitter:url" content="https://blog.cf.avmtn.net/coding/python/Python%E7%9A%84%E4%B8%80%E4%BA%9B%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/" />
+
+  <!-- Mobile Specific Metas
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Preload fonts
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="preload" href="../fonts/dm-serif-display-v4-latin-regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../fonts/inter-v2-latin-regular.woff2" as="font" type="font/woff2" crossorigin>
+
+  <!-- CSS
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  
+<link rel="stylesheet" href="/css/normalize.css">
+
+  
+<link rel="stylesheet" href="/css/skeleton.css">
+
+  
+<link rel="stylesheet" href="/css/custom.css">
+
+  
+<link rel="stylesheet" href="/css/prism-dark.css">
+
+  
+<link rel="stylesheet" href="/css/prism-line-numbers.css">
+
+  <!-- User css -->
+  
+  
+<link rel="stylesheet" href="/css/user.css">
+
+  
+
+  <!-- Favicon
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="icon" type="image/png" href="/images/favicon.png">
+
+  <!-- Custom Theme Color Style
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <style>
+  a:not(.icon) {
+    text-decoration-color: #D19826;
+    background-image: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0) 50%,
+      #D19826 50%
+    );
+  }
+  blockquote {
+    border-left: 8px solid #D19826;
+  }
+  .nanobar .bar {
+    background: #D19826;
+  }
+  .button.button-primary:hover,
+  button.button-primary:hover,
+  input[type="submit"].button-primary:hover,
+  input[type="reset"].button-primary:hover,
+  input[type="button"].button-primary:hover,
+  .button.button-primary:focus,
+  button.button-primary:focus,
+  input[type="submit"].button-primary:focus,
+  input[type="reset"].button-primary:focus,
+  input[type="button"].button-primary:focus {
+    background-color: #D19826;
+    border-color: #D19826;
+  }
+  input[type="email"]:focus,
+  input[type="number"]:focus,
+  input[type="search"]:focus,
+  input[type="text"]:focus,
+  input[type="tel"]:focus,
+  input[type="url"]:focus,
+  input[type="password"]:focus,
+  textarea:focus,
+  select:focus {
+    border: 1px solid #D19826;
+  }
+</style>
+
+  <!-- Google Analytics (With Privacy Settings On)
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+  <div class="container">
+    <div class="row">
+      <div>
+
+        <div class="row">
+  <div class="two columns" style="max-width: 50px">
+    <h1 class="mt-2 mode">
+      <div onclick=setDarkMode(true) id="darkBtn">🌑</div>
+      <div onclick=setDarkMode(false) id="lightBtn" class=hidden>☀️</div>
+      <script >
+        if (localStorage.getItem('preferredTheme') == 'dark') {
+          setDarkMode(true)
+        }
+        function setDarkMode(isDark) {
+          var darkBtn = document.getElementById('darkBtn')
+          var lightBtn = document.getElementById('lightBtn')
+          if (isDark) {
+            lightBtn.style.display = "block"
+            darkBtn.style.display = "none"
+            localStorage.setItem('preferredTheme', 'dark');
+          } else {
+            lightBtn.style.display = "none"
+            darkBtn.style.display = "block"
+            localStorage.removeItem('preferredTheme');
+          }
+          document.body.classList.toggle("darkmode");
+        }
+      </script>
+    </h1>
+  </div>
+
+  <div class="six columns ml-1">
+    <h1 class="mt-2">
+      Avimitin&#39;s Blog
+    </h1>
+  </div>
+
+  <div class="twelve columns">
+    <div class="row">
+      <div class="nine columns left">
+        <a href="/">Home</a>
+        
+          
+          <a href="/friends" class="ml">Friends</a>
+          
+        
+        
+          
+            <a href="mailto:avimitin@gmail.com" target="_blank" class="ml">Email</a>
+          
+        
+      </div>
+    </div>
+    <hr style="margin-bottom: 2.6rem">
+  </div>
+</div>
+
+        <div class="trans">
+          <h1 class="post-title">Python Coding Notice</h1>
+
+
+
+
+
+
+
+  <h1 id="易错易忘点"><a href="#易错易忘点" class="headerlink" title="易错易忘点"></a>易错易忘点</h1><p><del>每周更新新的易错知识点，巩固记忆。</del></p>
+<p>不写 Python 了, 停更</p>
+<h2 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h2><h3 id="随机数生成"><a href="#随机数生成" class="headerlink" title="随机数生成"></a>随机数生成</h3><ul>
+<li>随机数生成需要<code>import random</code>这个模块，使用<code>random.randrange(int值)</code>来获取指定范围内的数值。</li>
+</ul>
+<blockquote>
+<p>Example:</p>
+</blockquote>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">import</span> random
+···
+ran_num <span class="token operator">=</span> random<span class="token punctuation">.</span>randrange<span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span>ran_num<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="列表元组和字典"><a href="#列表元组和字典" class="headerlink" title="列表元组和字典"></a>列表元组和字典</h3><ul>
+<li>列表是可变化的，元组是不可变化的列表。</li>
+<li>列表第一个元素是<code>list[0]</code>，最后一个元素是<code>list[-1]</code></li>
+<li>字典是用<code>&#123;key:value&#125;</code>来对应生成的列表。列表使用中括号：<code>list = [&quot;abc&quot;,&quot;123&quot;,456]</code>，字典使用大括号:<code>dic = &#123;value1:&quot;abc&quot;,value2:&quot;123&quot;&#125;</code>。</li>
+<li><strong>列表元素可重复，字典键值不可重复。</strong>若有重复的字典元素，将会由后面的元素替代指向前面的元素。</li>
+</ul>
+<blockquote>
+<p>Example:</p>
+</blockquote>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python">list1 <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string">"abc"</span><span class="token punctuation">,</span><span class="token string">'abc'</span><span class="token punctuation">,</span><span class="token string">'123'</span><span class="token punctuation">,</span><span class="token number">321</span><span class="token punctuation">]</span>
+<span class="token operator">>></span><span class="token operator">></span> list1
+<span class="token punctuation">[</span><span class="token string">'abc'</span><span class="token punctuation">,</span><span class="token string">'abc'</span><span class="token punctuation">,</span><span class="token string">'123'</span><span class="token punctuation">,</span><span class="token number">321</span><span class="token punctuation">]</span>
+dic1 <span class="token operator">=</span> <span class="token punctuation">&#123;</span>name<span class="token punctuation">:</span><span class="token string">'zhangsan'</span><span class="token punctuation">,</span>age<span class="token punctuation">:</span><span class="token number">30</span><span class="token punctuation">,</span>name<span class="token punctuation">:</span><span class="token string">"lisi"</span><span class="token punctuation">&#125;</span>
+<span class="token operator">>></span><span class="token operator">></span> <span class="token keyword">print</span><span class="token punctuation">(</span>dic1<span class="token punctuation">[</span><span class="token string">'name'</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+lisi<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="键盘输入输出"><a href="#键盘输入输出" class="headerlink" title="键盘输入输出"></a>键盘输入输出</h3><ul>
+<li><code>input</code>默认输入String类型，有时候需要记得强制转换类型。</li>
+<li>格式化输出<code>format</code>的用法就是使用大括号来占位，使用后面的括号内的元素替代。</li>
+</ul>
+<blockquote>
+<p>Example:</p>
+</blockquote>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"我的名字叫&#123;&#125;,年龄是&#123;&#125;"</span><span class="token punctuation">.</span><span class="token builtin">format</span><span class="token punctuation">(</span><span class="token string">"李华"</span><span class="token punctuation">,</span><span class="token string">"19"</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+我的名字叫李华，年龄是<span class="token number">19</span>
+<span class="token operator">>></span><span class="token operator">></span> <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"我的名字叫&#123;0&#125;,年龄是&#123;1&#125;"</span><span class="token punctuation">.</span><span class="token builtin">format</span><span class="token punctuation">(</span><span class="token string">"李华"</span><span class="token punctuation">,</span><span class="token string">"19"</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+我的名字叫李华，年龄是<span class="token number">19</span>
+<span class="token operator">>></span><span class="token operator">></span> <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"我的名字叫&#123;1&#125;,年龄是&#123;0&#125;"</span><span class="token punctuation">.</span><span class="token builtin">format</span><span class="token punctuation">(</span><span class="token string">"李华"</span><span class="token punctuation">,</span><span class="token string">"19"</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+我的名字叫<span class="token number">19</span>，年龄是李华
+<span class="token operator">>></span><span class="token operator">></span> <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"我的名字叫&#123;name&#125;,年龄是&#123;age&#125;"</span><span class="token punctuation">.</span><span class="token builtin">format</span><span class="token punctuation">(</span>name<span class="token operator">=</span><span class="token string">"李华"</span><span class="token punctuation">,</span>age<span class="token operator">=</span><span class="token string">"19"</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+我的名字叫<span class="token number">19</span>，年龄是李华<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<ul>
+<li>由于<code>open</code>方法打开文件需要<code>close</code>，而使用close会经常蹦出奇怪的错误且占用一行，所以常用<code>with open() as xxx</code>语句来自动关闭文件。</li>
+</ul>
+<blockquote>
+<p>Example:</p>
+</blockquote>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token triple-quoted-string string">"""
+假设要创建一个文件叫test.txt，打开并写入:
+Hello
+World
+然后再读取并输出到终端
+"""</span>
+<span class="token comment"># 打开并读写文件，W+模式用来新建并读写文件</span>
+<span class="token keyword">with</span> <span class="token builtin">open</span><span class="token punctuation">(</span><span class="token string">"test.txt"</span><span class="token punctuation">,</span><span class="token string">"w+"</span><span class="token punctuation">)</span> <span class="token keyword">as</span> test_file<span class="token punctuation">:</span>
+    test_file<span class="token punctuation">.</span>write<span class="token punctuation">(</span><span class="token string">"Hello\nWorld"</span><span class="token punctuation">)</span>
+    
+<span class="token comment"># 打开并读取文件，输出到终端，r+用来读写文件，指针置于文件开头</span>
+<span class="token keyword">with</span> <span class="token builtin">open</span><span class="token punctuation">(</span><span class="token string">"test.txt"</span><span class="token punctuation">,</span><span class="token string">"r+"</span><span class="token punctuation">)</span> <span class="token keyword">as</span> test_file<span class="token punctuation">:</span>
+    test_words <span class="token operator">=</span> test_file<span class="token punctuation">.</span>read<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token keyword">print</span><span class="token punctuation">(</span>test_word<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h3 id="While循环"><a href="#While循环" class="headerlink" title="While循环"></a>While循环</h3><ul>
+<li><code>break</code>直接跳出循环，<code>continue</code>回到循环开头</li>
+</ul>
+<h3 id="异常与错误"><a href="#异常与错误" class="headerlink" title="异常与错误"></a>异常与错误</h3><ul>
+<li>使用<code>try</code>语句来尝试执行某语句，假如语句返回异常则进行<code>except</code>中的错误值匹配判断，假如返回<code>True</code>则执行<code>except</code>中的语句，假如返回<code>False</code>则中断并退出程序。</li>
+<li>类型错误是<code>ValueError</code>,不是<code>TypeError</code>。</li>
+</ul>
+<h3 id="迭代器"><a href="#迭代器" class="headerlink" title="迭代器"></a>迭代器</h3><ul>
+<li>迭代器执行完之后不可以再继续读取执行</li>
+</ul>
+<h3 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h3><ul>
+<li>Python中的赋值是将某个变量指向一个对象，变量本身不会变动。</li>
+</ul>
+<blockquote>
+<p>Example</p>
+</blockquote>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token triple-quoted-string string">"""
+Python只引用对象，赋值本身属于将变量指向对象
+a本身是没有任何类型的
+"""</span>
+a <span class="token operator">=</span> <span class="token number">2</span>  <span class="token comment"># 将a变量指向int 2对象</span>
+a <span class="token operator">=</span> <span class="token number">3</span>  <span class="token comment"># 将a变量指向int 3对象</span>
+
+
+<span class="token keyword">def</span> <span class="token function">change_num</span><span class="token punctuation">(</span>b<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    b <span class="token operator">=</span> <span class="token number">10</span>
+    <span class="token keyword">return</span> b
+
+
+<span class="token keyword">print</span><span class="token punctuation">(</span>change_num<span class="token punctuation">(</span>a<span class="token punctuation">)</span><span class="token punctuation">)</span>  <span class="token comment"># a = 10(将a指向了10）</span>
+change_num<span class="token punctuation">(</span>a<span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span>a<span class="token punctuation">)</span>  <span class="token comment"># a = 3 （a本身不改变，还是指向3）</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<ul>
+<li><code>def</code>定义函数时，参数有标识的传参可以无所谓顺序。</li>
+<li>默认参数需要写在最后面。</li>
+<li>*号后的不定长参数默认传元组。</li>
+</ul>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">def</span> <span class="token function">test</span><span class="token punctuation">(</span>a<span class="token punctuation">,</span> b<span class="token punctuation">,</span> c<span class="token punctuation">,</span> <span class="token operator">*</span>var<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token triple-quoted-string string">"""*号后传入的数据指向元组类
+    所以如果想加多余值不可以直接sum = aa + b + vd + var
+    需要使用循环语句将元组内数字传出"""</span>
+    <span class="token keyword">print</span><span class="token punctuation">(</span>a <span class="token operator">+</span> b <span class="token operator">+</span> c<span class="token punctuation">)</span>
+    <span class="token keyword">print</span><span class="token punctuation">(</span>var<span class="token punctuation">)</span>
+    count <span class="token operator">=</span> <span class="token builtin">len</span><span class="token punctuation">(</span>var<span class="token punctuation">)</span>
+    num <span class="token operator">=</span> <span class="token number">0</span>
+    <span class="token keyword">while</span> count <span class="token operator">!=</span> <span class="token number">0</span><span class="token punctuation">:</span>
+        num <span class="token operator">+=</span> var<span class="token punctuation">[</span>count<span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">]</span>
+        count <span class="token operator">-=</span> <span class="token number">1</span>
+    <span class="token builtin">sum</span> <span class="token operator">=</span> a <span class="token operator">+</span> b <span class="token operator">+</span> c <span class="token operator">+</span> num
+    <span class="token keyword">return</span> <span class="token builtin">sum</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="YAML和JSON"><a href="#YAML和JSON" class="headerlink" title="YAML和JSON"></a>YAML和JSON</h3><ul>
+<li>都需要导入模块才能使用，YAML需要额外安装<code>PyYaml</code></li>
+<li>JSON需要学习，但是推荐使用YAML，简单强大不易错误。</li>
+<li>使用<code>json.dumps</code>把Python转换成JSON格式，使用<code>json.loads</code>把JSON文件转换成Python可识别格式。</li>
+<li>使用<code>yaml.dumps</code>把Python转换成YAML格式，使用<code>yaml.load</code>把YAML文件转换成Python可识别格式。</li>
+<li>读取YAML文件时可能会出现安全性错误，需要在load方法中传入参数<code>Loader=yaml.FullLoader</code></li>
+</ul>
+<h3 id="面向对象"><a href="#面向对象" class="headerlink" title="面向对象"></a>面向对象</h3><ul>
+<li>类中的变量本身可以被其他函数改变值</li>
+<li>当想使用普通函数时需要用装饰器<code>@staticmethod</code></li>
+</ul>
+
+
+  <p><a class="classtest-link" href="/tags/notes/" rel="tag">notes</a>, <a class="classtest-link" href="/tags/python/" rel="tag">python</a> — Apr 4, 2020</p>
+  
+
+
+          <div class="row mt-2">
+  
+    <div class="eight columns">
+      <p id="madewith">Made with ❤ and
+        <a class="footer-link icon" href="https://hexo.io" target="_blank" style="text-decoration: none;" rel="noreferrer" aria-label="Hexo.io">
+        <svg class="hexo svg-hov" width="14" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>Hexo.js</title><path d="M12 .007L1.57 6.056V18.05L12 23.995l10.43-6.049V5.952L12 .007zm4.798 17.105l-.939.521-.939-.521V12.94H9.08v4.172l-.94.521-.938-.521V6.89l.939-.521.939.521v4.172h5.84V6.89l.94-.521.938.521v10.222z"/></svg>
+        </a>
+        
+        at <a href="https://en.wikipedia.org/wiki/Earth" target="_blank" rel="noreferrer">Earth</a>.</p>
+        
+    </div>
+
+    <!-- Sepcial thanks to https://simpleicons.org/ for the icons -->
+    <div class="four columns mb-3 posisi" >
+      
+      <a class="ml-0 footer-link icon" href="https://github.com/avimitin" target="_blank" style="text-decoration: none" rel="noreferrer" aria-label="GitHub">
+        <svg class="github svg-hov" width="18" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>GitHub</title><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+      </a>
+      
+
+      
+
+      
+
+      
+
+      
+
+    </div>
+  
+</div>
+
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+  <script src="/js/nanobar.min.js"></script>
+  <script>
+    var options = {
+      classname: 'nanobar',
+      id: 'myNanobar'
+    };
+    var nanobar = new Nanobar(options);
+    nanobar.go(30);
+    nanobar.go(76);
+    nanobar.go(100);
+  </script>
+
+</body>
+
+</html>

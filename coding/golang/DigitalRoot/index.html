@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <!-- Minima -->
+  <!-- Hexo theme created by @adisaktijrs -->
+
+  <!-- Basic Page Needs
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta charset="utf-8">
+
+  
+  <title>Solving Digital Roots</title>
+  
+  <link rel="canonical" href="https://blog.cf.avmtn.net/coding/golang/DigitalRoot/">
+  
+  <meta name="description" content="Sum of Digits / Digital RootDetailDigital root is the recursive sum of all the digits in a number. Given n, take the sum of the digits of n.  If that ">
+  
+  
+  <meta name="keywords" content="golang,linux">
+  
+  <meta name="author" content="Avimitin">
+  
+  <meta property="og:image" content="https://blog.cf.avmtn.nethttps://cdn.jsdelivr.net/gh/Avimitin/PicStorage/pic/20200810211539.png">
+  
+  <meta property="og:site_name" content="Avimitin Blog" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Solving Digital Roots" />
+  
+  <meta property="og:description" content="Sum of Digits / Digital RootDetailDigital root is the recursive sum of all the digits in a number. Given n, take the sum of the digits of n.  If that ">
+  
+  <meta property="og:url" content="https://blog.cf.avmtn.net/coding/golang/DigitalRoot/" />
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Solving Digital Roots">
+  
+  <meta name="twitter:description" content="Sum of Digits / Digital RootDetailDigital root is the recursive sum of all the digits in a number. Given n, take the sum of the digits of n.  If that ">
+  
+  
+  <meta name="twitter:image" content="https://blog.cf.avmtn.nethttps://cdn.jsdelivr.net/gh/Avimitin/PicStorage/pic/20200810211539.png">
+  
+  <meta name="twitter:url" content="https://blog.cf.avmtn.net/coding/golang/DigitalRoot/" />
+
+  <!-- Mobile Specific Metas
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Preload fonts
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="preload" href="../fonts/dm-serif-display-v4-latin-regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../fonts/inter-v2-latin-regular.woff2" as="font" type="font/woff2" crossorigin>
+
+  <!-- CSS
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  
+<link rel="stylesheet" href="/css/normalize.css">
+
+  
+<link rel="stylesheet" href="/css/skeleton.css">
+
+  
+<link rel="stylesheet" href="/css/custom.css">
+
+  
+<link rel="stylesheet" href="/css/prism-dark.css">
+
+  
+<link rel="stylesheet" href="/css/prism-line-numbers.css">
+
+  <!-- User css -->
+  
+  
+<link rel="stylesheet" href="/css/user.css">
+
+  
+
+  <!-- Favicon
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="icon" type="image/png" href="/images/favicon.png">
+
+  <!-- Custom Theme Color Style
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <style>
+  a:not(.icon) {
+    text-decoration-color: #D19826;
+    background-image: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0) 50%,
+      #D19826 50%
+    );
+  }
+  blockquote {
+    border-left: 8px solid #D19826;
+  }
+  .nanobar .bar {
+    background: #D19826;
+  }
+  .button.button-primary:hover,
+  button.button-primary:hover,
+  input[type="submit"].button-primary:hover,
+  input[type="reset"].button-primary:hover,
+  input[type="button"].button-primary:hover,
+  .button.button-primary:focus,
+  button.button-primary:focus,
+  input[type="submit"].button-primary:focus,
+  input[type="reset"].button-primary:focus,
+  input[type="button"].button-primary:focus {
+    background-color: #D19826;
+    border-color: #D19826;
+  }
+  input[type="email"]:focus,
+  input[type="number"]:focus,
+  input[type="search"]:focus,
+  input[type="text"]:focus,
+  input[type="tel"]:focus,
+  input[type="url"]:focus,
+  input[type="password"]:focus,
+  textarea:focus,
+  select:focus {
+    border: 1px solid #D19826;
+  }
+</style>
+
+  <!-- Google Analytics (With Privacy Settings On)
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+  <div class="container">
+    <div class="row">
+      <div>
+
+        <div class="row">
+  <div class="two columns" style="max-width: 50px">
+    <h1 class="mt-2 mode">
+      <div onclick=setDarkMode(true) id="darkBtn">🌑</div>
+      <div onclick=setDarkMode(false) id="lightBtn" class=hidden>☀️</div>
+      <script >
+        if (localStorage.getItem('preferredTheme') == 'dark') {
+          setDarkMode(true)
+        }
+        function setDarkMode(isDark) {
+          var darkBtn = document.getElementById('darkBtn')
+          var lightBtn = document.getElementById('lightBtn')
+          if (isDark) {
+            lightBtn.style.display = "block"
+            darkBtn.style.display = "none"
+            localStorage.setItem('preferredTheme', 'dark');
+          } else {
+            lightBtn.style.display = "none"
+            darkBtn.style.display = "block"
+            localStorage.removeItem('preferredTheme');
+          }
+          document.body.classList.toggle("darkmode");
+        }
+      </script>
+    </h1>
+  </div>
+
+  <div class="six columns ml-1">
+    <h1 class="mt-2">
+      Avimitin&#39;s Blog
+    </h1>
+  </div>
+
+  <div class="twelve columns">
+    <div class="row">
+      <div class="nine columns left">
+        <a href="/">Home</a>
+        
+          
+          <a href="/friends" class="ml">Friends</a>
+          
+        
+        
+          
+            <a href="mailto:avimitin@gmail.com" target="_blank" class="ml">Email</a>
+          
+        
+      </div>
+    </div>
+    <hr style="margin-bottom: 2.6rem">
+  </div>
+</div>
+
+        <div class="trans">
+          <h1 class="post-title">Solving Digital Roots</h1>
+
+
+	<p class="post-tldr">
+		<span id="tldr-start">TL;DR:</span> using TDD to solve the digital roots problem
+	</p>
+
+
+
+	<img src="https://cdn.jsdelivr.net/gh/Avimitin/PicStorage/pic/20200810211539.png"/>
+
+
+
+	<p class="post-tn-alt">random photo</p>
+
+
+  <h1 id="Sum-of-Digits-Digital-Root"><a href="#Sum-of-Digits-Digital-Root" class="headerlink" title="Sum of Digits / Digital Root"></a>Sum of Digits / Digital Root</h1><h2 id="Detail"><a href="#Detail" class="headerlink" title="Detail"></a>Detail</h2><p><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Digital_root">Digital root</a> is the <em>recursive sum of all the digits in a number.</em></p>
+<p>Given <code>n</code>, take the sum of the digits of <code>n</code>.  If that value has more than one digit, continue reducing in this way  until a single-digit number is produced. The input will be a non-negative integer.</p>
+<p>For example:</p>
+<pre class="line-numbers language-text" data-language="text"><code class="language-text">    16  --&gt;  1 + 6 &#x3D; 7
+   942  --&gt;  9 + 4 + 2 &#x3D; 15  --&gt;  1 + 5 &#x3D; 6
+132189  --&gt;  1 + 3 + 2 + 1 + 8 + 9 &#x3D; 24  --&gt;  2 + 4 &#x3D; 6
+493193  --&gt;  4 + 9 + 3 + 1 + 9 + 3 &#x3D; 29  --&gt;  2 + 9 &#x3D; 11  --&gt;  1 + 1 &#x3D; 2<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="Ideas"><a href="#Ideas" class="headerlink" title="Ideas"></a>Ideas</h2><p>首先基于分治思想，把这个问题分成几个小的部分：</p>
+<pre class="line-numbers language-text" data-language="text"><code class="language-text">分离各数位上的数字 -&gt; 求和 -&gt; 检查是否不为单位数<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h2 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h2><p>首先细分第一个任务：分离数字。我的思路是把每个数位上的第一个数字给抽取出来，放进一个数组里，然后将其减少为剩下的数位，继续这样的循环直到数字降到最低一位。比如对于数字 114514，先去 1 塞进数组，然后令数字等于 14514，继续遍历。</p>
+<p>根据以上思路，第一个任务可以细分为：抽取首位，塞入数组，减少数字大小。</p>
+<h2 id="抽取首位"><a href="#抽取首位" class="headerlink" title="抽取首位"></a>抽取首位</h2><h3 id="Test-first"><a href="#Test-first" class="headerlink" title="Test first"></a>Test first</h3><p>基于 TDD 的思想，我先写测试 <code>TestGetBit</code> , 测试对于数字 16 能不能正确取得首位 1:</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">func</span> <span class="token function">TestGetDigit</span><span class="token punctuation">(</span>t <span class="token operator">*</span>testing<span class="token punctuation">.</span>T<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	t<span class="token punctuation">.</span><span class="token function">Run</span><span class="token punctuation">(</span><span class="token string">"get 16"</span><span class="token punctuation">,</span> <span class="token keyword">func</span><span class="token punctuation">(</span>t <span class="token operator">*</span>testing<span class="token punctuation">.</span>T<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+		got <span class="token operator">:=</span> <span class="token function">getDigit</span><span class="token punctuation">(</span><span class="token number">16</span><span class="token punctuation">)</span>
+		want <span class="token operator">:=</span> <span class="token number">1</span>
+		<span class="token keyword">if</span> got <span class="token operator">!=</span> want <span class="token punctuation">&#123;</span>
+			t<span class="token punctuation">.</span><span class="token function">Errorf</span><span class="token punctuation">(</span><span class="token string">"got %d want %d"</span><span class="token punctuation">,</span> got<span class="token punctuation">,</span> want<span class="token punctuation">)</span>
+		<span class="token punctuation">&#125;</span>
+	<span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>运行一下测试：</p>
+<pre class="line-numbers language-text" data-language="text"><code class="language-text">.&#x2F;DigitalRoot_test.go: undefined: getDigit<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="Then-code"><a href="#Then-code" class="headerlink" title="Then code"></a>Then code</h3><p>然后再来写函数 <code>getDigit</code> ：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">func</span> <span class="token function">getDigit</span><span class="token punctuation">(</span>n <span class="token builtin">int</span><span class="token punctuation">)</span> <span class="token builtin">int</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">return</span> <span class="token number">1</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>再来跑一次测试，测试应该能够通过了。于是我们再写后面的测试，对于输入 6 能不能获得首位 6：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go">t<span class="token punctuation">.</span><span class="token function">Run</span><span class="token punctuation">(</span><span class="token string">"get 6"</span><span class="token punctuation">,</span> <span class="token keyword">func</span><span class="token punctuation">(</span>t <span class="token operator">*</span>testing<span class="token punctuation">.</span>T<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+		got <span class="token operator">:=</span> <span class="token function">getDigit</span><span class="token punctuation">(</span><span class="token number">6</span><span class="token punctuation">)</span>
+		want <span class="token operator">:=</span> <span class="token number">6</span>
+		<span class="token keyword">if</span> got <span class="token operator">!=</span> want <span class="token punctuation">&#123;</span>
+			t<span class="token punctuation">.</span><span class="token function">Errorf</span><span class="token punctuation">(</span><span class="token string">"got %d want %d"</span><span class="token punctuation">,</span> got<span class="token punctuation">,</span> want<span class="token punctuation">)</span>
+		<span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>然后重新跑测试，结果自然会错误：</p>
+<pre class="line-numbers language-text" data-language="text"><code class="language-text">.&#x2F;DigitalRoot_test.go: got 1 want 6<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="Refactor"><a href="#Refactor" class="headerlink" title="Refactor"></a>Refactor</h3><p>然后要对代码进行重构：想要对任何数字都能取得第一位，我们只需要把他和10的幂运算后的结果相除即可，比如对于数 <code>1,919,810</code>，可以将其除以 10 的 6 次方，也就是 <code>1,000,000</code> 并舍弃余数就能获得结果 1 。所以在重构 <code>getDigit</code> 前，需要先写一个函数来进行对 10 的幂运算。</p>
+<h2 id="幂运算"><a href="#幂运算" class="headerlink" title="幂运算"></a>幂运算</h2><h3 id="Test-first-1"><a href="#Test-first-1" class="headerlink" title="Test first"></a>Test first</h3><p>先写测试 <code>TestPow</code>:</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">func</span> <span class="token function">TestPow</span><span class="token punctuation">(</span>t <span class="token operator">*</span>testing<span class="token punctuation">.</span>T<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	got <span class="token operator">:=</span> <span class="token function">pow</span><span class="token punctuation">(</span><span class="token number">6</span><span class="token punctuation">)</span>
+	want <span class="token operator">:=</span> <span class="token number">1000000</span>
+	<span class="token keyword">if</span> got <span class="token operator">!=</span> want <span class="token punctuation">&#123;</span>
+		t<span class="token punctuation">.</span><span class="token function">Errorf</span><span class="token punctuation">(</span><span class="token string">"got %d want %d"</span><span class="token punctuation">,</span> got<span class="token punctuation">,</span> want<span class="token punctuation">)</span>
+	<span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>跑一下测试：</p>
+<pre class="line-numbers language-test" data-language="test"><code class="language-test">.&#x2F;DigitalRoot_test.go: undefined: pow<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="Then-code-1"><a href="#Then-code-1" class="headerlink" title="Then code"></a>Then code</h3><p>然后写函数</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">func</span> <span class="token function">pow</span><span class="token punctuation">(</span>p <span class="token builtin">int</span><span class="token punctuation">)</span> <span class="token builtin">int</span> <span class="token punctuation">&#123;</span>
+	<span class="token keyword">var</span> pow <span class="token operator">=</span> <span class="token number">10</span>
+	<span class="token keyword">if</span> p <span class="token operator">==</span> <span class="token number">0</span> <span class="token punctuation">&#123;</span>
+		<span class="token keyword">return</span> <span class="token number">1</span>
+	<span class="token punctuation">&#125;</span>
+	<span class="token keyword">for</span> p <span class="token operator">></span> <span class="token number">1</span> <span class="token punctuation">&#123;</span>
+		pow <span class="token operator">*=</span> <span class="token number">10</span>
+		p<span class="token operator">--</span>
+	<span class="token punctuation">&#125;</span>
+	<span class="token keyword">return</span> pow
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>当 <code>p = 0</code> 也就是十的 0 次方时，我们返回 1。如果输入是正的，我们不断将 pow 变量和 10 相乘并递减输入。由于题干给出，输入一定是正整数，所以我们不需要考虑 <code>p&lt;0</code> 的情况。</p>
+<h3 id="Refactor-1"><a href="#Refactor-1" class="headerlink" title="Refactor"></a>Refactor</h3><p>然后对函数 <code>getDigit</code> 进行重构，多输入一个 e 来获得这个数有几位，且因为对于 7 位的数字我们只需要求 10 的 6 倍即可，因此要先把 <code>e -= 1</code>：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">func</span> <span class="token function">getDigit</span><span class="token punctuation">(</span>n <span class="token builtin">int</span><span class="token punctuation">,</span> e <span class="token builtin">int</span><span class="token punctuation">)</span> <span class="token builtin">int</span> <span class="token punctuation">&#123;</span>
+	e <span class="token operator">-=</span> <span class="token number">1</span>
+	pow <span class="token operator">:=</span> <span class="token function">pow</span><span class="token punctuation">(</span>e<span class="token punctuation">)</span>
+	<span class="token keyword">return</span> n <span class="token operator">/</span> pow
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>同时对测试进行完整修改补充：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">func</span> <span class="token function">TestGetDigit</span><span class="token punctuation">(</span>t <span class="token operator">*</span>testing<span class="token punctuation">.</span>T<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	t<span class="token punctuation">.</span><span class="token function">Run</span><span class="token punctuation">(</span><span class="token string">"get 16"</span><span class="token punctuation">,</span> <span class="token keyword">func</span><span class="token punctuation">(</span>t <span class="token operator">*</span>testing<span class="token punctuation">.</span>T<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+		got <span class="token operator">:=</span> <span class="token function">getDigit</span><span class="token punctuation">(</span><span class="token number">16</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span>
+		want <span class="token operator">:=</span> <span class="token number">1</span>
+		<span class="token keyword">if</span> got <span class="token operator">!=</span> want <span class="token punctuation">&#123;</span>
+			t<span class="token punctuation">.</span><span class="token function">Errorf</span><span class="token punctuation">(</span><span class="token string">"got %d want %d"</span><span class="token punctuation">,</span> got<span class="token punctuation">,</span> want<span class="token punctuation">)</span>
+		<span class="token punctuation">&#125;</span>
+	<span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+
+	t<span class="token punctuation">.</span><span class="token function">Run</span><span class="token punctuation">(</span><span class="token string">"get 114514"</span><span class="token punctuation">,</span> <span class="token keyword">func</span><span class="token punctuation">(</span>t <span class="token operator">*</span>testing<span class="token punctuation">.</span>T<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+		got <span class="token operator">:=</span> <span class="token function">getDigit</span><span class="token punctuation">(</span><span class="token number">114514</span><span class="token punctuation">,</span> <span class="token number">6</span><span class="token punctuation">)</span>
+		want <span class="token operator">:=</span> <span class="token number">1</span>
+		<span class="token keyword">if</span> got <span class="token operator">!=</span> want <span class="token punctuation">&#123;</span>
+			t<span class="token punctuation">.</span><span class="token function">Errorf</span><span class="token punctuation">(</span><span class="token string">"got %d want %d"</span><span class="token punctuation">,</span> got<span class="token punctuation">,</span> want<span class="token punctuation">)</span>
+		<span class="token punctuation">&#125;</span>
+	<span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+
+	t<span class="token punctuation">.</span><span class="token function">Run</span><span class="token punctuation">(</span><span class="token string">"get 6"</span><span class="token punctuation">,</span> <span class="token keyword">func</span><span class="token punctuation">(</span>t <span class="token operator">*</span>testing<span class="token punctuation">.</span>T<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+		got <span class="token operator">:=</span> <span class="token function">getDigit</span><span class="token punctuation">(</span><span class="token number">6</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span>
+		want <span class="token operator">:=</span> <span class="token number">6</span>
+		<span class="token keyword">if</span> got <span class="token operator">!=</span> want <span class="token punctuation">&#123;</span>
+			t<span class="token punctuation">.</span><span class="token function">Errorf</span><span class="token punctuation">(</span><span class="token string">"got %d want %d"</span><span class="token punctuation">,</span> got<span class="token punctuation">,</span> want<span class="token punctuation">)</span>
+		<span class="token punctuation">&#125;</span>
+	<span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>然后跑一下测试，测试就应该是能通过的了。</p>
+<p>然后我们就需要知道每个输入都有多少位，所以需要写一个 <code>count</code> 函数来获得数位。</p>
+<h2 id="计算数位"><a href="#计算数位" class="headerlink" title="计算数位"></a>计算数位</h2><h3 id="Test-first-2"><a href="#Test-first-2" class="headerlink" title="Test first"></a>Test first</h3><p>二话不说，先写测试：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">func</span> <span class="token function">TestCount</span><span class="token punctuation">(</span>t <span class="token operator">*</span>testing<span class="token punctuation">.</span>T<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	got <span class="token operator">:=</span> <span class="token function">count</span><span class="token punctuation">(</span><span class="token number">114514</span><span class="token punctuation">)</span>
+	want <span class="token operator">:=</span> <span class="token number">6</span>
+	<span class="token keyword">if</span> got <span class="token operator">!=</span> want <span class="token punctuation">&#123;</span>
+		t<span class="token punctuation">.</span><span class="token function">Errorf</span><span class="token punctuation">(</span><span class="token string">"got %d want %d"</span><span class="token punctuation">,</span> got<span class="token punctuation">,</span> want<span class="token punctuation">)</span>
+	<span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Then-code-2"><a href="#Then-code-2" class="headerlink" title="Then code"></a>Then code</h3><pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">func</span> <span class="token function">count</span><span class="token punctuation">(</span>n <span class="token builtin">int</span><span class="token punctuation">)</span> <span class="token builtin">int</span> <span class="token punctuation">&#123;</span>
+	<span class="token keyword">var</span> digitCount <span class="token builtin">int</span>
+	<span class="token keyword">for</span> n <span class="token operator">></span> <span class="token number">0</span> <span class="token punctuation">&#123;</span>
+		n <span class="token operator">/=</span> <span class="token number">10</span>
+		digitCount<span class="token operator">++</span>
+	<span class="token punctuation">&#125;</span>
+	<span class="token keyword">return</span> digitCount
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>不断令 n 退 1 位直到其不为正整数，并在每次遍历时递增变量 <code>digitCount</code> 就能获得数字的位数。</p>
+<h3 id="Refactor-2"><a href="#Refactor-2" class="headerlink" title="Refactor"></a>Refactor</h3><p>加个注释？</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token comment">// count return the number of input n</span>
+<span class="token keyword">func</span> <span class="token function">count</span><span class="token punctuation">(</span>n <span class="token builtin">int</span><span class="token punctuation">)</span> <span class="token builtin">int</span> <span class="token punctuation">&#123;</span>
+	<span class="token keyword">var</span> digitCount <span class="token builtin">int</span>
+	<span class="token keyword">for</span> n <span class="token operator">></span> <span class="token number">0</span> <span class="token punctuation">&#123;</span>
+		n <span class="token operator">/=</span> <span class="token number">10</span>
+		digitCount<span class="token operator">++</span>
+	<span class="token punctuation">&#125;</span>
+	<span class="token keyword">return</span> digitCount
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="获得余数"><a href="#获得余数" class="headerlink" title="获得余数"></a>获得余数</h2><h3 id="Test-first-3"><a href="#Test-first-3" class="headerlink" title="Test first"></a>Test first</h3><pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">func</span> <span class="token function">TestGetPart</span><span class="token punctuation">(</span>t <span class="token operator">*</span>testing<span class="token punctuation">.</span>T<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	t<span class="token punctuation">.</span><span class="token function">Run</span><span class="token punctuation">(</span><span class="token string">"get part 114514"</span><span class="token punctuation">,</span> <span class="token keyword">func</span><span class="token punctuation">(</span>t <span class="token operator">*</span>testing<span class="token punctuation">.</span>T<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+		got <span class="token operator">:=</span> <span class="token function">getPart</span><span class="token punctuation">(</span><span class="token number">114514</span><span class="token punctuation">)</span>
+		want <span class="token operator">:=</span> <span class="token number">14514</span>
+		<span class="token keyword">if</span> got <span class="token operator">!=</span> want <span class="token punctuation">&#123;</span>
+			t<span class="token punctuation">.</span><span class="token function">Errorf</span><span class="token punctuation">(</span><span class="token string">"got %d want %d"</span><span class="token punctuation">,</span> got<span class="token punctuation">,</span> want<span class="token punctuation">)</span>
+		<span class="token punctuation">&#125;</span>
+	<span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Then-code-3"><a href="#Then-code-3" class="headerlink" title="Then code"></a>Then code</h3><pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">func</span> <span class="token function">getPart</span><span class="token punctuation">(</span>n <span class="token builtin">int</span><span class="token punctuation">)</span> <span class="token builtin">int</span> <span class="token punctuation">&#123;</span>
+	<span class="token keyword">return</span> <span class="token number">14514</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Refactor-3"><a href="#Refactor-3" class="headerlink" title="Refactor"></a>Refactor</h3><p>重新写测试，让原方法失败</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">func</span> <span class="token function">TestGetPart</span><span class="token punctuation">(</span>t <span class="token operator">*</span>testing<span class="token punctuation">.</span>T<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	t<span class="token punctuation">.</span><span class="token function">Run</span><span class="token punctuation">(</span><span class="token string">"get part 114514"</span><span class="token punctuation">,</span> <span class="token keyword">func</span><span class="token punctuation">(</span>t <span class="token operator">*</span>testing<span class="token punctuation">.</span>T<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+		got <span class="token operator">:=</span> <span class="token function">getPart</span><span class="token punctuation">(</span><span class="token number">114514</span><span class="token punctuation">)</span>
+		want <span class="token operator">:=</span> <span class="token number">14514</span>
+		<span class="token keyword">if</span> got <span class="token operator">!=</span> want <span class="token punctuation">&#123;</span>
+			t<span class="token punctuation">.</span><span class="token function">Errorf</span><span class="token punctuation">(</span><span class="token string">"got %d want %d"</span><span class="token punctuation">,</span> got<span class="token punctuation">,</span> want<span class="token punctuation">)</span>
+		<span class="token punctuation">&#125;</span>
+	<span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+
+	t<span class="token punctuation">.</span><span class="token function">Run</span><span class="token punctuation">(</span><span class="token string">"get part 16"</span><span class="token punctuation">,</span> <span class="token keyword">func</span><span class="token punctuation">(</span>t <span class="token operator">*</span>testing<span class="token punctuation">.</span>T<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+		got <span class="token operator">:=</span> <span class="token function">getPart</span><span class="token punctuation">(</span><span class="token number">16</span><span class="token punctuation">)</span>
+		want <span class="token operator">:=</span> <span class="token number">6</span>
+		<span class="token keyword">if</span> got <span class="token operator">!=</span> want <span class="token punctuation">&#123;</span>
+			t<span class="token punctuation">.</span><span class="token function">Errorf</span><span class="token punctuation">(</span><span class="token string">"got %d want %d"</span><span class="token punctuation">,</span> got<span class="token punctuation">,</span> want<span class="token punctuation">)</span>
+		<span class="token punctuation">&#125;</span>
+	<span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>对于任何正整数输入，可以对其进行取余操作来获得他除首位以外的数位。比如对于输入 <code>1,919,810</code>，可以对其除以 <code>1,000,000</code> ，余数 <code>919,810</code> 就是我们需要的值。</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">func</span> <span class="token function">getPart</span><span class="token punctuation">(</span>n <span class="token builtin">int</span><span class="token punctuation">,</span> bit <span class="token builtin">int</span><span class="token punctuation">)</span> <span class="token builtin">int</span> <span class="token punctuation">&#123;</span>
+	<span class="token keyword">return</span> n <span class="token operator">%</span> <span class="token function">pow</span><span class="token punctuation">(</span>bit<span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="插入数组"><a href="#插入数组" class="headerlink" title="插入数组"></a>插入数组</h2><p>然后我们把这些数分别插入数组，还是先写测试：</p>
+<h3 id="Test-first-4"><a href="#Test-first-4" class="headerlink" title="Test first"></a>Test first</h3><pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">func</span> <span class="token function">TestInsertDigit</span><span class="token punctuation">(</span>t <span class="token operator">*</span>testing<span class="token punctuation">.</span>T<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	t<span class="token punctuation">.</span><span class="token function">Run</span><span class="token punctuation">(</span><span class="token string">"get 16"</span><span class="token punctuation">,</span> <span class="token keyword">func</span><span class="token punctuation">(</span>t <span class="token operator">*</span>testing<span class="token punctuation">.</span>T<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+		got <span class="token operator">:=</span> <span class="token function">insertDigit</span><span class="token punctuation">(</span><span class="token number">16</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span>
+		want <span class="token operator">:=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">int</span><span class="token punctuation">&#123;</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">6</span><span class="token punctuation">&#125;</span>
+		<span class="token keyword">if</span> <span class="token operator">!</span>reflect<span class="token punctuation">.</span><span class="token function">DeepEqual</span><span class="token punctuation">(</span>got<span class="token punctuation">,</span> want<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+			t<span class="token punctuation">.</span><span class="token function">Errorf</span><span class="token punctuation">(</span><span class="token string">"got %v want %v"</span><span class="token punctuation">,</span> got<span class="token punctuation">,</span> want<span class="token punctuation">)</span>
+		<span class="token punctuation">&#125;</span>
+	<span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+	t<span class="token punctuation">.</span><span class="token function">Run</span><span class="token punctuation">(</span><span class="token string">"get 114514"</span><span class="token punctuation">,</span> <span class="token keyword">func</span><span class="token punctuation">(</span>t <span class="token operator">*</span>testing<span class="token punctuation">.</span>T<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+		got <span class="token operator">:=</span> <span class="token function">insertDigit</span><span class="token punctuation">(</span><span class="token number">114514</span><span class="token punctuation">,</span> <span class="token number">6</span><span class="token punctuation">)</span>
+		want <span class="token operator">:=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">int</span><span class="token punctuation">&#123;</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">&#125;</span>
+		<span class="token keyword">if</span> <span class="token operator">!</span>reflect<span class="token punctuation">.</span><span class="token function">DeepEqual</span><span class="token punctuation">(</span>got<span class="token punctuation">,</span> want<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+			t<span class="token punctuation">.</span><span class="token function">Errorf</span><span class="token punctuation">(</span><span class="token string">"got %v want %v"</span><span class="token punctuation">,</span> got<span class="token punctuation">,</span> want<span class="token punctuation">)</span>
+		<span class="token punctuation">&#125;</span>
+	<span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>运行上面的测试，使用 <code>reflect</code> 包的 <code>DeepEqual</code> 函数来检查输出数组是否时我们想要的。</p>
+<h3 id="Then-code-4"><a href="#Then-code-4" class="headerlink" title="Then code"></a>Then code</h3><p>先初始化一个数组，然后我们利用上面写好的函数，抽取首位插入数组，将余数赋值 n，循环至位数降至 0：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">func</span> <span class="token function">insertDigit</span><span class="token punctuation">(</span>n <span class="token builtin">int</span><span class="token punctuation">,</span> amount <span class="token builtin">int</span><span class="token punctuation">)</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">int</span> <span class="token punctuation">&#123;</span>
+	<span class="token keyword">var</span> digits <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">int</span>
+	<span class="token keyword">for</span> amount <span class="token operator">></span> <span class="token number">0</span> <span class="token punctuation">&#123;</span>
+		i <span class="token operator">:=</span> <span class="token function">getDigit</span><span class="token punctuation">(</span>n<span class="token punctuation">,</span> amount<span class="token punctuation">)</span>
+		n <span class="token operator">=</span> <span class="token function">getPart</span><span class="token punctuation">(</span>n<span class="token punctuation">,</span> amount<span class="token punctuation">)</span>
+		amount<span class="token operator">--</span>
+		digits <span class="token operator">=</span> <span class="token function">append</span><span class="token punctuation">(</span>digits<span class="token punctuation">,</span> i<span class="token punctuation">)</span>
+	<span class="token punctuation">&#125;</span>
+	<span class="token keyword">return</span> digits
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Refactor-4"><a href="#Refactor-4" class="headerlink" title="Refactor"></a>Refactor</h3><p>因为每次 <code>getDigit</code> 和 <code>getPart</code> 都需要循环进行一次 10 的幂运算，所以我们可以重构一下比较占用时间的这一部分，把原本各函数的计算提取出来只计算一次，并把这两个函数的第二个参数改为传入 10 幂运算后的值：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">func</span> <span class="token function">insertDigit</span><span class="token punctuation">(</span>n <span class="token builtin">int</span><span class="token punctuation">,</span> amount <span class="token builtin">int</span><span class="token punctuation">)</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">int</span> <span class="token punctuation">&#123;</span>
+	<span class="token keyword">var</span> digits <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">int</span>
+    divisor <span class="token operator">:=</span> <span class="token function">pow</span><span class="token punctuation">(</span>amount <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">)</span>
+	<span class="token keyword">for</span> amount <span class="token operator">></span> <span class="token number">0</span> <span class="token punctuation">&#123;</span>
+		i <span class="token operator">:=</span> <span class="token function">getDigit</span><span class="token punctuation">(</span>n<span class="token punctuation">,</span> divisor<span class="token punctuation">)</span>
+		n <span class="token operator">=</span> <span class="token function">getPart</span><span class="token punctuation">(</span>n<span class="token punctuation">,</span> divisor<span class="token punctuation">)</span>
+		amount<span class="token operator">--</span>
+		digits <span class="token operator">=</span> <span class="token function">append</span><span class="token punctuation">(</span>digits<span class="token punctuation">,</span> i<span class="token punctuation">)</span>
+	<span class="token punctuation">&#125;</span>
+	<span class="token keyword">return</span> digits
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="主函数"><a href="#主函数" class="headerlink" title="主函数"></a>主函数</h2><h3 id="Test-first-5"><a href="#Test-first-5" class="headerlink" title="Test first"></a>Test first</h3><pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">func</span> <span class="token function">TestDigitRoot</span><span class="token punctuation">(</span>t <span class="token operator">*</span>testing<span class="token punctuation">.</span>T<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	t<span class="token punctuation">.</span><span class="token function">Run</span><span class="token punctuation">(</span><span class="token string">"test 16"</span><span class="token punctuation">,</span> <span class="token keyword">func</span><span class="token punctuation">(</span>t <span class="token operator">*</span>testing<span class="token punctuation">.</span>T<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+		got <span class="token operator">:=</span> <span class="token function">DigitalRoot</span><span class="token punctuation">(</span><span class="token number">16</span><span class="token punctuation">)</span>
+		want <span class="token operator">:=</span> <span class="token number">7</span>
+
+		<span class="token keyword">if</span> got <span class="token operator">!=</span> want <span class="token punctuation">&#123;</span>
+			t<span class="token punctuation">.</span><span class="token function">Errorf</span><span class="token punctuation">(</span><span class="token string">"got %d want %d"</span><span class="token punctuation">,</span> got<span class="token punctuation">,</span> want<span class="token punctuation">)</span>
+		<span class="token punctuation">&#125;</span>
+	<span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Then-code-5"><a href="#Then-code-5" class="headerlink" title="Then code"></a>Then code</h3><p>首先我们需要检测输入有几位，然后传到 <code>insertDigit</code> 函数里来获得每一位的值，最后再遍历求值：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">func</span> <span class="token function">DigitalRoot</span><span class="token punctuation">(</span>n <span class="token builtin">int</span><span class="token punctuation">)</span> <span class="token builtin">int</span> <span class="token punctuation">&#123;</span>
+    cm <span class="token operator">:=</span> <span class="token function">countNum</span><span class="token punctuation">(</span>n<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	digits <span class="token operator">:=</span> <span class="token function">insertDigit</span><span class="token punctuation">(</span>n<span class="token punctuation">,</span> cm<span class="token punctuation">)</span>
+	n <span class="token operator">=</span> <span class="token function">sum</span><span class="token punctuation">(</span>digits<span class="token punctuation">)</span>
+	<span class="token keyword">return</span> n
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Refactor-5"><a href="#Refactor-5" class="headerlink" title="Refactor"></a>Refactor</h3><p>然后加入更多测试：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go">t<span class="token punctuation">.</span><span class="token function">Run</span><span class="token punctuation">(</span><span class="token string">"942"</span><span class="token punctuation">,</span> <span class="token keyword">func</span><span class="token punctuation">(</span>t <span class="token operator">*</span>testing<span class="token punctuation">.</span>T<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	got <span class="token operator">:=</span> <span class="token function">DigitalRoot</span><span class="token punctuation">(</span><span class="token number">942</span><span class="token punctuation">)</span>
+	want <span class="token operator">:=</span> <span class="token number">6</span>
+
+	<span class="token keyword">if</span> got <span class="token operator">!=</span> want <span class="token punctuation">&#123;</span>
+		t<span class="token punctuation">.</span><span class="token function">Errorf</span><span class="token punctuation">(</span><span class="token string">"got %d want %d"</span><span class="token punctuation">,</span> got<span class="token punctuation">,</span> want<span class="token punctuation">)</span>
+	<span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+t<span class="token punctuation">.</span><span class="token function">Run</span><span class="token punctuation">(</span><span class="token string">"132189"</span><span class="token punctuation">,</span> <span class="token keyword">func</span><span class="token punctuation">(</span>t <span class="token operator">*</span>testing<span class="token punctuation">.</span>T<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	got <span class="token operator">:=</span> <span class="token function">DigitalRoot</span><span class="token punctuation">(</span><span class="token number">132189</span><span class="token punctuation">)</span>
+	want <span class="token operator">:=</span> <span class="token number">6</span>
+
+	<span class="token keyword">if</span> got <span class="token operator">!=</span> want <span class="token punctuation">&#123;</span>
+		t<span class="token punctuation">.</span><span class="token function">Errorf</span><span class="token punctuation">(</span><span class="token string">"got %d want %d"</span><span class="token punctuation">,</span> got<span class="token punctuation">,</span> want<span class="token punctuation">)</span>
+	<span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>毫不意外，这个测试一定会 failed，因为我们没有把求和完的值继续分开计算，所以继续重构：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">func</span> <span class="token function">DigitalRoot</span><span class="token punctuation">(</span>n <span class="token builtin">int</span><span class="token punctuation">)</span> <span class="token builtin">int</span> <span class="token punctuation">&#123;</span>
+	<span class="token keyword">for</span> cm <span class="token operator">:=</span> <span class="token function">countNum</span><span class="token punctuation">(</span>n<span class="token punctuation">)</span><span class="token punctuation">;</span> cm <span class="token operator">></span> <span class="token number">1</span><span class="token punctuation">;</span> cm <span class="token operator">=</span> <span class="token function">countNum</span><span class="token punctuation">(</span>n<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+		digits <span class="token operator">:=</span> <span class="token function">insertDigit</span><span class="token punctuation">(</span>n<span class="token punctuation">,</span> cm<span class="token punctuation">)</span>
+		n <span class="token operator">=</span> <span class="token function">sum</span><span class="token punctuation">(</span>digits<span class="token punctuation">)</span>
+	<span class="token punctuation">&#125;</span>
+	<span class="token keyword">return</span> n
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>把输入进行数位计算，只要输入大于1就分离求和，并把求和结果重新赋值回变量 n，直到 n 的数位降至 1，返回结果。</p>
+<h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>这是我第一次基于 TDD 写算法题，出乎意料的是，TDD 不仅没有降低写题速度，甚至帮助我避免了大量简单错误，而且基于 TDD，我也不需要架上 “BREAK POINTS MACHINE GUN” 在 IDE 打上密密麻麻的红点来判断逻辑错误，TDD 帮助了我很多，所以这篇文章我也基于 TDD 的写法，希望能带更多人入坑。</p>
+
+
+  <p><a class="classtest-link" href="/tags/algorithm/" rel="tag">algorithm</a>, <a class="classtest-link" href="/tags/coding/" rel="tag">coding</a>, <a class="classtest-link" href="/tags/golang/" rel="tag">golang</a> — Feb 13, 2021</p>
+  
+
+
+          <div class="row mt-2">
+  
+    <div class="eight columns">
+      <p id="madewith">Made with ❤ and
+        <a class="footer-link icon" href="https://hexo.io" target="_blank" style="text-decoration: none;" rel="noreferrer" aria-label="Hexo.io">
+        <svg class="hexo svg-hov" width="14" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>Hexo.js</title><path d="M12 .007L1.57 6.056V18.05L12 23.995l10.43-6.049V5.952L12 .007zm4.798 17.105l-.939.521-.939-.521V12.94H9.08v4.172l-.94.521-.938-.521V6.89l.939-.521.939.521v4.172h5.84V6.89l.94-.521.938.521v10.222z"/></svg>
+        </a>
+        
+        at <a href="https://en.wikipedia.org/wiki/Earth" target="_blank" rel="noreferrer">Earth</a>.</p>
+        
+    </div>
+
+    <!-- Sepcial thanks to https://simpleicons.org/ for the icons -->
+    <div class="four columns mb-3 posisi" >
+      
+      <a class="ml-0 footer-link icon" href="https://github.com/avimitin" target="_blank" style="text-decoration: none" rel="noreferrer" aria-label="GitHub">
+        <svg class="github svg-hov" width="18" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>GitHub</title><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+      </a>
+      
+
+      
+
+      
+
+      
+
+      
+
+    </div>
+  
+</div>
+
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+  <script src="/js/nanobar.min.js"></script>
+  <script>
+    var options = {
+      classname: 'nanobar',
+      id: 'myNanobar'
+    };
+    var nanobar = new Nanobar(options);
+    nanobar.go(30);
+    nanobar.go(76);
+    nanobar.go(100);
+  </script>
+
+</body>
+
+</html>

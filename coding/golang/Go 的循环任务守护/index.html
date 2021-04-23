@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <!-- Minima -->
+  <!-- Hexo theme created by @adisaktijrs -->
+
+  <!-- Basic Page Needs
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta charset="utf-8">
+
+  
+  <title>Golang Polling Control Flow</title>
+  
+  <link rel="canonical" href="https://blog.cf.avmtn.net/coding/golang/Go%20%E7%9A%84%E5%BE%AA%E7%8E%AF%E4%BB%BB%E5%8A%A1%E5%AE%88%E6%8A%A4/">
+  
+  <meta name="description" content="Go 的循环任务守护前言这几天在做的一个项目里，有一个功能需求是：长期运行一个轮询任务，通过轮询得到的返回的信息进行下一步操作。这个问题初一看是蛮简单的，就一个 for 循环的事情嘛。但是实际上还有很多细节的地方需要仔细处理。本篇文章建立在你有足够的 Go 语言基础且懂得 chan 、 select">
+  
+  
+  <meta name="keywords" content="golang,linux">
+  
+  <meta name="author" content="Avimitin">
+  
+  <meta property="og:image" content="https://blog.cf.avmtn.netundefined">
+  
+  <meta property="og:site_name" content="Avimitin Blog" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Golang Polling Control Flow" />
+  
+  <meta property="og:description" content="Go 的循环任务守护前言这几天在做的一个项目里，有一个功能需求是：长期运行一个轮询任务，通过轮询得到的返回的信息进行下一步操作。这个问题初一看是蛮简单的，就一个 for 循环的事情嘛。但是实际上还有很多细节的地方需要仔细处理。本篇文章建立在你有足够的 Go 语言基础且懂得 chan 、 select">
+  
+  <meta property="og:url" content="https://blog.cf.avmtn.net/coding/golang/Go%20%E7%9A%84%E5%BE%AA%E7%8E%AF%E4%BB%BB%E5%8A%A1%E5%AE%88%E6%8A%A4/" />
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Golang Polling Control Flow">
+  
+  <meta name="twitter:description" content="Go 的循环任务守护前言这几天在做的一个项目里，有一个功能需求是：长期运行一个轮询任务，通过轮询得到的返回的信息进行下一步操作。这个问题初一看是蛮简单的，就一个 for 循环的事情嘛。但是实际上还有很多细节的地方需要仔细处理。本篇文章建立在你有足够的 Go 语言基础且懂得 chan 、 select">
+  
+  
+  <meta name="twitter:image" content="https://blog.cf.avmtn.netundefined">
+  
+  <meta name="twitter:url" content="https://blog.cf.avmtn.net/coding/golang/Go%20%E7%9A%84%E5%BE%AA%E7%8E%AF%E4%BB%BB%E5%8A%A1%E5%AE%88%E6%8A%A4/" />
+
+  <!-- Mobile Specific Metas
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Preload fonts
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="preload" href="../fonts/dm-serif-display-v4-latin-regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../fonts/inter-v2-latin-regular.woff2" as="font" type="font/woff2" crossorigin>
+
+  <!-- CSS
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  
+<link rel="stylesheet" href="/css/normalize.css">
+
+  
+<link rel="stylesheet" href="/css/skeleton.css">
+
+  
+<link rel="stylesheet" href="/css/custom.css">
+
+  
+<link rel="stylesheet" href="/css/prism-dark.css">
+
+  
+<link rel="stylesheet" href="/css/prism-line-numbers.css">
+
+  <!-- User css -->
+  
+  
+<link rel="stylesheet" href="/css/user.css">
+
+  
+
+  <!-- Favicon
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="icon" type="image/png" href="/images/favicon.png">
+
+  <!-- Custom Theme Color Style
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <style>
+  a:not(.icon) {
+    text-decoration-color: #D19826;
+    background-image: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0) 50%,
+      #D19826 50%
+    );
+  }
+  blockquote {
+    border-left: 8px solid #D19826;
+  }
+  .nanobar .bar {
+    background: #D19826;
+  }
+  .button.button-primary:hover,
+  button.button-primary:hover,
+  input[type="submit"].button-primary:hover,
+  input[type="reset"].button-primary:hover,
+  input[type="button"].button-primary:hover,
+  .button.button-primary:focus,
+  button.button-primary:focus,
+  input[type="submit"].button-primary:focus,
+  input[type="reset"].button-primary:focus,
+  input[type="button"].button-primary:focus {
+    background-color: #D19826;
+    border-color: #D19826;
+  }
+  input[type="email"]:focus,
+  input[type="number"]:focus,
+  input[type="search"]:focus,
+  input[type="text"]:focus,
+  input[type="tel"]:focus,
+  input[type="url"]:focus,
+  input[type="password"]:focus,
+  textarea:focus,
+  select:focus {
+    border: 1px solid #D19826;
+  }
+</style>
+
+  <!-- Google Analytics (With Privacy Settings On)
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+  <div class="container">
+    <div class="row">
+      <div>
+
+        <div class="row">
+  <div class="two columns" style="max-width: 50px">
+    <h1 class="mt-2 mode">
+      <div onclick=setDarkMode(true) id="darkBtn">🌑</div>
+      <div onclick=setDarkMode(false) id="lightBtn" class=hidden>☀️</div>
+      <script >
+        if (localStorage.getItem('preferredTheme') == 'dark') {
+          setDarkMode(true)
+        }
+        function setDarkMode(isDark) {
+          var darkBtn = document.getElementById('darkBtn')
+          var lightBtn = document.getElementById('lightBtn')
+          if (isDark) {
+            lightBtn.style.display = "block"
+            darkBtn.style.display = "none"
+            localStorage.setItem('preferredTheme', 'dark');
+          } else {
+            lightBtn.style.display = "none"
+            darkBtn.style.display = "block"
+            localStorage.removeItem('preferredTheme');
+          }
+          document.body.classList.toggle("darkmode");
+        }
+      </script>
+    </h1>
+  </div>
+
+  <div class="six columns ml-1">
+    <h1 class="mt-2">
+      Avimitin&#39;s Blog
+    </h1>
+  </div>
+
+  <div class="twelve columns">
+    <div class="row">
+      <div class="nine columns left">
+        <a href="/">Home</a>
+        
+          
+          <a href="/friends" class="ml">Friends</a>
+          
+        
+        
+          
+            <a href="mailto:avimitin@gmail.com" target="_blank" class="ml">Email</a>
+          
+        
+      </div>
+    </div>
+    <hr style="margin-bottom: 2.6rem">
+  </div>
+</div>
+
+        <div class="trans">
+          <h1 class="post-title">Golang Polling Control Flow</h1>
+
+
+
+
+
+
+
+  <h1 id="Go-的循环任务守护"><a href="#Go-的循环任务守护" class="headerlink" title="Go 的循环任务守护"></a>Go 的循环任务守护</h1><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>这几天在做的一个项目里，有一个功能需求是：长期运行一个轮询任务，通过轮询得到的返回的信息进行下一步操作。这个问题初一看是蛮简单的，就一个 <code>for</code> 循环的事情嘛。但是实际上还有很多细节的地方需要仔细处理。本篇文章建立在你有足够的 Go 语言基础且懂得 <code>chan</code> 、 <code>select</code> 、<code>go</code> 关键字的用法的基础上。文章代码是逐步完善的伪代码，<strong>请自行推演，不要复制粘贴</strong>。</p>
+<h2 id="简单的无限循环"><a href="#简单的无限循环" class="headerlink" title="简单的无限循环"></a>简单的无限循环</h2><p>基于分治的思想，我们把这个任务给分成几个小任务：</p>
+<ul>
+<li>执行一次请求</li>
+<li>把一次请求改为轮询</li>
+<li>对执行中的轮询进行控制</li>
+</ul>
+<p>首先先写好请求的代码：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">import</span> <span class="token punctuation">(</span>
+    <span class="token string">"net/http"</span>
+    <span class="token string">"log"</span>
+    <span class="token string">"fmt"</span>
+<span class="token punctuation">)</span>
+
+<span class="token keyword">func</span> <span class="token function">Request</span><span class="token punctuation">(</span>url <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">byte</span><span class="token punctuation">,</span> <span class="token builtin">error</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    resp<span class="token punctuation">,</span> err <span class="token operator">:=</span> http<span class="token punctuation">.</span><span class="token function">Get</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span>
+    <span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">&#123;</span>
+        log<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"[Error]Http get error,"</span><span class="token punctuation">,</span> err<span class="token punctuation">)</span>
+        <span class="token keyword">return</span> <span class="token boolean">nil</span><span class="token punctuation">,</span> err
+    <span class="token punctuation">&#125;</span>
+    <span class="token keyword">return</span> resp<span class="token punctuation">,</span> <span class="token boolean">nil</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    resp<span class="token punctuation">,</span> err <span class="token operator">:=</span> <span class="token function">Request</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">&#123;</span>
+        log<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"[Error]Request error,"</span><span class="token punctuation">,</span> err<span class="token punctuation">)</span>
+        <span class="token keyword">return</span>
+    <span class="token punctuation">&#125;</span>
+    fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token function">string</span><span class="token punctuation">(</span>resp<span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>执行一下，程序会发出一次请求，如果没有错误，打印返回的数据。</p>
+<p>接着我们将这个请求改为无限请求来达成轮询：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">for</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">var</span> url <span class="token operator">=</span> <span class="token string">"http://127.0.0.1:11451"</span>
+        resp<span class="token punctuation">,</span> err <span class="token operator">:=</span> <span class="token function">Request</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span>
+        <span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">&#123;</span>
+            log<span class="token punctuation">.</span><span class="token function">Printf</span><span class="token punctuation">(</span><span class="token string">"request url %s: %v"</span><span class="token punctuation">,</span> url<span class="token punctuation">,</span> err<span class="token punctuation">)</span>
+            <span class="token keyword">continue</span>
+        <span class="token punctuation">&#125;</span>
+        fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token function">string</span><span class="token punctuation">(</span>resp<span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>程序现在就会一直无限循环的发出请求了。请求的太快？我们加入一个 <code>sleep</code> ：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">import</span> <span class="token string">"time"</span>
+
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">for</span> <span class="token punctuation">&#123;</span>
+        <span class="token operator">...</span>
+        fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token function">string</span><span class="token punctuation">(</span>resp<span class="token punctuation">)</span><span class="token punctuation">)</span>
+        time<span class="token punctuation">.</span><span class="token function">Sleep</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>好，一个简单的轮询就写完了。</p>
+<h2 id="轮询控制"><a href="#轮询控制" class="headerlink" title="轮询控制"></a>轮询控制</h2><p>上面那个简单的轮询，我们可以随时 <code>Ctrl+C</code> 停止。但是在实际生产环境中我们要保证程序尽量的 7x24h 在线，因此我们需要给这个轮询进行更多修改操作。比如我们新增一个变量 <code>pause</code> :</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">import</span> <span class="token punctuation">(</span>
+	<span class="token string">"fmt"</span>
+    <span class="token string">"log"</span>
+    <span class="token string">"net/http"</span>
+    <span class="token string">"time"</span>
+<span class="token punctuation">)</span>
+
+<span class="token keyword">var</span> pause <span class="token builtin">bool</span>
+
+<span class="token keyword">func</span> <span class="token function">Pause</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    pause <span class="token operator">=</span> <span class="token boolean">true</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">func</span> <span class="token function">Start</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    pause <span class="token operator">=</span> <span class="token boolean">false</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">func</span> <span class="token function">Request</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">byte</span><span class="token punctuation">,</span> <span class="token builtin">error</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token comment">// 同上</span>
+    <span class="token operator">...</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">for</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">if</span> pause <span class="token punctuation">&#123;</span>
+            <span class="token keyword">return</span>
+        <span class="token punctuation">&#125;</span>
+        <span class="token operator">...</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>使用 <code>pause</code> 变量我们可以在程序内逻辑控制暂停了。但是不够即时，不管暂不暂停，我们都要先等上一次的请求结束之后才能判断 <code>pause</code> 变量。同时，因为我们用的是 <code>async</code> 服务器，意味着可能我们请求的服务不是即时返回的，在这种情况下，我们就要调用 Go 的关键字：<code>go</code> 协程 + <code>chan</code> channel 通信。</p>
+<h2 id="使用-Channel-进行流程控制"><a href="#使用-Channel-进行流程控制" class="headerlink" title="使用 Channel 进行流程控制"></a>使用 Channel 进行流程控制</h2><p>还是用分治的思想细化任务，我们要达成可控的轮询需要：</p>
+<ul>
+<li>开辟一个新的协程来运行请求</li>
+<li>新建一个通道来传输请求返回值</li>
+<li>新建一个通道来传输暂停与否</li>
+<li>同时为了让轮询的间隔也变得可控，我们再新建一个通道来控制间隔时间</li>
+</ul>
+<p>建立一个新的协程非常容易，基于语言层面的支持，我们直接使用 <code>go</code> 关键字就可以开辟新的协程了。同时我们需要把轮询的代码移动出来，防止主进程结束导致子协程全部退出。</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">func</span> <span class="token function">Run</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">for</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">go</span> <span class="token function">Request</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token operator">...</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token function">Run</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>然后我们要修改一下 <code>Request()</code> 的代码，让他能够通讯：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">func</span> <span class="token function">Request</span><span class="token punctuation">(</span>response <span class="token keyword">chan</span> <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    resp<span class="token punctuation">,</span> err <span class="token operator">:=</span> http<span class="token punctuation">.</span><span class="token function">Get</span><span class="token punctuation">(</span><span class="token string">"127.0.0.1:11451"</span><span class="token punctuation">)</span>
+    <span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">&#123;</span>
+        log<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"[Error]Http get error,"</span><span class="token punctuation">,</span> err<span class="token punctuation">)</span>
+        response <span class="token operator">&lt;-</span> err<span class="token punctuation">.</span><span class="token function">Error</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token keyword">return</span>
+    <span class="token punctuation">&#125;</span>
+    response <span class="token operator">&lt;-</span> <span class="token function">string</span><span class="token punctuation">(</span>resp<span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>假设服务器只会返回 <code>done</code> 值：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">func</span> <span class="token function">Run</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    resp <span class="token operator">:=</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token keyword">chan</span> <span class="token builtin">string</span><span class="token punctuation">)</span>
+    <span class="token keyword">for</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">go</span> <span class="token function">Request</span><span class="token punctuation">(</span>resp<span class="token punctuation">)</span>
+        <span class="token keyword">for</span> r <span class="token operator">:=</span> <span class="token keyword">range</span> resp <span class="token punctuation">&#123;</span>
+            <span class="token keyword">if</span> r <span class="token operator">==</span> <span class="token string">"done"</span> <span class="token punctuation">&#123;</span>
+                log<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"[Info]Request success"</span><span class="token punctuation">)</span>
+                time<span class="token punctuation">.</span><span class="token function">Sleep</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>
+            <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+                log<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"[Error]"</span><span class="token punctuation">,</span> r<span class="token punctuation">)</span>
+            <span class="token punctuation">&#125;</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">go</span> <span class="token keyword">func</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token function">Run</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token keyword">for</span> i<span class="token operator">:=</span><span class="token number">0</span><span class="token punctuation">;</span> i<span class="token operator">&lt;</span><span class="token number">100</span><span class="token punctuation">;</span> i<span class="token operator">++</span> <span class="token punctuation">&#123;</span>
+        <span class="token comment">//做点什么来保持主进程</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>然后我们就完成了用协程进行轮询的任务，同时整个任务都是在后台执行完毕的，我们也能获取到想要的消息。</p>
+<p>接着实现暂停功能，这里我们要用上 <code>select</code> 关键字来控制通道：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">var</span> stop <span class="token keyword">chan</span> <span class="token builtin">bool</span>
+
+<span class="token keyword">func</span> <span class="token function">Run</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    resp <span class="token operator">:=</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token keyword">chan</span> <span class="token builtin">string</span><span class="token punctuation">)</span>
+    <span class="token keyword">for</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">go</span> <span class="token function">Request</span><span class="token punctuation">(</span>resp<span class="token punctuation">)</span>
+        <span class="token keyword">select</span><span class="token punctuation">&#123;</span>
+        <span class="token keyword">case</span> <span class="token operator">&lt;-</span> stop<span class="token punctuation">:</span>
+            <span class="token keyword">return</span>
+        <span class="token keyword">case</span> r <span class="token operator">:=</span> resp<span class="token punctuation">:</span>
+            <span class="token keyword">if</span> r <span class="token operator">==</span> done <span class="token punctuation">&#123;</span>
+                log<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"[Info]Request success"</span><span class="token punctuation">)</span>
+                time<span class="token punctuation">.</span><span class="token function">Sleep</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>
+            <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+                log<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"[Error]Request fail"</span><span class="token punctuation">)</span>
+                <span class="token keyword">return</span>
+            <span class="token punctuation">&#125;</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>因为 <code>select</code> 带来的通道响应的即时性，现在就算是正在请求中，我们也可以随时暂停程序了。</p>
+<p>最后一步就是改造间隔时间，我们可以直接传参然后让程序 sleep。但是这样会导致一个情况：当你想要停止循环的时候，刚好这个循环正在睡眠，那么你就得等这个睡眠完全结束了程序才会停止，假如你设置了每隔2h轮询一次，那么最坏情况下循环要等2h之后才能收到你要停止的消息。</p>
+<p>因此我们使用一个 <code>time</code> 包里的触发器 <code>time.Ticker</code> ，间隔一定时间发送一个信号，循环收到信号时再启动程序，这样也能实现间隔的效果，也能随时退出循环：</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">import</span> <span class="token punctuation">(</span>
+	<span class="token string">"time"</span>
+    <span class="token string">"log"</span>
+    <span class="token string">"net/http"</span>
+<span class="token punctuation">)</span>
+
+<span class="token comment">// 你还可以构建一个结构体把这些通道或是你项目需要的信息封装起来，实现更优雅的代码。</span>
+<span class="token keyword">var</span> stop <span class="token keyword">chan</span> <span class="token builtin">bool</span>
+
+<span class="token keyword">func</span> <span class="token function">Run</span><span class="token punctuation">(</span>interval <span class="token builtin">int</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    period <span class="token operator">:=</span> time<span class="token punctuation">.</span><span class="token function">Duration</span><span class="token punctuation">(</span>interval<span class="token punctuation">)</span> <span class="token operator">*</span> time<span class="token punctuation">.</span>Second
+    t <span class="token operator">:=</span> time<span class="token punctuation">.</span><span class="token function">NewTicker</span><span class="token punctuation">(</span>period<span class="token punctuation">)</span>
+    <span class="token keyword">for</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">select</span> <span class="token punctuation">&#123;</span>
+        <span class="token comment">// t.C 是一个 channel，会在给定的间隔时间发送一个 tick</span>
+        <span class="token comment">// 利用这个特性既能实现轮询冷却，又能保证轮询的控制性</span>
+        <span class="token keyword">case</span> <span class="token operator">&lt;-</span> t<span class="token punctuation">.</span>C<span class="token punctuation">:</span>
+            log<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"[Info]New request started"</span><span class="token punctuation">)</span>
+            <span class="token keyword">go</span> <span class="token function">Request</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+            <span class="token comment">// 启动轮询之后就停止 ticker </span>
+            t<span class="token punctuation">.</span><span class="token function">Stop</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token keyword">case</span> r <span class="token operator">:=</span> <span class="token operator">&lt;-</span> resp<span class="token punctuation">:</span>
+            <span class="token keyword">if</span> r <span class="token operator">==</span> done <span class="token punctuation">&#123;</span>
+                log<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"[Info]Request success"</span><span class="token punctuation">)</span>
+                <span class="token comment">// 一次请求成功之后重置定时器</span>
+                t<span class="token punctuation">.</span><span class="token function">Reset</span><span class="token punctuation">(</span>Period<span class="token punctuation">)</span>
+            <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+                log<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"[Error]Request fail"</span><span class="token punctuation">)</span>
+                <span class="token keyword">return</span>
+            <span class="token punctuation">&#125;</span>
+        <span class="token keyword">case</span> <span class="token operator">&lt;-</span> stop<span class="token punctuation">:</span>
+            log<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"[Info]loop stopped"</span><span class="token punctuation">)</span>
+            <span class="token keyword">return</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>至此，我们实现了一个后台轮询的易用性和可控性。代码仅作抛砖引玉，实际操作上还有各种细节需要补充，比如对多个后台任务进行统一管理，以及错误出现后的自动恢复等等，就需要你自行根据情况进行设计。总而言之，多实践，在实践中学习，在学习中总结。</p>
+
+
+  <p><a class="classtest-link" href="/tags/golang/" rel="tag">golang</a>, <a class="classtest-link" href="/tags/goroutine/" rel="tag">goroutine</a>, <a class="classtest-link" href="/tags/polling/" rel="tag">polling</a> — Feb 21, 2021</p>
+  
+
+
+          <div class="row mt-2">
+  
+    <div class="eight columns">
+      <p id="madewith">Made with ❤ and
+        <a class="footer-link icon" href="https://hexo.io" target="_blank" style="text-decoration: none;" rel="noreferrer" aria-label="Hexo.io">
+        <svg class="hexo svg-hov" width="14" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>Hexo.js</title><path d="M12 .007L1.57 6.056V18.05L12 23.995l10.43-6.049V5.952L12 .007zm4.798 17.105l-.939.521-.939-.521V12.94H9.08v4.172l-.94.521-.938-.521V6.89l.939-.521.939.521v4.172h5.84V6.89l.94-.521.938.521v10.222z"/></svg>
+        </a>
+        
+        at <a href="https://en.wikipedia.org/wiki/Earth" target="_blank" rel="noreferrer">Earth</a>.</p>
+        
+    </div>
+
+    <!-- Sepcial thanks to https://simpleicons.org/ for the icons -->
+    <div class="four columns mb-3 posisi" >
+      
+      <a class="ml-0 footer-link icon" href="https://github.com/avimitin" target="_blank" style="text-decoration: none" rel="noreferrer" aria-label="GitHub">
+        <svg class="github svg-hov" width="18" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>GitHub</title><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+      </a>
+      
+
+      
+
+      
+
+      
+
+      
+
+    </div>
+  
+</div>
+
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+  <script src="/js/nanobar.min.js"></script>
+  <script>
+    var options = {
+      classname: 'nanobar',
+      id: 'myNanobar'
+    };
+    var nanobar = new Nanobar(options);
+    nanobar.go(30);
+    nanobar.go(76);
+    nanobar.go(100);
+  </script>
+
+</body>
+
+</html>

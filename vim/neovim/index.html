@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <!-- Minima -->
+  <!-- Hexo theme created by @adisaktijrs -->
+
+  <!-- Basic Page Needs
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta charset="utf-8">
+
+  
+  <title>让你的 neovim 像 IDE 一样强大</title>
+  
+  <link rel="canonical" href="https://blog.cf.avmtn.net/vim/neovim/">
+  
+  <meta name="description" content="让你的 NeoVim 和 IDE 一样强大前言Neovim 是一款完全拥有 vim 特性且拥有高度支持插件的编辑器软件，而他的高可自定义能力也深深吸引了像我这样的人。这篇文章我会带着你编写一个漂亮且强大的终端编辑器的配置文件，同时稍微的带你入门一点 neovim，但没那么零基础哦。 我的配置文件在 ">
+  
+  
+  <meta name="keywords" content="golang,linux">
+  
+  <meta name="author" content="Avimitin">
+  
+  <meta property="og:image" content="https://blog.cf.avmtn.nethttps://cdn.jsdelivr.net/gh/Avimitin/PicStorage/pic/20210126183441.png">
+  
+  <meta property="og:site_name" content="Avimitin Blog" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="让你的 neovim 像 IDE 一样强大" />
+  
+  <meta property="og:description" content="让你的 NeoVim 和 IDE 一样强大前言Neovim 是一款完全拥有 vim 特性且拥有高度支持插件的编辑器软件，而他的高可自定义能力也深深吸引了像我这样的人。这篇文章我会带着你编写一个漂亮且强大的终端编辑器的配置文件，同时稍微的带你入门一点 neovim，但没那么零基础哦。 我的配置文件在 ">
+  
+  <meta property="og:url" content="https://blog.cf.avmtn.net/vim/neovim/" />
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="让你的 neovim 像 IDE 一样强大">
+  
+  <meta name="twitter:description" content="让你的 NeoVim 和 IDE 一样强大前言Neovim 是一款完全拥有 vim 特性且拥有高度支持插件的编辑器软件，而他的高可自定义能力也深深吸引了像我这样的人。这篇文章我会带着你编写一个漂亮且强大的终端编辑器的配置文件，同时稍微的带你入门一点 neovim，但没那么零基础哦。 我的配置文件在 ">
+  
+  
+  <meta name="twitter:image" content="https://blog.cf.avmtn.nethttps://cdn.jsdelivr.net/gh/Avimitin/PicStorage/pic/20210126183441.png">
+  
+  <meta name="twitter:url" content="https://blog.cf.avmtn.net/vim/neovim/" />
+
+  <!-- Mobile Specific Metas
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Preload fonts
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="preload" href="../fonts/dm-serif-display-v4-latin-regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../fonts/inter-v2-latin-regular.woff2" as="font" type="font/woff2" crossorigin>
+
+  <!-- CSS
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  
+<link rel="stylesheet" href="/css/normalize.css">
+
+  
+<link rel="stylesheet" href="/css/skeleton.css">
+
+  
+<link rel="stylesheet" href="/css/custom.css">
+
+  
+<link rel="stylesheet" href="/css/prism-dark.css">
+
+  
+<link rel="stylesheet" href="/css/prism-line-numbers.css">
+
+  <!-- User css -->
+  
+  
+<link rel="stylesheet" href="/css/user.css">
+
+  
+
+  <!-- Favicon
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="icon" type="image/png" href="/images/favicon.png">
+
+  <!-- Custom Theme Color Style
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <style>
+  a:not(.icon) {
+    text-decoration-color: #D19826;
+    background-image: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0) 50%,
+      #D19826 50%
+    );
+  }
+  blockquote {
+    border-left: 8px solid #D19826;
+  }
+  .nanobar .bar {
+    background: #D19826;
+  }
+  .button.button-primary:hover,
+  button.button-primary:hover,
+  input[type="submit"].button-primary:hover,
+  input[type="reset"].button-primary:hover,
+  input[type="button"].button-primary:hover,
+  .button.button-primary:focus,
+  button.button-primary:focus,
+  input[type="submit"].button-primary:focus,
+  input[type="reset"].button-primary:focus,
+  input[type="button"].button-primary:focus {
+    background-color: #D19826;
+    border-color: #D19826;
+  }
+  input[type="email"]:focus,
+  input[type="number"]:focus,
+  input[type="search"]:focus,
+  input[type="text"]:focus,
+  input[type="tel"]:focus,
+  input[type="url"]:focus,
+  input[type="password"]:focus,
+  textarea:focus,
+  select:focus {
+    border: 1px solid #D19826;
+  }
+</style>
+
+  <!-- Google Analytics (With Privacy Settings On)
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+  <div class="container">
+    <div class="row">
+      <div>
+
+        <div class="row">
+  <div class="two columns" style="max-width: 50px">
+    <h1 class="mt-2 mode">
+      <div onclick=setDarkMode(true) id="darkBtn">🌑</div>
+      <div onclick=setDarkMode(false) id="lightBtn" class=hidden>☀️</div>
+      <script >
+        if (localStorage.getItem('preferredTheme') == 'dark') {
+          setDarkMode(true)
+        }
+        function setDarkMode(isDark) {
+          var darkBtn = document.getElementById('darkBtn')
+          var lightBtn = document.getElementById('lightBtn')
+          if (isDark) {
+            lightBtn.style.display = "block"
+            darkBtn.style.display = "none"
+            localStorage.setItem('preferredTheme', 'dark');
+          } else {
+            lightBtn.style.display = "none"
+            darkBtn.style.display = "block"
+            localStorage.removeItem('preferredTheme');
+          }
+          document.body.classList.toggle("darkmode");
+        }
+      </script>
+    </h1>
+  </div>
+
+  <div class="six columns ml-1">
+    <h1 class="mt-2">
+      Avimitin&#39;s Blog
+    </h1>
+  </div>
+
+  <div class="twelve columns">
+    <div class="row">
+      <div class="nine columns left">
+        <a href="/">Home</a>
+        
+          
+          <a href="/friends" class="ml">Friends</a>
+          
+        
+        
+          
+            <a href="mailto:avimitin@gmail.com" target="_blank" class="ml">Email</a>
+          
+        
+      </div>
+    </div>
+    <hr style="margin-bottom: 2.6rem">
+  </div>
+</div>
+
+        <div class="trans">
+          <h1 class="post-title">让你的 neovim 像 IDE 一样强大</h1>
+
+
+	<p class="post-tldr">
+		<span id="tldr-start">TL;DR:</span> This artical can help you build your neovim, with vim setting tutorial.
+	</p>
+
+
+
+	<img src="https://cdn.jsdelivr.net/gh/Avimitin/PicStorage/pic/20210126183441.png"/>
+
+
+
+	<p class="post-tn-alt">neovim screenshot</p>
+
+
+  <h1 id="让你的-NeoVim-和-IDE-一样强大"><a href="#让你的-NeoVim-和-IDE-一样强大" class="headerlink" title="让你的 NeoVim 和 IDE 一样强大"></a>让你的 NeoVim 和 IDE 一样强大</h1><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>Neovim 是一款完全拥有 vim 特性且拥有高度支持插件的编辑器软件，而他的高可自定义能力也深深吸引了像我这样的人。这篇文章我会带着你编写一个漂亮且强大的终端编辑器的配置文件，同时稍微的带你入门一点 neovim，但没那么零基础哦。</p>
+<p>我的配置文件在 <a target="_blank" rel="noopener" href="https://github.com/avimitin/nvim">Avimitin/nvim</a> , 欢迎 fork 使用。</p>
+<h2 id="下载安装"><a href="#下载安装" class="headerlink" title="下载安装"></a>下载安装</h2><p>neovim 有一个很重要的 <code>pop_up_windows</code> 弹出窗口特性在 0.5.0 版本才有，还有很多 <code>TUI</code> 的支持，蛮多插件依赖于这些特性的，所以我不建议在默认源的包管理器中下载稳定版的 0.4 版本。关于 neovim 的安装指南在 <a target="_blank" rel="noopener" href="https://github.com/neovim/neovim/wiki/Installing-Neovim">wiki</a> 里面有，Ubuntu 的话也可以通过添加 PPA 源的方式，添加 unstable 源用 apt 包管理器安装：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># 如果你已经安装了，先卸载</span>
+<span class="token function">sudo</span> <span class="token function">apt</span> remove neovim 
+
+<span class="token comment"># 添加 0.5.0 的源</span>
+<span class="token function">sudo</span> add-apt-repository ppa:neovim-ppa/unstable
+<span class="token function">sudo</span> <span class="token function">apt-get</span> update
+<span class="token function">sudo</span> <span class="token function">apt</span> <span class="token function">install</span> neovim<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>安装好 neovim 之后，还需要安装 Python3 和 NodeJS 来获得完全的插件支持：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">sudo</span> <span class="token function">apt</span> <span class="token function">install</span> python3 python3-pip<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>NodeJS 非常不推荐在包管理器中安装，建议查看 NVM 安装教程或参考<a target="_blank" rel="noopener" href="https://github.com/Avimitin/nvim/blob/master/docs/nodejs_install.md">这篇文章</a> 。</p>
+<p>安装好 Python3 和 NodeJS 之后，安装 neovim 的依赖：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">pip3 <span class="token function">install</span> pynvim
+<span class="token function">npm</span> <span class="token function">install</span> -g neovim<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>如果想要获得像我配置一样的更多的插件支持，你还需要安装:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">sudo</span> <span class="token function">apt</span> <span class="token function">install</span> lazygit ctags ranger<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h2 id="开始配置"><a href="#开始配置" class="headerlink" title="开始配置"></a>开始配置</h2><h3 id="检查依赖"><a href="#检查依赖" class="headerlink" title="检查依赖"></a>检查依赖</h3><p>在配置文件之前，在终端输入 <code>nvim</code> 打开 neovim 。直接键盘输入 <code>:checkhealth</code> ，然后按下回车执行来检查依赖是否齐全：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Avimitin/PicStorage/pic/20210204171124.png" alt="直接敲就行"></p>
+<p>回车之后你会看到这样的页面：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Avimitin/PicStorage/pic/20210204171212.png"></p>
+<p>checkhealth 指令会帮你检查所有插件的依赖，在没安装依赖之前，找到<code>health#nvim#check</code> 这一行，全部显示 OK 即可，没有显示 OK 的就把缺的依赖安装好。之后安装插件如果运行不正确你都可以输入这个指令来检查是不是依赖丢失。然后输入 <code>:q</code> 退出该页面。</p>
+<h3 id="编写设置"><a href="#编写设置" class="headerlink" title="编写设置"></a>编写设置</h3><p>linux 的 neovim 配置通常在 <code>~/.config/nvim/</code> 目录下，是一个命名为 <code>init.vim</code> 的文件。Windows 的版本通常在 <code>C:/Users/$USERNAME/AppData/Local/nvim</code> 下。</p>
+<p>在对应系统的目录下创建 <code>init.vim</code> 文件，我们需要写一些设置。我会在设置背后表明注释，你可以参考设置。对于具体的设置选项你可以输入 <code>:help specific_setting</code> 来了解详细，比如你不懂 <code>lazyredraw</code> 是什么，你可以输入 <code>:help lazyredraw</code> 来翻看文档。一般来说，你直接复制下面的所有设置即可，大部分非常贴近普通 IDE 的设置了。然后如果你喜欢每个 tab = 4个空格的话，你可以设置 <code>tabstop</code> | <code>shiftwidth</code> | <code>softtabstop</code> 的值为 4。</p>
+<pre class="line-numbers language-Vimscript" data-language="Vimscript"><code class="language-Vimscript">set exrc                                                  &quot; exec command in init.vim
+set secure                                                &quot; safely do command above
+set autochdir                                             &quot; auto change directory
+set number                                                &quot; setting line
+set relativenumber                                        &quot; setting line in relative mode
+set cursorline                                            &quot; set line below cursor
+set noexpandtab                                           &quot; use only &#39;\t&#39; as tab
+set tabstop&#x3D;2                                             &quot; show how many space for a &#39;\t&#39;
+set shiftwidth&#x3D;2                                          &quot; use how many space for &gt;&gt; or &lt;&lt; key
+set softtabstop&#x3D;2                                         &quot; use how many space when pressing tab
+set autoindent
+set list                                                  &quot; show hiding char
+set listchars&#x3D;tab:\|\ ,trail:·                            &quot; define tab and space show
+set scrolloff&#x3D;4                                           &quot; least amount line below and above the cursor
+set ttimeoutlen&#x3D;0                                         &quot; set never wait for key
+set notimeout
+set viewoptions&#x3D;cursor,folds,slash,unix                   &quot; remember where to recover cursor
+set wrap                                                  &quot; auto line feed
+set tw&#x3D;0                                                  &quot; text width for automatically wrapping
+set indentexpr&#x3D;
+set splitright
+set splitbelow
+set noshowmode                                            &quot; not showing current mode
+set showcmd                                               &quot; show cmd inputing like key combine
+set wildmenu                                              &quot; auto finish vim command
+set ignorecase                                            &quot; ignore case when searching
+set smartcase                                             &quot; ignore case only on searching
+set shortmess+&#x3D;c                                          &quot; don&#39;t show useless msg
+set inccommand&#x3D;split                                      &quot; show substitution automatically
+set completeopt&#x3D;longest,noinsert,menuone,noselect,preview &quot; complete opject with a menue
+set ttyfast                                               &quot; make scrolling faster
+set visualbell                                            &quot; flash screen to notify error
+set updatetime&#x3D;100
+set virtualedit&#x3D;block
+set colorcolumn&#x3D;100
+set lazyredraw
+set re&#x3D;0                                                  &quot;make increase speed
+
+&quot; set folding paragraph
+set foldmethod&#x3D;indent
+set foldlevel&#x3D;99
+set foldenable
+set formatoptions-&#x3D;tc
+
+&quot; keep undo or temp file
+set hidden
+silent !mkdir -p ~&#x2F;.config&#x2F;nvim&#x2F;tmp&#x2F;backup
+silent !mkdir -p ~&#x2F;.config&#x2F;nvim&#x2F;tmp&#x2F;undo
+set backupdir&#x3D;~&#x2F;.config&#x2F;nvim&#x2F;tmp&#x2F;backup,.
+set directory&#x3D;~&#x2F;.config&#x2F;nvim&#x2F;tmp&#x2F;backup,.
+if has(&#39;persistent_undo&#39;)
+	set undofile
+	set undodir&#x3D;~&#x2F;.config&#x2F;nvim&#x2F;tmp&#x2F;undo,.
+endif<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="编写快捷键"><a href="#编写快捷键" class="headerlink" title="编写快捷键"></a>编写快捷键</h3><blockquote>
+<p>这边你可以直接复制我的设置，也可以根据个人喜好设定。</p>
+</blockquote>
+<p>首先需要介绍几个概念，一般的快捷键语法非常简单，录入 <code>map key function</code> 三部分就可以了，比如我要让 d 键变成删除整行，就可以 <code>map d Vd</code> ，但是你如果你熟悉 vim 你就会知道，vim 有几种不同的模式，只用 map 可能会键位冲突，所以 vim 里还有 <code>imap</code> | <code>vmap</code> | <code>nmap</code> 分别对应输入时，选中时，普通模式时三种键位。而只是这样还不太够，假如我设置 <code>nmap r d</code> 来让 r 键代替原来的 d 键，会出现递归的命令传递，结果你输入 r 键也变成删除整行了。所以 vim 还有另外一个概念：norecusive map，你可以设置 <code>noremap | nnoremap | inoremap | vnoremap</code>  ，分别对应不递归的快捷键，普通模式限定快捷键，插入模式限定快捷键，选中模式限定快捷键，从而避免递归指令。</p>
+<p>作为一个懒癌，我不想移动手去摸鼠标，甚至不想去右移到方向键，默认的 <code>hjkl</code> 键位我用的不是很顺手，所以我把指针移动配置改成了 <code>uhjk</code> ：</p>
+<pre class="line-numbers language-vimscript" data-language="vimscript"><code class="language-vimscript">noremap &lt;silent&gt; u k
+noremap &lt;silent&gt; k l<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<blockquote>
+<p>因为 vim 会显示所有你输入的指令，<code>&lt;silent&gt;</code> 可以避免一些频繁且不会出错的操作一直不停输出显示。</p>
+</blockquote>
+<p>改了这两个键之后，指针操作就顺手多了，为了移动的更快，我又加入了倍数操作：</p>
+<pre class="line-numbers language-vimscript" data-language="vimscript"><code class="language-vimscript">noremap &lt;silent&gt; U 5k
+noremap &lt;silent&gt; H 0
+noremap &lt;silent&gt; J 5j
+noremap &lt;silent&gt; K $<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>这样一来，输入大写 U 就可以往上飞 5 行，输入大写 H 就可以跳转到行首，以此类推，让指针操作更符合直觉。</p>
+<p>但是这样设置完之后，我把原来撤销操作的 u 键位给霸占了，所以我又加入了 Windows 常用键位 <code>Ctrl - z</code> 来替代撤销操作：</p>
+<pre class="line-numbers language-vimscript" data-language="vimscript"><code class="language-vimscript">noremap &lt;silent&gt; &lt;C-z&gt; u<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>其中的 c 代表着 Ctrl，对于 Shift 和 Alt，也有 s 和 a 分别对应，比如 <code>ctrl alt shift a</code> 就可以设置成 <code>&lt;c-a-s-q&gt;</code> ，这里的大小写不敏感。</p>
+<p>你也可以把一些常用命令写进去，比如我们需要经常写一点保存一点，但是老是输入 <code>:w</code> 加回车也过于麻烦了，所以你可以这样写：</p>
+<pre class="line-numbers language-vimscript" data-language="vimscript"><code class="language-vimscript">noremap &lt;silent&gt; &lt;C-s&gt; :w&lt;CR&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>这里的 <code>&lt;CR&gt;</code> 代表着回车。然后你按下 Ctrl + S 就能保存文件啦。</p>
+<p>除了以上键位，vim 还引入了一个 <code>&lt;LEADER&gt;</code> 键位的概念，你可以设置 leader 键来实现更多快捷键：</p>
+<pre class="line-numbers language-vimscript" data-language="vimscript"><code class="language-vimscript">let mapleader&#x3D;&quot; &quot;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>这里我把 leader 设置为空格，在普通模式下他就可以帮我实现更加多的快捷键设置了，比如常常苦恼人的 “vim 怎么复制粘贴的问题” ，你不需要输入繁杂的命令，配置一个:</p>
+<pre class="line-numbers language-vimscript" data-language="vimscript"><code class="language-vimscript">vnoremap &lt;LEADER&gt;y &quot;+y
+nnoremap &lt;LEADER&gt;p &quot;+p<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>就可以在选中文字后按下 <strong>空格+y</strong> 来复制文字，在普通模式中按下 <strong>空格+p</strong> 来粘贴文字。应该是非常简单且容易理解的，关于更多键位实现，你可以参考我的配置文件复制粘贴即可。</p>
+<h3 id="配置插件"><a href="#配置插件" class="headerlink" title="配置插件"></a>配置插件</h3><p>只是实现一堆快捷键并没有本质上改变 neovim 只是编辑器的本质，我们还需要安装各种插件来让 neovim 更加强大。大部分的插件在 github 上都能搜索到，vim 插件都可以在 neovim 上使用的，反过来不行。但是大量插件，管理是一个很麻烦的事情，于是我在这里给你们推荐一个很好用的 vim 插件管理插件，<a target="_blank" rel="noopener" href="https://github.com/junegunn/vim-plug">vim-plug</a> 。你可以参考 README 安装。</p>
+<p>为了高度可迁移能力，你可以在 init.vim 中加入这么一行来避免每次都要手动安装 vim plug：</p>
+<pre class="line-numbers language-vimscript" data-language="vimscript"><code class="language-vimscript">if empty(glob(&#39;~&#x2F;.config&#x2F;nvim&#x2F;autoload&#x2F;plug.vim&#39;))
+	!curl -fLo ~&#x2F;.config&#x2F;nvim&#x2F;autoload&#x2F;plug.vim --create-dirs
+			\ https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;junegunn&#x2F;vim-plug&#x2F;master&#x2F;plug.vim
+	autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>这段命令会自动下载并启用 vim plug ，顺便帮你把插件都安装好。但是由于国内不可言说的原因，你可能会遇到 <code>no resolve host</code> 的错误，就只能自己动手爬梯子手动安装了。</p>
+<p>vim plug 安装好之后，在你的 init.vim 中加入一段命令：</p>
+<pre class="line-numbers language-vimscript" data-language="vimscript"><code class="language-vimscript">call plug#begin(&#39;~&#x2F;.config&#x2F;nvim&#x2F;plugged&#39;)
+call plug#end()<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>这段命令会激活所有包裹在里面的插件，比如：</p>
+<pre class="line-numbers language-vimscript" data-language="vimscript"><code class="language-vimscript">call plug#begin(&#39;~&#x2F;.config&#x2F;nvim&#x2F;plugged&#39;)
+Plug &#39;bpietravalle&#x2F;vim-bolt&#39;
+call plug#end()<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>就可以激活 vim-bolt 这个插件。如果是第一次安装插件，你可以依照上面的格式写好 <code>Plug &#39;github author/repo&#39;</code> 的格式填进去，保存之后输入 <code>:PlugInstall</code> 命令，vim-plug 会帮你下载并处理好插件：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Avimitin/PicStorage/pic/20210204181653.png" alt="依赖 vim-plug，你可以下载安装并管理几乎所有的 github 上的 vim 插件。"></p>
+<p>想要关闭插件就在 <code>Plug...</code> 字段之前加上 <code>&quot;</code> 注释掉。如果想要删除在 <code>~/.config/nvim/plugged</code> 目录里找到并删除就可以了。更多好用的插件你可以参考我的配置文件，或者持续关注下栏的插件推荐。</p>
+<h2 id="插件推荐"><a href="#插件推荐" class="headerlink" title="插件推荐"></a>插件推荐</h2><h3 id="coc-nvim"><a href="#coc-nvim" class="headerlink" title="coc.nvim"></a>coc.nvim</h3><p><img src="https://user-images.githubusercontent.com/251450/55285193-400a9000-53b9-11e9-8cff-ffe4983c5947.gif"></p>
+<p>coc.nvim 是一个利用 Language Server Protocol (LSP) 实现代码补全功能的插件，VSCode 也是用的这个 LSP 来代码补全的。它自身也带有一个插件系统，帮你安装各类用 JS 写的语法补全以及好用的插件。</p>
+<p>用 vim-plug 安装 coc.nvim : <code>Plug &#39;neoclide/coc.nvim&#39;, &#123;&#39;branch&#39;: &#39;release&#39;&#125;</code></p>
+<p>coc.nvim 你需要配置他的各种键位操作，比如 tab 选择补全栏目和错误跳转，因为设置太多了，我建议你直接复制粘贴，然后再来自行修改需要的键位：</p>
+<pre class="line-numbers language-vimscript" data-language="vimscript"><code class="language-vimscript">&quot;coc.nvim
+let g:coc_global_extensions &#x3D; [
+	\ &#39;coc-diagnostic&#39;,
+	\ &#39;coc-explorer&#39;,
+	\ &#39;coc-gitignore&#39;,
+	\ &#39;coc-html&#39;,
+	\ &#39;coc-json&#39;,
+	\ &#39;coc-lists&#39;,
+	\ &#39;coc-prettier&#39;,
+	\ &#39;coc-snippets&#39;,
+	\ &#39;coc-syntax&#39;,
+	\ &#39;coc-tasks&#39;,
+	\ &#39;coc-translator&#39;,
+	\ &#39;coc-vimlsp&#39;,
+	\ &#39;coc-yaml&#39;,
+	\ &#39;coc-yank&#39;]
+
+inoremap &lt;silent&gt;&lt;expr&gt; &lt;TAB&gt;
+			\ pumvisible() ? &quot;\&lt;C-n&gt;&quot; :
+			\ &lt;SID&gt;check_back_space() ? &quot;\&lt;TAB&gt;&quot; :
+			\ coc#refresh()
+inoremap &lt;expr&gt;&lt;S-TAB&gt; pumvisible() ? &quot;\&lt;C-p&gt;&quot; : &quot;\&lt;C-h&gt;&quot;
+inoremap &lt;expr&gt; &lt;cr&gt; complete_info()[&quot;selected&quot;] !&#x3D; &quot;-1&quot; ? &quot;\&lt;C-y&gt;&quot; : &quot;\&lt;C-g&gt;u\&lt;CR&gt;&quot;
+
+function! s:check_back_space() abort
+	let col &#x3D; col(&#39;.&#39;) - 1
+	return !col || getline(&#39;.&#39;)[col - 1]  &#x3D;~# &#39;\s&#39;
+endfunction
+
+function! Show_documentation()
+	call CocActionAsync(&#39;highlight&#39;)
+	if (index([&#39;vim&#39;,&#39;help&#39;], &amp;filetype) &gt;&#x3D; 0)
+		execute &#39;h &#39;.expand(&#39;&lt;cword&gt;&#39;)
+	else
+		call CocAction(&#39;doHover&#39;)
+	endif
+endfunction
+
+inoremap &lt;silent&gt;&lt;expr&gt; &lt;c-o&gt; coc#refresh()
+nnoremap &lt;LEADER&gt;h :call Show_documentation()&lt;CR&gt;
+nnoremap &lt;silent&gt;&lt;nowait&gt; &lt;LEADER&gt;d :CocList diagnostics&lt;cr&gt;
+nmap &lt;silent&gt; &lt;LEADER&gt;- &lt;Plug&gt;(coc-diagnostic-prev)
+nmap &lt;silent&gt; &lt;LEADER&gt;&#x3D; &lt;Plug&gt;(coc-diagnostic-next)
+nnoremap &lt;c-c&gt; :CocCommand&lt;CR&gt;
+nnoremap &lt;silent&gt; &lt;space&gt;y :&lt;C-u&gt;CocList -A --normal yank&lt;cr&gt;
+nmap &lt;silent&gt; gd &lt;Plug&gt;(coc-definition)
+nmap &lt;silent&gt; gy &lt;Plug&gt;(coc-type-definition)
+nmap &lt;silent&gt; gr &lt;Plug&gt;(coc-references)
+nmap &lt;leader&gt;rn &lt;Plug&gt;(coc-rename)
+nmap tt :CocCommand explorer&lt;CR&gt;
+nmap ts &lt;Plug&gt;(coc-translator-p)
+imap &lt;C-l&gt; &lt;Plug&gt;(coc-snippets-expand)
+vmap &lt;C-e&gt; &lt;Plug&gt;(coc-snippets-select)
+let g:coc_snippet_next &#x3D; &#39;&lt;c-e&gt;&#39;
+let g:coc_snippet_prev &#x3D; &#39;&lt;c-n&gt;&#39;
+imap &lt;C-e&gt; &lt;Plug&gt;(coc-snippets-expand-jump)
+let g:snips_author &#x3D; &#39;Avimitin&#39;
+autocmd BufRead,BufNewFile tsconfig.json set filetype&#x3D;jsonc
+
+function! s:cocActionsOpenFromSelected(type) abort
+	execute &#39;CocCommand actions.open &#39; . a:type
+endfunction
+xmap &lt;leader&gt;a  &lt;Plug&gt;(coc-codeaction-selected)
+nmap &lt;leader&gt;aw  &lt;Plug&gt;(coc-codeaction-selected)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>其中 coc_global_extension 是自定义的插件变量，可以在你每次迁移的时候自动安装列表里的所有插件，除此之外，你还可以输入 <code>:CocInstall xxx</code> 来安装 coc 插件，也可以输入 <code>:CocList extensions</code> 来查看插件仓库有什么好用的插件，带 * 号的就是已经安装好的插件。</p>
+<p>在上面定义的大部分命令中，最好用的有几个快捷键：在普通模式中输入 gd，gy 会分别跳转到光标下的函数或者变量的定义和指向，gr 可以修改变量名字或者函数名字，空格加 <code>-</code> 或者 <code>=</code> 可以在错误信息之间跳转。ts 可以翻译光标下的英语单词。关于 coc 的 setting 由于篇幅就不在这里写了，我会找时间另开篇目。</p>
+<h3 id="咕咕咕"><a href="#咕咕咕" class="headerlink" title="咕咕咕"></a>咕咕咕</h3><h2 id="后话"><a href="#后话" class="headerlink" title="后话"></a>后话</h2><p>我时常会听到有人说：你为啥要 vim，你为啥要用终端，IDE 他不香吗，GUI他不香吗。这些质问我到现在也没法给出很好的回应，因为说的确实不错：对于普通人来说，不要说 Jetbrains 的 IDE ，MicroSoft 的 Visual Studio Code 都已经能够完全的胜任个人项目或是团队合作项目了。一个如此简陋的需要耗费大量时间配置的软件，根本不是现代选择。如果你只是看到了一个漂亮的截图或者什么论坛帖子推荐，就想要耗费时间去折腾自己的 neovim，我也会建议你思考一下上面抛出的问题。虽说磨刀不误砍柴工，但是折腾 neovim ，是一个会耽误砍柴的历程。</p>
+<p>我使用 neovim 的契机来自于一台 ChromeBook，因为经费不足但是又很有带笔记本出门的需求，我在诸多轻薄本中选中了 ChromeBook 13，一台 X86 平台的上网本。但是因为其羸弱的性能和便秘的散热，只是打开浏览器就能烫的脚发麻。于是我只好抛弃 IDE 开始使用 VSCode，啃各种 CLI 文档并慢慢习惯于各种终端操作。但是 ChromeBook 的触摸板也是极度的反人类，我每次移动光标都像回到了2008年第一次摸到黑莓的时光，在无奈之下我就开始寻找纯键盘和终端的解决方案。</p>
+<p>在 B站 Up 主 TheCW 的熏陶下，我开始尝试学习使用 i3wm ，给 ChromeBook 刷上了 i3wm + Ubuntu 的发行版 Regolith，关于这个系统的配置可以参考：<a target="_blank" rel="noopener" href="https://avimitin.com/system/regolith.html">如何配置 Ubuntu + i3wm</a> 。逐渐习惯全快捷键的系统之后就自然而然地，开始走向魔改 neovim 的道路。</p>
+<p>所以最后总结起来我愿意花时间魔改 neovim 的原因很简单，我想要一个能够随手启动，随手打开，速度飞快的编辑器，他还能拥有绝大多数 IDE 的功能，这些要求别的编辑器多多少少能做到一些，但是像 neovim 一样什么都有我全都要的，却只有 neovim 一个。那么你呢，你心中的答案能够值得你花这个时间去折腾吗。</p>
+
+
+  <p><a class="classtest-link" href="/tags/coc-nvim/" rel="tag">coc.nvim</a>, <a class="classtest-link" href="/tags/ide/" rel="tag">ide</a>, <a class="classtest-link" href="/tags/neovim/" rel="tag">neovim</a> — Feb 4, 2021</p>
+  
+
+
+          <div class="row mt-2">
+  
+    <div class="eight columns">
+      <p id="madewith">Made with ❤ and
+        <a class="footer-link icon" href="https://hexo.io" target="_blank" style="text-decoration: none;" rel="noreferrer" aria-label="Hexo.io">
+        <svg class="hexo svg-hov" width="14" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>Hexo.js</title><path d="M12 .007L1.57 6.056V18.05L12 23.995l10.43-6.049V5.952L12 .007zm4.798 17.105l-.939.521-.939-.521V12.94H9.08v4.172l-.94.521-.938-.521V6.89l.939-.521.939.521v4.172h5.84V6.89l.94-.521.938.521v10.222z"/></svg>
+        </a>
+        
+        at <a href="https://en.wikipedia.org/wiki/Earth" target="_blank" rel="noreferrer">Earth</a>.</p>
+        
+    </div>
+
+    <!-- Sepcial thanks to https://simpleicons.org/ for the icons -->
+    <div class="four columns mb-3 posisi" >
+      
+      <a class="ml-0 footer-link icon" href="https://github.com/avimitin" target="_blank" style="text-decoration: none" rel="noreferrer" aria-label="GitHub">
+        <svg class="github svg-hov" width="18" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>GitHub</title><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+      </a>
+      
+
+      
+
+      
+
+      
+
+      
+
+    </div>
+  
+</div>
+
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+  <script src="/js/nanobar.min.js"></script>
+  <script>
+    var options = {
+      classname: 'nanobar',
+      id: 'myNanobar'
+    };
+    var nanobar = new Nanobar(options);
+    nanobar.go(30);
+    nanobar.go(76);
+    nanobar.go(100);
+  </script>
+
+</body>
+
+</html>

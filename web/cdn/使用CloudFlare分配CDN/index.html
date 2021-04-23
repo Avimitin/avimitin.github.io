@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <!-- Minima -->
+  <!-- Hexo theme created by @adisaktijrs -->
+
+  <!-- Basic Page Needs
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta charset="utf-8">
+
+  
+  <title>使用CloudFlare CDN</title>
+  
+  <link rel="canonical" href="https://blog.cf.avmtn.net/web/cdn/%E4%BD%BF%E7%94%A8CloudFlare%E5%88%86%E9%85%8DCDN/">
+  
+  <meta name="description" content="前言CloudFlare是真的减速器，假如服务器在香港可能上了CF会很慢，所以假如像我一样用完延迟从60ms蹦到500ms的，就不要搞CF了。   添加域名首先先注册CloudFlare，然后点击添加站点，输入你的域名。然后就会跳转计划，选择0美元的免费计划就可以了。选完之后CloudFlare就会">
+  
+  
+  <meta name="keywords" content="golang,linux">
+  
+  <meta name="author" content="Avimitin">
+  
+  <meta property="og:image" content="https://blog.cf.avmtn.netundefined">
+  
+  <meta property="og:site_name" content="Avimitin Blog" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="使用CloudFlare CDN" />
+  
+  <meta property="og:description" content="前言CloudFlare是真的减速器，假如服务器在香港可能上了CF会很慢，所以假如像我一样用完延迟从60ms蹦到500ms的，就不要搞CF了。   添加域名首先先注册CloudFlare，然后点击添加站点，输入你的域名。然后就会跳转计划，选择0美元的免费计划就可以了。选完之后CloudFlare就会">
+  
+  <meta property="og:url" content="https://blog.cf.avmtn.net/web/cdn/%E4%BD%BF%E7%94%A8CloudFlare%E5%88%86%E9%85%8DCDN/" />
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="使用CloudFlare CDN">
+  
+  <meta name="twitter:description" content="前言CloudFlare是真的减速器，假如服务器在香港可能上了CF会很慢，所以假如像我一样用完延迟从60ms蹦到500ms的，就不要搞CF了。   添加域名首先先注册CloudFlare，然后点击添加站点，输入你的域名。然后就会跳转计划，选择0美元的免费计划就可以了。选完之后CloudFlare就会">
+  
+  
+  <meta name="twitter:image" content="https://blog.cf.avmtn.netundefined">
+  
+  <meta name="twitter:url" content="https://blog.cf.avmtn.net/web/cdn/%E4%BD%BF%E7%94%A8CloudFlare%E5%88%86%E9%85%8DCDN/" />
+
+  <!-- Mobile Specific Metas
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Preload fonts
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="preload" href="../fonts/dm-serif-display-v4-latin-regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../fonts/inter-v2-latin-regular.woff2" as="font" type="font/woff2" crossorigin>
+
+  <!-- CSS
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  
+<link rel="stylesheet" href="/css/normalize.css">
+
+  
+<link rel="stylesheet" href="/css/skeleton.css">
+
+  
+<link rel="stylesheet" href="/css/custom.css">
+
+  
+<link rel="stylesheet" href="/css/prism-dark.css">
+
+  
+<link rel="stylesheet" href="/css/prism-line-numbers.css">
+
+  <!-- User css -->
+  
+  
+<link rel="stylesheet" href="/css/user.css">
+
+  
+
+  <!-- Favicon
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="icon" type="image/png" href="/images/favicon.png">
+
+  <!-- Custom Theme Color Style
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <style>
+  a:not(.icon) {
+    text-decoration-color: #D19826;
+    background-image: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0) 50%,
+      #D19826 50%
+    );
+  }
+  blockquote {
+    border-left: 8px solid #D19826;
+  }
+  .nanobar .bar {
+    background: #D19826;
+  }
+  .button.button-primary:hover,
+  button.button-primary:hover,
+  input[type="submit"].button-primary:hover,
+  input[type="reset"].button-primary:hover,
+  input[type="button"].button-primary:hover,
+  .button.button-primary:focus,
+  button.button-primary:focus,
+  input[type="submit"].button-primary:focus,
+  input[type="reset"].button-primary:focus,
+  input[type="button"].button-primary:focus {
+    background-color: #D19826;
+    border-color: #D19826;
+  }
+  input[type="email"]:focus,
+  input[type="number"]:focus,
+  input[type="search"]:focus,
+  input[type="text"]:focus,
+  input[type="tel"]:focus,
+  input[type="url"]:focus,
+  input[type="password"]:focus,
+  textarea:focus,
+  select:focus {
+    border: 1px solid #D19826;
+  }
+</style>
+
+  <!-- Google Analytics (With Privacy Settings On)
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+  <div class="container">
+    <div class="row">
+      <div>
+
+        <div class="row">
+  <div class="two columns" style="max-width: 50px">
+    <h1 class="mt-2 mode">
+      <div onclick=setDarkMode(true) id="darkBtn">🌑</div>
+      <div onclick=setDarkMode(false) id="lightBtn" class=hidden>☀️</div>
+      <script >
+        if (localStorage.getItem('preferredTheme') == 'dark') {
+          setDarkMode(true)
+        }
+        function setDarkMode(isDark) {
+          var darkBtn = document.getElementById('darkBtn')
+          var lightBtn = document.getElementById('lightBtn')
+          if (isDark) {
+            lightBtn.style.display = "block"
+            darkBtn.style.display = "none"
+            localStorage.setItem('preferredTheme', 'dark');
+          } else {
+            lightBtn.style.display = "none"
+            darkBtn.style.display = "block"
+            localStorage.removeItem('preferredTheme');
+          }
+          document.body.classList.toggle("darkmode");
+        }
+      </script>
+    </h1>
+  </div>
+
+  <div class="six columns ml-1">
+    <h1 class="mt-2">
+      Avimitin&#39;s Blog
+    </h1>
+  </div>
+
+  <div class="twelve columns">
+    <div class="row">
+      <div class="nine columns left">
+        <a href="/">Home</a>
+        
+          
+          <a href="/friends" class="ml">Friends</a>
+          
+        
+        
+          
+            <a href="mailto:avimitin@gmail.com" target="_blank" class="ml">Email</a>
+          
+        
+      </div>
+    </div>
+    <hr style="margin-bottom: 2.6rem">
+  </div>
+</div>
+
+        <div class="trans">
+          <h1 class="post-title">使用CloudFlare CDN</h1>
+
+
+
+
+
+
+
+  <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>CloudFlare是真的减速器，假如服务器在香港可能上了CF会很慢，所以假如像我一样用完延迟从60ms蹦到500ms的，就不要搞CF了。</p>
+<span id="more"></span>
+
+<h1 id="添加域名"><a href="#添加域名" class="headerlink" title="添加域名"></a>添加域名</h1><p>首先先注册CloudFlare，然后点击添加站点，输入你的域名。然后就会跳转计划，选择0美元的免费计划就可以了。选完之后CloudFlare就会开始扫描你现在的DNS缓存。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Avimitin/PicStorage/pic/Snipaste_2020-04-19_17-56-04.png"></p>
+<p>一般来说CloudFlare不用CNAME类型，把CNAME类型删了，再添加一条A类型记录，名称为www，指向VPS，改完应该长这样：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Avimitin/PicStorage/pic/20200419175954.png"></p>
+<p>点击继续，使用默认方法。然后跳转到域名面板，去域名购买的网站改一下域名DNS服务器。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Avimitin/PicStorage/pic/20200419180406.png"></p>
+<p>假如使用namesilo的用户就到<code>manage my domain</code>页面里，勾选域名，然后点击上面第二个图标<code>change nameserver</code>更换DNS服务器。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Avimitin/PicStorage/pic/20200419180516.png"></p>
+<p>把原来的<code>NameServer</code>删除，填入CloudFlare页面提供的名称服务器：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Avimitin/PicStorage/pic/20200419180556.png"></p>
+<p>然后等待DNS生效就可以了。</p>
+<h1 id="IP测试"><a href="#IP测试" class="headerlink" title="IP测试"></a>IP测试</h1><p>打开CMD，先刷新本地DNS：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">ipconfig/flushdns<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>然后ping你的域名：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">ping</span> example.com<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>假如ping出来的不是VPS的IP而是CDN的IP那就是生效了。</p>
+<h1 id="CloudFlare设置"><a href="#CloudFlare设置" class="headerlink" title="CloudFlare设置"></a>CloudFlare设置</h1><p><img src="https://cdn.jsdelivr.net/gh/Avimitin/PicStorage/pic/20200419180742.png"></p>
+<p>点击<code>SSL/TLS</code>选项，假如你的服务器有SSL认证的话，选择<code>完全(严格)</code>，没有认证的话选择灵活。</p>
+<p>CloudFlare也有提供证书认证，而且是永久免费的，可以用宝塔面板自定义证书填入。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Avimitin/PicStorage/pic/20200419181137.png"></p>
+<p>点击右上角的速度，可以把这里面能打钩的全部选上，但是效果的话，只能说… 感 知 不 强。</p>
+<h1 id="站长工具"><a href="#站长工具" class="headerlink" title="站长工具"></a>站长工具</h1><ul>
+<li><p>使用<a target="_blank" rel="noopener" href="https://seo.chinaz.com/">站长工具网站</a>来测试自己的站点。</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://tool.chinaz.com/sitespeed">这个网页</a>可以测试访问站点的速度。</p>
+</li>
+</ul>
+
+
+  <p><a class="classtest-link" href="/tags/cdn/" rel="tag">cdn</a>, <a class="classtest-link" href="/tags/cloudflare/" rel="tag">cloudflare</a>, <a class="classtest-link" href="/tags/sites/" rel="tag">sites</a> — Apr 19, 2020</p>
+  
+
+
+          <div class="row mt-2">
+  
+    <div class="eight columns">
+      <p id="madewith">Made with ❤ and
+        <a class="footer-link icon" href="https://hexo.io" target="_blank" style="text-decoration: none;" rel="noreferrer" aria-label="Hexo.io">
+        <svg class="hexo svg-hov" width="14" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>Hexo.js</title><path d="M12 .007L1.57 6.056V18.05L12 23.995l10.43-6.049V5.952L12 .007zm4.798 17.105l-.939.521-.939-.521V12.94H9.08v4.172l-.94.521-.938-.521V6.89l.939-.521.939.521v4.172h5.84V6.89l.94-.521.938.521v10.222z"/></svg>
+        </a>
+        
+        at <a href="https://en.wikipedia.org/wiki/Earth" target="_blank" rel="noreferrer">Earth</a>.</p>
+        
+    </div>
+
+    <!-- Sepcial thanks to https://simpleicons.org/ for the icons -->
+    <div class="four columns mb-3 posisi" >
+      
+      <a class="ml-0 footer-link icon" href="https://github.com/avimitin" target="_blank" style="text-decoration: none" rel="noreferrer" aria-label="GitHub">
+        <svg class="github svg-hov" width="18" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>GitHub</title><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+      </a>
+      
+
+      
+
+      
+
+      
+
+      
+
+    </div>
+  
+</div>
+
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+  <script src="/js/nanobar.min.js"></script>
+  <script>
+    var options = {
+      classname: 'nanobar',
+      id: 'myNanobar'
+    };
+    var nanobar = new Nanobar(options);
+    nanobar.go(30);
+    nanobar.go(76);
+    nanobar.go(100);
+  </script>
+
+</body>
+
+</html>
